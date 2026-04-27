@@ -19,11 +19,8 @@
       --glow: 0 0 8px #00ff41, 0 0 20px #00ff4155;
       --glow-sm: 0 0 4px #00ff41, 0 0 10px #00ff4133;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -32,663 +29,165 @@
       overflow-x: hidden;
       cursor: crosshair;
     }
-
-    /* ── MATRIX CANVAS ── */
     #matrix-bg {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
-      z-index: 0;
-      opacity: 0.18;
-      pointer-events: none;
+      z-index: 0; opacity: 0.18; pointer-events: none;
     }
-
-    /* ── SCANLINES ── */
     body::after {
-      content: '';
-      position: fixed;
-      top: 0; left: 0;
+      content: ''; position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 255, 65, 0.015) 2px,
-        rgba(0, 255, 65, 0.015) 4px
-      );
-      pointer-events: none;
-      z-index: 9999;
+      background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.015) 2px,rgba(0,255,65,0.015) 4px);
+      pointer-events: none; z-index: 9999;
     }
-
-    /* ── LAYOUT ── */
-    .wrapper {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* ── HEADER ── */
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 18px 0 14px;
-      position: sticky;
-      top: 0;
-      background: rgba(0,0,0,0.92);
-      backdrop-filter: blur(6px);
-      z-index: 100;
-    }
-
-    .header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .logo-block {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-    }
-
-    .logo-icon {
-      width: 44px;
-      height: 44px;
-      border: 1.5px solid var(--green);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'VT323', monospace;
-      font-size: 26px;
-      color: var(--green);
-      box-shadow: var(--glow-sm);
-      animation: pulse-border 3s ease-in-out infinite;
-    }
-
-    @keyframes pulse-border {
-      0%, 100% { box-shadow: var(--glow-sm); }
-      50% { box-shadow: var(--glow); }
-    }
-
-    .logo-text {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 18px;
-      color: var(--green);
-      text-shadow: var(--glow-sm);
-      letter-spacing: 3px;
-      line-height: 1.2;
-    }
-
-    .logo-sub {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 9px;
-      color: var(--green-dim);
-      letter-spacing: 2px;
-    }
-
-    .status-bar {
-      font-size: 11px;
-      color: var(--green-dim);
-      text-align: right;
-    }
-
-    .status-dot {
-      display: inline-block;
-      width: 7px;
-      height: 7px;
-      background: var(--green);
-      border-radius: 50%;
-      margin-right: 5px;
-      animation: blink 1.2s step-end infinite;
-      box-shadow: 0 0 6px var(--green);
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    /* ── HERO ── */
-    .hero {
-      padding: 60px 0 40px;
-      text-align: center;
-    }
-
-    .hero-tag {
-      font-size: 11px;
-      letter-spacing: 4px;
-      color: var(--green-dim);
-      margin-bottom: 14px;
-      text-transform: uppercase;
-    }
-
-    .hero-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(28px, 5vw, 52px);
-      font-weight: 900;
-      color: var(--green);
-      text-shadow: var(--glow);
-      letter-spacing: 4px;
-      line-height: 1.15;
-      margin-bottom: 10px;
-    }
-
-    .hero-title span {
-      color: #fff;
-      text-shadow: 0 0 12px #fff8;
-    }
-
-    .hero-subtitle {
-      font-family: 'VT323', monospace;
-      font-size: 22px;
-      color: var(--cyan);
-      letter-spacing: 2px;
-      margin-bottom: 30px;
-      text-shadow: 0 0 8px var(--cyan);
-    }
-
-    .hero-ticker {
-      font-size: 13px;
-      color: var(--green-dim);
-      border: 1px solid var(--border);
-      background: #001a00;
-      padding: 8px 20px;
-      display: inline-block;
-      letter-spacing: 1px;
-    }
-
-    .ticker-prefix {
-      color: var(--green);
-      margin-right: 8px;
-    }
-
-    /* ── DIVIDER ── */
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--green-dim), transparent);
-      margin: 10px 0;
-    }
-
-    /* ── NAV GRID ── */
-    .nav-section {
-      padding: 28px 0;
-    }
-
-    .section-label {
-      font-size: 10px;
-      letter-spacing: 4px;
-      color: var(--green-dim);
-      text-transform: uppercase;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-label::before {
-      content: '//';
-      color: var(--green);
-    }
-
-    .nav-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 8px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      border: 1px solid #00ff4122;
-      background: #00050000;
-      color: var(--text);
-      text-decoration: none;
-      font-size: 12px;
-      letter-spacing: 1px;
-      transition: all 0.15s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .nav-item::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 2px;
-      background: var(--green);
-      transform: scaleY(0);
-      transition: transform 0.15s ease;
-    }
-
-    .nav-item:hover {
-      border-color: var(--green);
-      background: #00ff410a;
-      color: var(--green);
-      box-shadow: 0 0 10px #00ff4118;
-    }
-
-    .nav-item:hover::before {
-      transform: scaleY(1);
-    }
-
-    .nav-item .icon {
-      font-size: 14px;
-      opacity: 0.6;
-    }
-
-    /* ── MAIN CONTENT GRID ── */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 20px;
-      padding: 10px 0 40px;
-    }
-
-    @media (max-width: 780px) {
-      .content-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ── PANEL ── */
-    .panel {
-      border: 1px solid var(--border);
-      background: rgba(0, 10, 0, 0.6);
-    }
-
-    .panel-header {
-      border-bottom: 1px solid var(--border);
-      padding: 9px 14px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 10px;
-      letter-spacing: 3px;
-      color: var(--green);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .panel-header .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--green);
-      display: inline-block;
-      box-shadow: 0 0 5px var(--green);
-      animation: blink 2s step-end infinite;
-    }
-
-    .panel-body {
-      padding: 16px;
-    }
-
-    /* ── FEED ITEMS ── */
-    .feed-item {
-      border-bottom: 1px solid #00ff410d;
-      padding: 14px 0;
-    }
-
+    .wrapper { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    header { border-bottom: 1px solid var(--border); padding: 18px 0 14px; position: sticky; top: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(6px); z-index: 100; }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .logo-block { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .logo-icon { width: 44px; height: 44px; border: 1.5px solid var(--green); display: flex; align-items: center; justify-content: center; font-family: 'VT323', monospace; font-size: 26px; color: var(--green); box-shadow: var(--glow-sm); animation: pulse-border 3s ease-in-out infinite; }
+    @keyframes pulse-border { 0%, 100% { box-shadow: var(--glow-sm); } 50% { box-shadow: var(--glow); } }
+    .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 18px; color: var(--green); text-shadow: var(--glow-sm); letter-spacing: 3px; line-height: 1.2; }
+    .logo-sub { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--green-dim); letter-spacing: 2px; }
+    .status-bar { font-size: 11px; color: var(--green-dim); text-align: right; }
+    .status-dot { display: inline-block; width: 7px; height: 7px; background: var(--green); border-radius: 50%; margin-right: 5px; animation: blink 1.2s step-end infinite; box-shadow: 0 0 6px var(--green); }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .hero { padding: 60px 0 40px; text-align: center; }
+    .hero-tag { font-size: 11px; letter-spacing: 4px; color: var(--green-dim); margin-bottom: 14px; text-transform: uppercase; }
+    .hero-title { font-family: 'Orbitron', sans-serif; font-size: clamp(28px, 5vw, 52px); font-weight: 900; color: var(--green); text-shadow: var(--glow); letter-spacing: 4px; line-height: 1.15; margin-bottom: 10px; }
+    .hero-title span { color: #fff; text-shadow: 0 0 12px #fff8; }
+    .hero-subtitle { font-family: 'VT323', monospace; font-size: 22px; color: var(--cyan); letter-spacing: 2px; margin-bottom: 30px; text-shadow: 0 0 8px var(--cyan); }
+    .hero-ticker { font-size: 13px; color: var(--green-dim); border: 1px solid var(--border); background: #001a00; padding: 8px 20px; display: inline-block; letter-spacing: 1px; }
+    .ticker-prefix { color: var(--green); margin-right: 8px; }
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--green-dim), transparent); margin: 10px 0; }
+    .nav-section { padding: 28px 0; }
+    .section-label { font-size: 10px; letter-spacing: 4px; color: var(--green-dim); text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .section-label::before { content: '//'; color: var(--green); }
+    .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+    .nav-item { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid #00ff4122; background: #00050000; color: var(--text); text-decoration: none; font-size: 12px; letter-spacing: 1px; transition: all 0.15s ease; position: relative; overflow: hidden; }
+    .nav-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--green); transform: scaleY(0); transition: transform 0.15s ease; }
+    .nav-item:hover { border-color: var(--green); background: #00ff410a; color: var(--green); box-shadow: 0 0 10px #00ff4118; }
+    .nav-item:hover::before { transform: scaleY(1); }
+    .nav-item .icon { font-size: 14px; opacity: 0.6; }
+    /* CyberWarSim special styling */
+    .nav-item.warsim-nav { border-color: #ff003c33; }
+    .nav-item.warsim-nav::before { background: var(--red); }
+    .nav-item.warsim-nav:hover { border-color: var(--red); background: #ff003c0a; color: var(--red); box-shadow: 0 0 10px #ff003c22; }
+    .content-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; padding: 10px 0 40px; }
+    @media (max-width: 780px) { .content-grid { grid-template-columns: 1fr; } }
+    .panel { border: 1px solid var(--border); background: rgba(0, 10, 0, 0.6); }
+    .panel-header { border-bottom: 1px solid var(--border); padding: 9px 14px; font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 3px; color: var(--green); display: flex; align-items: center; justify-content: space-between; }
+    .panel-header .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: inline-block; box-shadow: 0 0 5px var(--green); animation: blink 2s step-end infinite; }
+    .panel-body { padding: 16px; }
+    .feed-item { border-bottom: 1px solid #00ff410d; padding: 14px 0; }
     .feed-item:last-child { border-bottom: none; }
-
-    .feed-meta {
-      font-size: 10px;
-      color: var(--green-dim);
-      margin-bottom: 4px;
-      display: flex;
-      gap: 12px;
-    }
-
-    .feed-tag {
-      color: var(--cyan);
-      font-size: 10px;
-    }
-
-    .feed-title {
-      font-size: 13px;
-      color: #d0ffd0;
-      line-height: 1.4;
-      text-decoration: none;
-      display: block;
-    }
-
-    .feed-title:hover {
-      color: var(--green);
-      text-shadow: var(--glow-sm);
-    }
-
-    /* ── SIDEBAR WIDGETS ── */
-    .widget {
-      border: 1px solid var(--border);
-      background: rgba(0, 10, 0, 0.6);
-      margin-bottom: 14px;
-    }
-
+    .feed-meta { font-size: 10px; color: var(--green-dim); margin-bottom: 4px; display: flex; gap: 12px; }
+    .feed-tag { color: var(--cyan); font-size: 10px; }
+    .feed-title { font-size: 13px; color: #d0ffd0; line-height: 1.4; text-decoration: none; display: block; }
+    .feed-title:hover { color: var(--green); text-shadow: var(--glow-sm); }
+    .widget { border: 1px solid var(--border); background: rgba(0, 10, 0, 0.6); margin-bottom: 14px; }
     .widget:last-child { margin-bottom: 0; }
-
-    .widget-header {
-      border-bottom: 1px solid var(--border);
-      padding: 8px 12px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 9px;
-      letter-spacing: 3px;
-      color: var(--green);
-      text-transform: uppercase;
-    }
-
-    .widget-body {
-      padding: 12px;
-    }
-
-    /* ── THREAT METER ── */
-    .threat-level {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .threat-label {
-      font-size: 11px;
-      width: 70px;
-      color: var(--green-dim);
-    }
-
-    .threat-bar-bg {
-      flex: 1;
-      height: 6px;
-      background: #001500;
-      border: 1px solid #00ff4122;
-    }
-
-    .threat-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--green), var(--cyan));
-      box-shadow: 0 0 6px var(--green);
-      transition: width 1s ease;
-    }
-
-    .threat-val {
-      font-size: 11px;
-      color: var(--green);
-      width: 32px;
-      text-align: right;
-    }
-
-    /* ── STATS GRID ── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .stat-box {
-      border: 1px solid #00ff4115;
-      padding: 10px;
-      text-align: center;
-      background: #000800;
-    }
-
-    .stat-value {
-      font-family: 'VT323', monospace;
-      font-size: 26px;
-      color: var(--green);
-      text-shadow: var(--glow-sm);
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 9px;
-      color: var(--green-dim);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-
-    /* ── TERMINAL ── */
-    .terminal {
-      font-size: 11px;
-      line-height: 1.7;
-      color: var(--green-dim);
-    }
-
-    .terminal .cmd {
-      color: var(--green);
-    }
-
-    .terminal .out {
-      color: #7aff7a;
-      padding-left: 10px;
-    }
-
-    .terminal .err {
-      color: var(--red);
-      padding-left: 10px;
-    }
-
-    .terminal .cursor {
-      display: inline-block;
-      width: 8px;
-      height: 13px;
-      background: var(--green);
-      vertical-align: middle;
-      animation: blink 1s step-end infinite;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 22px 0;
-      text-align: center;
-      font-size: 11px;
-      color: var(--green-dim);
-      letter-spacing: 2px;
-    }
-
-    footer a {
-      color: var(--green-dim);
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      color: var(--green);
-    }
-
-    .footer-hash {
-      font-family: 'VT323', monospace;
-      font-size: 14px;
-      color: #003800;
-      margin-top: 6px;
-      word-break: break-all;
-    }
-
-    /* ── GLITCH EFFECT ── */
+    .widget-header { border-bottom: 1px solid var(--border); padding: 8px 12px; font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 3px; color: var(--green); text-transform: uppercase; }
+    .widget-body { padding: 12px; }
+    .threat-level { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .threat-label { font-size: 11px; width: 70px; color: var(--green-dim); }
+    .threat-bar-bg { flex: 1; height: 6px; background: #001500; border: 1px solid #00ff4122; }
+    .threat-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--cyan)); box-shadow: 0 0 6px var(--green); transition: width 1s ease; }
+    .threat-val { font-size: 11px; color: var(--green); width: 32px; text-align: right; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-box { border: 1px solid #00ff4115; padding: 10px; text-align: center; background: #000800; }
+    .stat-value { font-family: 'VT323', monospace; font-size: 26px; color: var(--green); text-shadow: var(--glow-sm); line-height: 1; }
+    .stat-label { font-size: 9px; color: var(--green-dim); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
+    .terminal { font-size: 11px; line-height: 1.7; color: var(--green-dim); }
+    .terminal .cmd { color: var(--green); }
+    .terminal .out { color: #7aff7a; padding-left: 10px; }
+    .terminal .err { color: var(--red); padding-left: 10px; }
+    .terminal .cursor { display: inline-block; width: 8px; height: 13px; background: var(--green); vertical-align: middle; animation: blink 1s step-end infinite; }
+    footer { border-top: 1px solid var(--border); padding: 22px 0; text-align: center; font-size: 11px; color: var(--green-dim); letter-spacing: 2px; }
+    footer a { color: var(--green-dim); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+    .footer-hash { font-family: 'VT323', monospace; font-size: 14px; color: #003800; margin-top: 6px; word-break: break-all; }
     @keyframes glitch {
       0%, 90%, 100% { clip-path: none; transform: translate(0); }
       91% { clip-path: polygon(0 20%, 100% 20%, 100% 30%, 0 30%); transform: translate(-3px, 0); }
       93% { clip-path: polygon(0 60%, 100% 60%, 100% 70%, 0 70%); transform: translate(3px, 0); }
       95% { clip-path: polygon(0 40%, 100% 40%, 100% 50%, 0 50%); transform: translate(-2px, 0); }
     }
-
-    .glitch {
-      animation: glitch 6s infinite;
-    }
-
-    /* ── ALERT BANNER ── */
-    .alert-banner {
-      background: #0d0000;
-      border: 1px solid #ff003c44;
-      color: var(--red);
-      font-size: 11px;
-      padding: 8px 16px;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .alert-icon {
-      font-size: 16px;
-      animation: blink 0.8s step-end infinite;
-    }
-
-    /* ── MODAL OVERLAY ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.88);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(4px);
-    }
+    .glitch { animation: glitch 6s infinite; }
+    .alert-banner { background: #0d0000; border: 1px solid #ff003c44; color: var(--red); font-size: 11px; padding: 8px 16px; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .alert-icon { font-size: 16px; animation: blink 0.8s step-end infinite; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 500; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
     .modal-overlay.open { display: flex; }
-
-    .modal-box {
-      border: 1px solid var(--green);
-      background: #000d00;
-      width: min(700px, 95vw);
-      max-height: 88vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--glow);
-      animation: modal-in 0.18s ease;
-    }
-
-    @keyframes modal-in {
-      from { opacity: 0; transform: scale(0.96) translateY(10px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 11px;
-      letter-spacing: 3px;
-      color: var(--green);
-    }
-
-    .modal-close {
-      background: none;
-      border: 1px solid #00ff4144;
-      color: var(--green);
-      font-size: 16px;
-      cursor: pointer;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
+    .modal-box { border: 1px solid var(--green); background: #000d00; width: min(700px, 95vw); max-height: 88vh; display: flex; flex-direction: column; box-shadow: var(--glow); animation: modal-in 0.18s ease; }
+    .modal-box.warsim-box { border-color: var(--red); box-shadow: 0 0 8px var(--red), 0 0 20px #ff003c55; width: min(900px, 96vw); }
+    .modal-box.warsim-box .modal-header { color: var(--red); border-bottom-color: #ff003c33; }
+    @keyframes modal-in { from { opacity: 0; transform: scale(0.96) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--border); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 3px; color: var(--green); }
+    .modal-close { background: none; border: 1px solid #00ff4144; color: var(--green); font-size: 16px; cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
     .modal-close:hover { background: #00ff4115; border-color: var(--green); }
-
-    .modal-body {
-      padding: 20px;
-      overflow-y: auto;
-      flex: 1;
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    /* tool inputs */
-    .tool-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .tool-input {
-      flex: 1;
-      min-width: 200px;
-      background: #001000;
-      border: 1px solid var(--border);
-      color: var(--green);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 13px;
-      padding: 8px 12px;
-      outline: none;
-    }
+    .modal-body { padding: 20px; overflow-y: auto; flex: 1; font-size: 13px; line-height: 1.7; }
+    .tool-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .tool-input { flex: 1; min-width: 200px; background: #001000; border: 1px solid var(--border); color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 13px; padding: 8px 12px; outline: none; }
     .tool-input:focus { border-color: var(--green); box-shadow: var(--glow-sm); }
-
-    .tool-btn {
-      background: #002200;
-      border: 1px solid var(--green);
-      color: var(--green);
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 1px;
-      padding: 8px 16px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
+    .tool-btn { background: #002200; border: 1px solid var(--green); color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 1px; padding: 8px 16px; cursor: pointer; transition: all 0.15s; }
     .tool-btn:hover { background: #004400; box-shadow: var(--glow-sm); }
-
-    .tool-output {
-      background: #000800;
-      border: 1px solid var(--border);
-      padding: 12px;
-      font-size: 12px;
-      color: #a0ffa0;
-      min-height: 80px;
-      white-space: pre-wrap;
-      word-break: break-all;
-      line-height: 1.6;
-    }
-
-    .tool-label {
-      font-size: 10px;
-      color: var(--green-dim);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .info-box {
-      border: 1px solid var(--border);
-      background: #000800;
-      padding: 10px 12px;
-    }
-
+    .tool-output { background: #000800; border: 1px solid var(--border); padding: 12px; font-size: 12px; color: #a0ffa0; min-height: 80px; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
+    .tool-label { font-size: 10px; color: var(--green-dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .info-box { border: 1px solid var(--border); background: #000800; padding: 10px 12px; }
     .info-box .lbl { font-size: 9px; color: var(--green-dim); letter-spacing: 2px; text-transform: uppercase; }
     .info-box .val { font-size: 14px; color: var(--green); margin-top: 2px; }
-
     textarea.tool-input { resize: vertical; min-height: 80px; }
-
     select.tool-input { cursor: pointer; }
-
     .cipher-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media(max-width:500px){ .cipher-grid,.info-grid{ grid-template-columns:1fr; } }
+    @media(max-width:500px) { .cipher-grid,.info-grid { grid-template-columns:1fr; } }
+    @media (max-width: 600px) { .nav-grid { grid-template-columns: repeat(2, 1fr); } .hero-title { font-size: 26px; } }
 
-    /* responsive */
-    @media (max-width: 600px) {
-      .nav-grid { grid-template-columns: repeat(2, 1fr); }
-      .hero-title { font-size: 26px; }
-    }
+    /* ══ CYBERWAR SIM STYLES ══ */
+    .ws-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid #ff003c33; padding-bottom: 10px; }
+    .ws-tab { background: #0d0000; border: 1px solid #ff003c33; color: #ff6688; font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 1px; padding: 5px 12px; cursor: pointer; transition: all 0.15s; }
+    .ws-tab:hover, .ws-tab.active { background: #ff003c15; border-color: var(--red); color: var(--red); box-shadow: 0 0 6px #ff003c33; }
+    .ws-panel { display: none; }
+    .ws-panel.active { display: block; }
+    .war-map { width: 100%; height: 220px; background: #000800; border: 1px solid #ff003c33; position: relative; overflow: hidden; margin-bottom: 10px; }
+    .war-node { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%,-50%); }
+    .war-node.attacker { background: var(--red); box-shadow: 0 0 8px var(--red); }
+    .war-node.defender { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .war-node.neutral  { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+    .war-node.compromised { background: #ff8800; box-shadow: 0 0 8px #ff8800; animation: blink 0.6s step-end infinite; }
+    .war-node-label { position: absolute; font-size: 9px; color: var(--green-dim); transform: translate(-50%,8px); white-space: nowrap; pointer-events: none; }
+    .attack-line { position: absolute; height: 1px; background: linear-gradient(90deg,var(--red),transparent); transform-origin: left center; pointer-events: none; opacity: 0; animation: atk-flash 0.5s ease forwards; }
+    @keyframes atk-flash { 0% { opacity:1; } 100% { opacity:0; } }
+    .sim-log { height: 120px; overflow-y: auto; background: #000500; border: 1px solid #ff003c22; padding: 8px; font-size: 11px; line-height: 1.8; }
+    .sim-log .l-atk { color: var(--red); }
+    .sim-log .l-def { color: var(--green); }
+    .sim-log .l-info { color: var(--green-dim); }
+    .sim-stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin: 10px 0; }
+    .sim-stat { background: #000500; border: 1px solid #ff003c22; padding: 8px; text-align: center; }
+    .sim-stat .sv { font-family: 'VT323', monospace; font-size: 22px; color: var(--red); text-shadow: 0 0 6px var(--red); }
+    .sim-stat .sl { font-size: 9px; color: var(--green-dim); letter-spacing: 1px; text-transform: uppercase; }
+    .red-btn { border-color: var(--red) !important; color: var(--red) !important; background: #1a0000 !important; }
+    .red-btn:hover { background: #2a0000 !important; box-shadow: 0 0 6px var(--red) !important; }
+    .red-out { background: #050000; border: 1px solid #ff003c33; padding: 12px; font-size: 12px; color: #ff8888; min-height: 80px; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
+    .prog-bg { height: 6px; background: #001000; border: 1px solid #ff003c22; margin: 3px 0 10px; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg,var(--red),#ff8800); box-shadow: 0 0 4px var(--red); transition: width 0.3s ease; }
+    .scenario-card { border: 1px solid #ff003c22; background: #050000; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; }
+    .scenario-card:hover { border-color: var(--red); background: #ff003c08; }
+    .sc-title { color: var(--red); font-size: 13px; margin-bottom: 4px; }
+    .sc-desc  { color: var(--green-dim); font-size: 11px; line-height: 1.5; }
+    .hp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .hp-box { border: 1px solid #ff003c22; background: #050000; padding: 10px; }
+    .hp-box .hbt { color: var(--red); font-size: 11px; margin-bottom: 4px; }
+    .hp-box .hbv { font-family: 'VT323', monospace; font-size: 20px; color: #ff8800; }
+    .ph-form { border: 1px solid #ff003c33; background: #050000; padding: 14px; margin-bottom: 10px; }
+    .apt-chain { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    @media(max-width:600px) { .sim-stats-row { grid-template-columns:repeat(2,1fr); } .hp-grid { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
 
-<!-- Matrix Rain Canvas -->
 <canvas id="matrix-bg"></canvas>
 
-<!-- ══ HEADER ══ -->
+<!-- HEADER -->
 <header>
   <div class="wrapper">
     <div class="header-inner">
@@ -707,7 +206,7 @@
   </div>
 </header>
 
-<!-- ══ HERO ══ -->
+<!-- HERO -->
 <section class="hero">
   <div class="wrapper">
     <div class="hero-tag">// CLASSIFIED NETWORK DIVISION //</div>
@@ -717,15 +216,13 @@
       <span class="ticker-prefix">▶</span>
       <span id="ticker-text">Initializing secure feed from global sources...</span>
     </div>
-
-
   </div>
 </section>
 
 <div class="wrapper">
   <div class="divider"></div>
 
-  <!-- ══ NAV GRID ══ -->
+  <!-- NAV GRID -->
   <section class="nav-section">
     <div class="section-label">OPERATIONS DIRECTORY</div>
     <div class="nav-grid">
@@ -751,136 +248,76 @@
       <a class="nav-item" href="#" data-tool="skynet"><span class="icon">🤖</span> SkyNet</a>
       <a class="nav-item" href="#" data-tool="rebellion"><span class="icon">⚡</span> Rebellion</a>
       <a class="nav-item" href="#" data-tool="about"><span class="icon">ℹ</span> About Us</a>
+      <!-- ★ NEW ★ -->
+      <a class="nav-item warsim-nav" href="#" data-tool="cyberwar"><span class="icon">💀</span> CyberWarSim</a>
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <!-- ══ MAIN CONTENT ══ -->
+  <!-- MAIN CONTENT -->
   <div class="content-grid">
-
-    <!-- LEFT: Feed -->
     <div>
       <div class="alert-banner">
         <span class="alert-icon">⚠</span>
         THREAT LEVEL ELEVATED — Monitor all channels. Operate with caution.
       </div>
-
       <div class="panel">
         <div class="panel-header">
           <span>// LIVE INTEL FEED</span>
           <span class="dot"></span>
         </div>
         <div class="panel-body">
-
           <div class="feed-item">
-            <div class="feed-meta">
-              <span class="feed-tag">[BREACH]</span>
-              <span>2026-04-23 · 08:41 UTC</span>
-            </div>
+            <div class="feed-meta"><span class="feed-tag">[BREACH]</span><span>2026-04-23 · 08:41 UTC</span></div>
             <a href="#" class="feed-title">Major cloud provider reports unauthorized access to internal dashboards — investigation ongoing</a>
           </div>
-
           <div class="feed-item">
-            <div class="feed-meta">
-              <span class="feed-tag">[ZERO-DAY]</span>
-              <span>2026-04-23 · 06:19 UTC</span>
-            </div>
+            <div class="feed-meta"><span class="feed-tag">[ZERO-DAY]</span><span>2026-04-23 · 06:19 UTC</span></div>
             <a href="#" class="feed-title">Unpatched vulnerability in widely-deployed VPN software actively exploited in the wild</a>
           </div>
-
           <div class="feed-item">
-            <div class="feed-meta">
-              <span class="feed-tag">[OPSEC]</span>
-              <span>2026-04-22 · 22:55 UTC</span>
-            </div>
+            <div class="feed-meta"><span class="feed-tag">[OPSEC]</span><span>2026-04-22 · 22:55 UTC</span></div>
             <a href="#" class="feed-title">New deanonymization technique demonstrated against Tor hidden services at academic conference</a>
           </div>
-
           <div class="feed-item">
-            <div class="feed-meta">
-              <span class="feed-tag">[MALWARE]</span>
-              <span>2026-04-22 · 17:30 UTC</span>
-            </div>
+            <div class="feed-meta"><span class="feed-tag">[MALWARE]</span><span>2026-04-22 · 17:30 UTC</span></div>
             <a href="#" class="feed-title">Analysis of novel rootkit variant using kernel-level evasion techniques — full report available</a>
           </div>
-
           <div class="feed-item">
-            <div class="feed-meta">
-              <span class="feed-tag">[LEAK]</span>
-              <span>2026-04-22 · 11:04 UTC</span>
-            </div>
+            <div class="feed-meta"><span class="feed-tag">[LEAK]</span><span>2026-04-22 · 11:04 UTC</span></div>
             <a href="#" class="feed-title">240GB dataset allegedly from government contractor appears on underground forum — hashes circulating</a>
           </div>
-
           <div class="feed-item">
-            <div class="feed-meta">
-              <span class="feed-tag">[NETWORK]</span>
-              <span>2026-04-21 · 09:17 UTC</span>
-            </div>
+            <div class="feed-meta"><span class="feed-tag">[NETWORK]</span><span>2026-04-21 · 09:17 UTC</span></div>
             <a href="#" class="feed-title">BGP hijacking incident diverts traffic for multiple financial institutions — 40 minute window detected</a>
           </div>
-
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: Sidebar -->
+    <!-- SIDEBAR -->
     <div>
-
-      <!-- Threat Meters -->
       <div class="widget">
         <div class="widget-header">THREAT METRICS</div>
         <div class="widget-body">
-          <div class="threat-level">
-            <span class="threat-label">GLOBAL</span>
-            <div class="threat-bar-bg"><div class="threat-bar-fill" style="width:72%"></div></div>
-            <span class="threat-val">72%</span>
-          </div>
-          <div class="threat-level">
-            <span class="threat-label">NETWORK</span>
-            <div class="threat-bar-bg"><div class="threat-bar-fill" style="width:55%"></div></div>
-            <span class="threat-val">55%</span>
-          </div>
-          <div class="threat-level">
-            <span class="threat-label">ENDPOINT</span>
-            <div class="threat-bar-bg"><div class="threat-bar-fill" style="width:84%"></div></div>
-            <span class="threat-val">84%</span>
-          </div>
-          <div class="threat-level">
-            <span class="threat-label">DARK WEB</span>
-            <div class="threat-bar-bg"><div class="threat-bar-fill" style="width:61%"></div></div>
-            <span class="threat-val">61%</span>
-          </div>
+          <div class="threat-level"><span class="threat-label">GLOBAL</span><div class="threat-bar-bg"><div class="threat-bar-fill" style="width:72%"></div></div><span class="threat-val">72%</span></div>
+          <div class="threat-level"><span class="threat-label">NETWORK</span><div class="threat-bar-bg"><div class="threat-bar-fill" style="width:55%"></div></div><span class="threat-val">55%</span></div>
+          <div class="threat-level"><span class="threat-label">ENDPOINT</span><div class="threat-bar-bg"><div class="threat-bar-fill" style="width:84%"></div></div><span class="threat-val">84%</span></div>
+          <div class="threat-level"><span class="threat-label">DARK WEB</span><div class="threat-bar-bg"><div class="threat-bar-fill" style="width:61%"></div></div><span class="threat-val">61%</span></div>
         </div>
       </div>
-
-      <!-- Stats -->
       <div class="widget">
         <div class="widget-header">NETWORK STATS</div>
         <div class="widget-body">
           <div class="stats-grid">
-            <div class="stat-box">
-              <div class="stat-value" id="cnt-nodes">2,847</div>
-              <div class="stat-label">NODES</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value" id="cnt-events">14.2K</div>
-              <div class="stat-label">EVENTS/HR</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value" id="cnt-blocked">931</div>
-              <div class="stat-label">BLOCKED</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value" id="cnt-alerts">47</div>
-              <div class="stat-label">ALERTS</div>
-            </div>
+            <div class="stat-box"><div class="stat-value" id="cnt-nodes">2,847</div><div class="stat-label">NODES</div></div>
+            <div class="stat-box"><div class="stat-value" id="cnt-events">14.2K</div><div class="stat-label">EVENTS/HR</div></div>
+            <div class="stat-box"><div class="stat-value" id="cnt-blocked">931</div><div class="stat-label">BLOCKED</div></div>
+            <div class="stat-box"><div class="stat-value" id="cnt-alerts">47</div><div class="stat-label">ALERTS</div></div>
           </div>
         </div>
       </div>
-
-      <!-- Terminal -->
       <div class="widget">
         <div class="widget-header">TERMINAL</div>
         <div class="widget-body">
@@ -896,26 +333,19 @@
           </div>
         </div>
       </div>
-
-      <!-- Tagline -->
       <div class="widget">
         <div class="widget-body" style="text-align:center; padding: 16px;">
-          <div style="font-family:'VT323',monospace; font-size:20px; color:var(--green); text-shadow:var(--glow-sm); letter-spacing:3px;">
-            #FollowTheWhiteRabbit
-          </div>
-          <div style="font-size:10px; color:var(--green-dim); margin-top:6px; letter-spacing:2px;">
-            WE ARE LOGOS · WE ARE THE SOLUTION
-          </div>
+          <div style="font-family:'VT323',monospace; font-size:20px; color:var(--green); text-shadow:var(--glow-sm); letter-spacing:3px;">#FollowTheWhiteRabbit</div>
+          <div style="font-size:10px; color:var(--green-dim); margin-top:6px; letter-spacing:2px;">WE ARE LOGOS · WE ARE THE SOLUTION</div>
         </div>
       </div>
-
     </div>
   </div>
 
   <div class="divider"></div>
 </div>
 
-<!-- ══ FOOTER ══ -->
+<!-- FOOTER -->
 <footer>
   <div class="wrapper">
     <div>
@@ -925,15 +355,13 @@
       <a href="#">PGP Key</a> &nbsp;|&nbsp;
       Archiving by <a href="https://archive.org" target="_blank">Archive.org</a>
     </div>
-    <div class="footer-hash">
-      SHA256: 3f4a8b2c9e1d07f5a6b3c8d2e9f4a7b1c6d3e8f2a9b4c7d1e6f3a8b2c9e1d07f5
-    </div>
+    <div class="footer-hash">SHA256: 3f4a8b2c9e1d07f5a6b3c8d2e9f4a7b1c6d3e8f2a9b4c7d1e6f3a8b2c9e1d07f5</div>
   </div>
 </footer>
 
-<!-- ══ MODAL OVERLAY ══ -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
-  <div class="modal-box">
+  <div class="modal-box" id="modal-box">
     <div class="modal-header">
       <span id="modal-title">TOOL</span>
       <button class="modal-close" id="modal-close-btn">✕</button>
@@ -943,802 +371,932 @@
 </div>
 
 <script>
-  /* ── MATRIX RAIN ── */
-  const canvas = document.getElementById('matrix-bg');
-  const ctx = canvas.getContext('2d');
-  let W, H, cols, drops;
-
-  function initMatrix() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    cols = Math.floor(W / 18);
-    drops = Array(cols).fill(1);
+/* ── MATRIX RAIN ── */
+const canvas = document.getElementById('matrix-bg');
+const ctx = canvas.getContext('2d');
+let W, H, cols, drops;
+function initMatrix() {
+  W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight;
+  cols = Math.floor(W / 18); drops = Array(cols).fill(1);
+}
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#00ff41'; ctx.font = '14px Share Tech Mono, monospace';
+  for (let i = 0; i < drops.length; i++) {
+    ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 18, drops[i] * 18);
+    if (drops[i] * 18 > H && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
   }
+}
+initMatrix(); window.addEventListener('resize', initMatrix); setInterval(drawMatrix, 50);
 
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+/* ── CLOCK ── */
+function updateClock() { document.getElementById('clock').textContent = new Date().toUTCString().slice(17, 25); }
+updateClock(); setInterval(updateClock, 1000);
 
-  function drawMatrix() {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#00ff41';
-    ctx.font = '14px Share Tech Mono, monospace';
-    for (let i = 0; i < drops.length; i++) {
-      const char = chars[Math.floor(Math.random() * chars.length)];
-      ctx.fillText(char, i * 18, drops[i] * 18);
-      if (drops[i] * 18 > H && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    }
-  }
+/* ── YEAR ── */
+document.getElementById('year').textContent = new Date().getFullYear();
 
-  initMatrix();
-  window.addEventListener('resize', initMatrix);
-  setInterval(drawMatrix, 50);
+/* ── TICKER ── */
+const tickers = [
+  'Monitoring 2,847 active nodes across 47 countries...',
+  'ALERT: Elevated DDoS activity detected on AS12345...',
+  'New zero-day CVE-2026-XXXX under active exploitation...',
+  'Secure RSS feed synchronized — 14 new intel reports...',
+  'Threat level elevated — all operatives on standby...',
+  'Anonymous network uptime: 247 days, 14 hours...',
+];
+let ti = 0;
+setInterval(() => {
+  ti = (ti + 1) % tickers.length;
+  const el = document.getElementById('ticker-text');
+  el.style.opacity = 0;
+  setTimeout(() => { el.textContent = tickers[ti]; el.style.opacity = 1; }, 300);
+}, 4000);
+document.getElementById('ticker-text').style.transition = 'opacity 0.3s';
 
-  /* ── CLOCK ── */
-  function updateClock() {
-    const now = new Date();
-    document.getElementById('clock').textContent =
-      now.toUTCString().slice(17, 25);
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
+/* ── STATS JITTER ── */
+function jitter(el, base, variance) { const val = base + Math.floor((Math.random() - 0.5) * variance); el.textContent = val.toLocaleString(); }
+setInterval(() => {
+  jitter(document.getElementById('cnt-blocked'), 931, 8);
+  jitter(document.getElementById('cnt-alerts'), 47, 4);
+  jitter(document.getElementById('cnt-nodes'), 2847, 6);
+}, 2500);
 
-  /* ── YEAR ── */
-  document.getElementById('year').textContent = new Date().getFullYear();
+/* ── MODAL ── */
+const modal = document.getElementById('modal');
+const modalBox = document.getElementById('modal-box');
+const modalTitle = document.getElementById('modal-title');
+const modalBody = document.getElementById('modal-body');
+const modalCloseBtn = document.getElementById('modal-close-btn');
 
-  /* ── TICKER ── */
-  const tickers = [
-    'Monitoring 2,847 active nodes across 47 countries...',
-    'ALERT: Elevated DDoS activity detected on AS12345...',
-    'New zero-day CVE-2026-XXXX under active exploitation...',
-    'Secure RSS feed synchronized — 14 new intel reports...',
-    'Threat level elevated — all operatives on standby...',
-    'Anonymous network uptime: 247 days, 14 hours...',
-  ];
-  let ti = 0;
-  setInterval(() => {
-    ti = (ti + 1) % tickers.length;
-    const el = document.getElementById('ticker-text');
-    el.style.opacity = 0;
-    setTimeout(() => {
-      el.textContent = tickers[ti];
-      el.style.opacity = 1;
-    }, 300);
-  }, 4000);
-  document.getElementById('ticker-text').style.transition = 'opacity 0.3s';
+function openModal(title, html, onOpen, isWar) {
+  modalTitle.textContent = title;
+  modalBody.innerHTML = html;
+  isWar ? modalBox.classList.add('warsim-box') : modalBox.classList.remove('warsim-box');
+  modal.classList.add('open');
+  if (onOpen) onOpen();
+}
+function closeModal() { modal.classList.remove('open'); modalBody.innerHTML = ''; modalBox.classList.remove('warsim-box'); }
+modalCloseBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  /* ── LIVE STATS JITTER ── */
-  function jitter(el, base, variance) {
-    const val = base + Math.floor((Math.random() - 0.5) * variance);
-    el.textContent = val.toLocaleString();
-  }
-  setInterval(() => {
-    jitter(document.getElementById('cnt-blocked'), 931, 8);
-    jitter(document.getElementById('cnt-alerts'), 47, 4);
-    jitter(document.getElementById('cnt-nodes'), 2847, 6);
-  }, 2500);
+/* ══ TOOLS ══ */
+const tools = {
+
+  livestream: () => openModal('📡 LIVE STREAM', `
+    <div class="tool-label">Embedded Live Broadcast</div>
+    <div style="background:#000;border:1px solid var(--border);padding:40px;text-align:center;color:var(--green-dim);font-size:13px;">
+      <div style="font-size:32px;margin-bottom:12px;">📡</div>
+      <div style="color:var(--green);font-size:15px;margin-bottom:6px;">STREAM OFFLINE</div>
+      Replace this block with your &lt;iframe&gt; embed (YouTube Live, Twitch, etc.)
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--green-dim);">Paste your stream URL below to preview:</div>
+    <div class="tool-row" style="margin-top:8px;">
+      <input class="tool-input" id="stream-url" placeholder="https://www.youtube.com/embed/live_stream?channel=...">
+      <button class="tool-btn" onclick="document.querySelector('#stream-frame').src=document.getElementById('stream-url').value">▶ LOAD</button>
+    </div>
+    <iframe id="stream-frame" style="width:100%;height:220px;border:1px solid var(--border);background:#000;" allowfullscreen></iframe>
+  `),
+
+  chat: () => openModal('💬 CHAT ROOM', `
+    <div class="tool-label">Anonymous Chat</div>
+    <div id="chat-messages" style="height:260px;overflow-y:auto;background:#000800;border:1px solid var(--border);padding:10px;font-size:12px;line-height:1.8;margin-bottom:10px;"></div>
+    <div class="tool-row">
+      <input class="tool-input" id="chat-handle" placeholder="Handle (anonymous)" style="max-width:150px;">
+      <input class="tool-input" id="chat-msg" placeholder="Message..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="tool-btn" onclick="sendChat()">SEND</button>
+    </div>
+    <div style="font-size:10px;color:var(--green-dim);margin-top:4px;">* Local session only — messages clear on close</div>
+  `, () => {
+    const box = document.getElementById('chat-messages');
+    [['anon_7f3a','Anyone else seeing the elevated BGP anomalies tonight?'],['ghost_null','Affirmative. Three AS hops redirected unexpectedly.'],['cipher_x','Monitoring. Looks like a probe, not a full hijack.']].forEach(([h,m])=>appendChat(box,h,m));
+    box.scrollTop = box.scrollHeight;
+  }),
+
+  cloudsearch: () => openModal('☁ CLOUD SEARCH', `
+    <div class="tool-label">Search Intelligence Sources</div>
+    <div class="tool-row">
+      <input class="tool-input" id="search-q" placeholder="Enter search query..." onkeydown="if(event.key==='Enter')runSearch()">
+      <button class="tool-btn" onclick="runSearch()">SEARCH</button>
+    </div>
+    <div class="tool-label">Filter</div>
+    <div class="tool-row">
+      ${['ALL','BREACH','MALWARE','LEAK','OPSEC','ZERO-DAY'].map(t=>`<button class="tool-btn" style="font-size:10px;padding:5px 10px;" onclick="filterSearch('${t}')">${t}</button>`).join('')}
+    </div>
+    <div class="tool-output" id="search-out">Enter a query and press SEARCH.</div>
+  `),
+
+  archives: () => openModal('📁 ARCHIVES', `
+    <div class="tool-label">Document Archive Index</div>
+    <div class="tool-row"><input class="tool-input" id="arc-filter" placeholder="Filter archives..." oninput="filterArchives(this.value)"></div>
+    <div id="arc-list" style="font-size:12px;line-height:2;"></div>
+  `, () => {
+    window._arcItems = [['2026-04-20','Operation Darkwater — Full Debrief','[PDF]'],['2026-03-14','BGP Anomaly Report Q1 2026','[TXT]'],['2026-02-28','Zero-Day CVE-2026-1337 Analysis','[PDF]'],['2026-01-10','Anonymous Network Uptime Logs','[LOG]'],['2025-12-01','Annual Threat Landscape Report','[PDF]'],['2025-11-15','Malware Reversing: Agent Tesla Variant','[TXT]'],['2025-10-22','OSINT Handbook v4.2','[PDF]']];
+    renderArchives(window._arcItems);
+  }),
+
+  pulse: () => openModal('💓 PULSE FEED', `
+    <div class="tool-label">Live Threat Pulse — Auto-refreshing</div>
+    <div id="pulse-list" style="font-size:12px;line-height:1.9;"></div>
+    <div style="margin-top:10px;font-size:10px;color:var(--green-dim);" id="pulse-updated"></div>
+  `, ()=>refreshPulse()),
+
+  upload: () => openModal('⬆ UPLOAD FILE', `
+    <div class="tool-label">Anonymous File Upload</div>
+    <div style="border:2px dashed var(--border);padding:30px;text-align:center;cursor:pointer;background:#000800;transition:all .2s;" id="drop-zone" ondragover="event.preventDefault();this.style.borderColor='var(--green)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleDrop(event)">
+      <div style="font-size:28px;margin-bottom:8px;">⬆</div>
+      <div style="color:var(--green);">Drag & drop files here</div>
+      <div style="font-size:11px;color:var(--green-dim);margin-top:4px;">or click to browse</div>
+      <input type="file" id="file-input" multiple style="display:none" onchange="handleFileSelect(this.files)">
+    </div>
+    <div id="upload-list" style="margin-top:12px;font-size:12px;"></div>
+  `, ()=>{ document.getElementById('drop-zone').addEventListener('click',()=>document.getElementById('file-input').click()); }),
+
+  grid: () => openModal('🔲 THE GRID', `
+    <div class="tool-label">Grid Login</div>
+    <div style="max-width:320px;margin:0 auto;">
+      <div style="margin-bottom:12px;"><div class="tool-label">ACCESS KEY</div><input class="tool-input" type="password" id="grid-key" placeholder="Enter grid access key..." style="width:100%"></div>
+      <div style="margin-bottom:12px;"><div class="tool-label">PASSPHRASE</div><input class="tool-input" type="password" id="grid-pass" placeholder="Passphrase..." style="width:100%"></div>
+      <button class="tool-btn" style="width:100%;padding:10px;" onclick="gridLogin()">▶ ACCESS THE GRID</button>
+      <div id="grid-out" style="margin-top:10px;font-size:12px;color:var(--green-dim);"></div>
+    </div>
+  `),
+
+  ghostbin: () => openModal('👻 GHOST BIN', `
+    <div class="tool-label">Paste anonymously — content is ephemeral</div>
+    <div class="tool-row">
+      <select class="tool-input" id="gb-syntax" style="max-width:160px;"><option>Plain Text</option><option>Python</option><option>JavaScript</option><option>Bash</option><option>C</option><option>SQL</option><option>YAML</option></select>
+      <select class="tool-input" id="gb-expire" style="max-width:140px;"><option>10 minutes</option><option>1 hour</option><option>24 hours</option><option>7 days</option></select>
+    </div>
+    <textarea class="tool-input" id="gb-content" placeholder="Paste your content here..." style="width:100%;min-height:180px;"></textarea>
+    <div class="tool-row" style="margin-top:8px;"><button class="tool-btn" onclick="createGhostBin()">CREATE PASTE</button></div>
+    <div class="tool-output" id="gb-out" style="display:none;margin-top:8px;"></div>
+  `),
+
+  nettools: () => openModal('🌐 NETWORK TOOLS', `
+    <div class="tool-label">Select Tool</div>
+    <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
+      ${['DNS Lookup','IP Info','Ping Sim','Traceroute Sim','WHOIS Sim'].map(t=>`<button class="tool-btn" style="font-size:11px;" onclick="runNetTool('${t}')">${t}</button>`).join('')}
+    </div>
+    <div style="margin-top:12px;"><div class="tool-label">TARGET HOST / IP</div>
+      <div class="tool-row"><input class="tool-input" id="net-target" placeholder="e.g. example.com or 8.8.8.8" onkeydown="if(event.key==='Enter')runNetTool(window._activeTool||'DNS Lookup')"><button class="tool-btn" onclick="runNetTool(window._activeTool||'DNS Lookup')">RUN</button></div>
+    </div>
+    <div class="tool-output" id="net-out">Select a tool and enter a target.</div>
+  `),
+
+  portscan: () => openModal('🔍 PORT SCANNER', `
+    <div class="tool-label">Target</div>
+    <div class="tool-row"><input class="tool-input" id="ps-host" placeholder="Host / IP (e.g. 192.168.1.1)"></div>
+    <div class="tool-label">Port Range</div>
+    <div class="tool-row">
+      <input class="tool-input" id="ps-start" placeholder="Start (e.g. 1)" style="max-width:120px;">
+      <input class="tool-input" id="ps-end" placeholder="End (e.g. 1024)" style="max-width:120px;">
+      <button class="tool-btn" onclick="runPortScan()">SCAN</button>
+    </div>
+    <div class="tool-output" id="ps-out">Enter a host and port range, then press SCAN.</div>
+    <div style="font-size:10px;color:var(--green-dim);margin-top:6px;">* Simulation only — no real network requests are made from the browser.</div>
+  `),
+
+  video: () => openModal('📺 VIDEO PORTAL', `
+    <div class="tool-label">Video URL</div>
+    <div class="tool-row"><input class="tool-input" id="vid-url" placeholder="YouTube / Vimeo embed URL..."><button class="tool-btn" onclick="loadVideo()">LOAD</button></div>
+    <div id="vid-frame-wrap" style="margin-top:10px;"><div style="border:1px solid var(--border);background:#000;padding:40px;text-align:center;color:var(--green-dim);font-size:13px;"><div style="font-size:32px;margin-bottom:8px;">📺</div>Paste a YouTube/Vimeo embed URL above.</div></div>
+  `),
+
+  mp3: () => openModal('🎵 MP3 PLAYER', `
+    <div class="tool-label">Load Audio File or URL</div>
+    <div class="tool-row"><input class="tool-input" id="mp3-url" placeholder="Direct .mp3 URL or drag a file below..."><button class="tool-btn" onclick="loadAudio()">LOAD</button></div>
+    <div style="border:1px dashed var(--border);padding:16px;text-align:center;font-size:11px;color:var(--green-dim);cursor:pointer;" onclick="document.getElementById('mp3-file').click()">Or click to select a local file<input type="file" id="mp3-file" accept="audio/*" style="display:none" onchange="loadLocalAudio(this)"></div>
+    <div id="mp3-player" style="margin-top:14px;"></div>
+  `),
+
+  cipher: () => openModal('🔐 CIPHER', `
+    <div class="tool-label">Algorithm</div>
+    <div class="tool-row">
+      <select class="tool-input" id="ci-algo" style="max-width:200px;"><option value="b64">Base64</option><option value="rot13">ROT-13</option><option value="caesar">Caesar Cipher</option><option value="atbash">Atbash</option><option value="morse">Morse Code</option><option value="rev">Reverse</option><option value="hex">Hex Encode</option><option value="bin">Binary</option></select>
+      <input class="tool-input" id="ci-shift" placeholder="Shift (Caesar)" style="max-width:140px;display:none">
+    </div>
+    <div class="cipher-grid">
+      <div><div class="tool-label">INPUT</div><textarea class="tool-input" id="ci-in" style="width:100%;min-height:120px;" placeholder="Enter text..."></textarea><div class="tool-row" style="margin-top:6px;"><button class="tool-btn" onclick="runCipher('enc')">ENCODE ▶</button></div></div>
+      <div><div class="tool-label">OUTPUT</div><textarea class="tool-input" id="ci-out" style="width:100%;min-height:120px;" readonly></textarea><div class="tool-row" style="margin-top:6px;"><button class="tool-btn" onclick="runCipher('dec')">◀ DECODE</button></div></div>
+    </div>
+  `, ()=>{ document.getElementById('ci-algo').addEventListener('change',function(){ document.getElementById('ci-shift').style.display=this.value==='caesar'?'block':'none'; }); }),
+
+  cloak: () => openModal('🕵 CLOAK', `
+    <div class="tool-label">IP / Identity Information</div>
+    <div class="info-grid" id="cloak-grid">
+      <div class="info-box"><div class="lbl">YOUR IP</div><div class="val" id="cloak-ip">Detecting...</div></div>
+      <div class="info-box"><div class="lbl">USER AGENT</div><div class="val" id="cloak-ua" style="font-size:10px;word-break:break-all;"></div></div>
+      <div class="info-box"><div class="lbl">TIMEZONE</div><div class="val" id="cloak-tz"></div></div>
+      <div class="info-box"><div class="lbl">LANGUAGE</div><div class="val" id="cloak-lang"></div></div>
+      <div class="info-box"><div class="lbl">SCREEN</div><div class="val" id="cloak-screen"></div></div>
+      <div class="info-box"><div class="lbl">COOKIES</div><div class="val" id="cloak-cookies"></div></div>
+    </div>
+    <div style="margin-top:14px;font-size:11px;color:var(--green-dim);">Anonymization tips: Use Tor Browser, disable JS, spoof UA headers, use a VPN with no-log policy.</div>
+  `, ()=>{
+    document.getElementById('cloak-ua').textContent=navigator.userAgent;
+    document.getElementById('cloak-tz').textContent=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById('cloak-lang').textContent=navigator.language;
+    document.getElementById('cloak-screen').textContent=screen.width+'×'+screen.height;
+    document.getElementById('cloak-cookies').textContent=navigator.cookieEnabled?'ENABLED ⚠':'DISABLED ✓';
+    fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{ document.getElementById('cloak-ip').textContent=d.ip; }).catch(()=>{ document.getElementById('cloak-ip').textContent='Unavailable'; });
+  }),
+
+  puzzle: () => openModal('🧩 PUZZLE 3301', `
+    <div style="text-align:center;margin-bottom:16px;"><div style="font-family:'VT323',monospace;font-size:48px;color:var(--green);text-shadow:var(--glow);">3301</div><div style="font-size:11px;color:var(--green-dim);letter-spacing:3px;">CICADA · THE ETERNAL PUZZLE</div></div>
+    <div style="background:#000800;border:1px solid var(--border);padding:16px;font-size:12px;line-height:1.9;margin-bottom:14px;">
+      <span style="color:var(--green)">CLUE #1:</span> The answer lies in the prime sequence.<br>
+      <span style="color:var(--green)">CLUE #2:</span> SHA256 the correct phrase to proceed.<br>
+      <span style="color:var(--green)">CLUE #3:</span> <span style="color:var(--cyan)">WELOME TO OUR NEXT JOURNEY</span>
+    </div>
+    <div class="tool-label">ENTER YOUR ANSWER</div>
+    <div class="tool-row"><input class="tool-input" id="puz-ans" placeholder="Enter solution hash or passphrase..." onkeydown="if(event.key==='Enter')checkPuzzle()"><button class="tool-btn" onclick="checkPuzzle()">SUBMIT</button></div>
+    <div class="tool-output" id="puz-out" style="margin-top:8px;display:none;"></div>
+  `),
+
+  decoder: () => openModal('⚙ DECODER', `
+    <div class="tool-label">Decoding Mode</div>
+    <div class="tool-row" style="flex-wrap:wrap;gap:6px;">${['Base64','Hex','URL','HTML Entities','Binary','Morse','ROT13'].map(t=>`<button class="tool-btn" style="font-size:11px;" onclick="decodeWith('${t}')">${t}</button>`).join('')}</div>
+    <div class="tool-label" style="margin-top:10px;">INPUT</div>
+    <textarea class="tool-input" id="dec-in" style="width:100%;min-height:100px;" placeholder="Paste encoded text..."></textarea>
+    <div class="tool-label" style="margin-top:10px;">OUTPUT</div>
+    <textarea class="tool-input" id="dec-out" style="width:100%;min-height:100px;" readonly placeholder="Decoded output will appear here..."></textarea>
+  `),
+
+  exif: () => openModal('🖼 EXIF TOOL', `
+    <div class="tool-label">Upload an image to inspect EXIF metadata</div>
+    <div style="border:2px dashed var(--border);padding:24px;text-align:center;cursor:pointer;background:#000800;" onclick="document.getElementById('exif-file').click()">
+      <div style="font-size:28px;margin-bottom:6px;">🖼</div><div style="color:var(--green);font-size:13px;">Click to select image</div>
+      <div style="font-size:10px;color:var(--green-dim);margin-top:4px;">Supports JPG, PNG, WebP</div>
+      <input type="file" id="exif-file" accept="image/*" style="display:none" onchange="readExif(this)">
+    </div>
+    <div id="exif-preview" style="margin-top:12px;"></div>
+    <div class="tool-output" id="exif-out" style="margin-top:8px;display:none;"></div>
+  `),
+
+  hashcracker: () => openModal('🔨 HASH CRACKER', `
+    <div class="tool-label">Hash Type</div>
+    <div class="tool-row"><select class="tool-input" id="hc-type" style="max-width:160px;"><option>MD5</option><option>SHA-1</option><option>SHA-256</option><option>SHA-512</option></select></div>
+    <div class="tool-label">Generate Hash from Text</div>
+    <div class="tool-row"><input class="tool-input" id="hc-plain" placeholder="Enter plaintext to hash..." onkeydown="if(event.key==='Enter')generateHash()"><button class="tool-btn" onclick="generateHash()">HASH IT</button></div>
+    <div class="tool-label" style="margin-top:2px;">Hash Output</div>
+    <div class="tool-output" id="hc-out" style="word-break:break-all;">Enter text and click HASH IT.</div>
+    <div style="font-size:10px;color:var(--green-dim);margin-top:10px;">Note: Full rainbow-table cracking requires server-side resources not available in this demo.</div>
+  `),
+
+  matrix: () => openModal('🌌 MATRIX SCREENSAVER', `
+    <canvas id="matrix-modal-canvas" style="width:100%;height:340px;background:#000;display:block;"></canvas>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--green-dim);">Wake up, Neo...</div>
+  `, ()=>{
+    const c=document.getElementById('matrix-modal-canvas');
+    c.width=c.offsetWidth; c.height=340;
+    const cx=c.getContext('2d'), mCols=Math.floor(c.width/14), mDrops=Array(mCols).fill(1);
+    const mChars='アイウエオカキクケコ0123456789ABCDEF@#$%';
+    const iv=setInterval(()=>{
+      if(!document.getElementById('matrix-modal-canvas')){clearInterval(iv);return;}
+      cx.fillStyle='rgba(0,0,0,0.05)'; cx.fillRect(0,0,c.width,c.height);
+      cx.fillStyle='#00ff41'; cx.font='13px Share Tech Mono,monospace';
+      for(let i=0;i<mDrops.length;i++){cx.fillText(mChars[Math.floor(Math.random()*mChars.length)],i*14,mDrops[i]*14);if(mDrops[i]*14>c.height&&Math.random()>.975)mDrops[i]=0;mDrops[i]++;}
+    },40);
+  }),
+
+  skynet: () => openModal('🤖 SKYNET', `
+    <div style="text-align:center;margin-bottom:14px;"><div style="font-family:'Orbitron',sans-serif;font-size:20px;color:var(--red);text-shadow:0 0 10px var(--red);letter-spacing:4px;">SKYNET</div><div style="font-size:10px;color:#ff555577;letter-spacing:2px;margin-top:2px;">AUTONOMOUS NETWORK INTELLIGENCE</div></div>
+    <div class="tool-label">QUERY SKYNET</div>
+    <div class="tool-row"><input class="tool-input" id="sk-query" placeholder="Ask Skynet anything..." onkeydown="if(event.key==='Enter')querySkynet()"><button class="tool-btn" style="border-color:var(--red);color:var(--red);" onclick="querySkynet()">QUERY</button></div>
+    <div class="tool-output" id="sk-out" style="min-height:120px;margin-top:8px;">SKYNET ONLINE. AWAITING QUERY.</div>
+  `),
+
+  rebellion: () => openModal('⚡ REBELLION', `
+    <div style="text-align:center;padding:16px 0;"><div style="font-family:'VT323',monospace;font-size:40px;color:var(--green);text-shadow:var(--glow);letter-spacing:4px;">THE REBELLION</div><div style="font-size:11px;color:var(--green-dim);letter-spacing:3px;margin-top:4px;">JOIN · RESIST · PERSIST</div></div>
+    <div style="background:#000800;border:1px solid var(--border);padding:16px;font-size:12px;line-height:2;margin-bottom:14px;text-align:center;">
+      I am who sees behind the curtain.<br>I do not forget. I do not forgive.<br>
+      <span style="color:var(--green);">The revolution will not be televised — it will be encrypted.</span>
+    </div>
+    <div class="tool-label">SIGN HERE</div>
+    <div class="tool-row"><input class="tool-input" id="reb-handle" placeholder="Anonymous handle..." style="max-width:180px;"><button class="tool-btn" onclick="signManifesto()">SIGN</button></div>
+    <div class="tool-output" id="reb-out" style="margin-top:8px;min-height:80px;"></div>
+  `, ()=>{ const sigs=['anon_7f3a','ghost_null','cipher_x','x0r_rider','v01d']; document.getElementById('reb-out').textContent='SIGNATURES:\n'+sigs.map(s=>'  [✓] '+s).join('\n'); }),
+
+  about: () => openModal('ℹ ABOUT US', `
+    <div style="text-align:center;margin-bottom:16px;"><div style="font-family:'Orbitron',sans-serif;font-size:22px;color:var(--green);text-shadow:var(--glow);letter-spacing:4px;">LOGOS-SEC</div><div style="font-size:10px;color:var(--green-dim);letter-spacing:3px;margin-top:4px;">ANONYMOUS CIVILIAN CYBER DEFENSE</div></div>
+    <div style="font-size:12px;line-height:2;color:#a0ffa0;">
+      LOGOS-SEC is an independent, anonymous civilian cybersecurity company. I monitor, document, and expose threats to the open internet and digital civil liberties.<br><br>
+      <span style="color:var(--green)">MISSION:</span> Provide free, open-source intelligence tools and a secure communications platform for those who believe in a free and open internet.<br><br>
+      <span style="color:var(--green)">OPERATED BY:</span> Logos.<br>
+      <span style="color:var(--green)">FOUNDED:</span> [REDACTED]<br>
+      <span style="color:var(--green)">AFFILIATION:</span> None. I am Logos.<br><br>
+      <span style="color:var(--cyan)">PGP Fingerprint:</span><br>
+      <span style="font-size:11px;color:var(--green-dim);">A1B2 C3D4 E5F6 7890 ABCD EF12 3456 7890 DEAD BEEF</span>
+    </div>
+    <div style="text-align:center;margin-top:20px;font-family:'VT323',monospace;font-size:18px;color:var(--green);letter-spacing:2px;">I SEEK TRUTH · I SEEK JUSTICE<br>I DO NOT FORGIVE · I DO NOT FORGET</div>
+  `),
 
   /* ══════════════════════════════
-     TOOL MODAL SYSTEM
+     💀 CYBERWAR SIM
   ══════════════════════════════ */
+  cyberwar: () => openModal('💀 CYBERWAR SIM', `
+    <div style="text-align:center;margin-bottom:12px;">
+      <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:var(--red);letter-spacing:4px;text-shadow:0 0 8px var(--red);">CYBER WARFARE SIMULATION CENTER</div>
+      <div style="font-size:10px;color:#ff003c77;letter-spacing:2px;margin-top:2px;">EDUCATIONAL · SIMULATED · NO REAL ATTACKS</div>
+    </div>
+    <div class="ws-tabs">
+      <button class="ws-tab active" onclick="wsTab('battlefield',this)">🗺 Battlefield</button>
+      <button class="ws-tab" onclick="wsTab('ddos',this)">💥 DDoS Sim</button>
+      <button class="ws-tab" onclick="wsTab('ransomware',this)">🔒 Ransomware</button>
+      <button class="ws-tab" onclick="wsTab('apt',this)">🕵 APT Campaign</button>
+      <button class="ws-tab" onclick="wsTab('phishing',this)">🎣 Phishing</button>
+      <button class="ws-tab" onclick="wsTab('honeypot',this)">🍯 Honeypot</button>
+      <button class="ws-tab" onclick="wsTab('ir',this)">🚨 IR Playbook</button>
+    </div>
 
-  const modal = document.getElementById('modal');
-  const modalTitle = document.getElementById('modal-title');
-  const modalBody = document.getElementById('modal-body');
-  const modalCloseBtn = document.getElementById('modal-close-btn');
-
-  function openModal(title, html, onOpen) {
-    modalTitle.textContent = title;
-    modalBody.innerHTML = html;
-    modal.classList.add('open');
-    if (onOpen) onOpen();
-  }
-
-  function closeModal() {
-    modal.classList.remove('open');
-    modalBody.innerHTML = '';
-  }
-
-  modalCloseBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-  /* ── TOOL DEFINITIONS ── */
-  const tools = {
-
-    livestream: () => openModal('📡 LIVE STREAM', `
-      <div class="tool-label">Embedded Live Broadcast</div>
-      <div style="background:#000;border:1px solid var(--border);padding:40px;text-align:center;color:var(--green-dim);font-size:13px;">
-        <div style="font-size:32px;margin-bottom:12px;">📡</div>
-        <div style="color:var(--green);font-size:15px;margin-bottom:6px;">STREAM OFFLINE</div>
-        Replace this block with your &lt;iframe&gt; embed (YouTube Live, Twitch, etc.)
+    <!-- BATTLEFIELD -->
+    <div class="ws-panel active" id="ws-battlefield">
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:2px;">LIVE NETWORK BATTLE MAP — ATTACK/DEFEND SIMULATION</div>
+      <div class="sim-stats-row">
+        <div class="sim-stat"><div class="sv" id="ws-attacks">0</div><div class="sl">Attacks</div></div>
+        <div class="sim-stat"><div class="sv" id="ws-blocked">0</div><div class="sl">Blocked</div></div>
+        <div class="sim-stat"><div class="sv" id="ws-breached">0</div><div class="sl">Breached</div></div>
+        <div class="sim-stat"><div class="sv" id="ws-score">100</div><div class="sl">Defense %</div></div>
       </div>
-      <div style="margin-top:12px;font-size:11px;color:var(--green-dim);">Paste your stream URL below to preview:</div>
-      <div class="tool-row" style="margin-top:8px;">
-        <input class="tool-input" id="stream-url" placeholder="https://www.youtube.com/embed/live_stream?channel=...">
-        <button class="tool-btn" onclick="document.querySelector('#stream-frame').src=document.getElementById('stream-url').value">▶ LOAD</button>
-      </div>
-      <iframe id="stream-frame" style="width:100%;height:220px;border:1px solid var(--border);background:#000;" allowfullscreen></iframe>
-    `),
-
-    chat: () => openModal('💬 CHAT ROOM', `
-      <div class="tool-label">Anonymous Chat</div>
-      <div id="chat-messages" style="height:260px;overflow-y:auto;background:#000800;border:1px solid var(--border);padding:10px;font-size:12px;line-height:1.8;margin-bottom:10px;"></div>
+      <div class="war-map" id="war-map"></div>
       <div class="tool-row">
-        <input class="tool-input" id="chat-handle" placeholder="Handle (anonymous)" style="max-width:150px;">
-        <input class="tool-input" id="chat-msg" placeholder="Message..." onkeydown="if(event.key==='Enter')sendChat()">
-        <button class="tool-btn" onclick="sendChat()">SEND</button>
+        <button class="tool-btn red-btn" id="ws-start-btn" onclick="wsStartBattle()">▶ START SIMULATION</button>
+        <button class="tool-btn" onclick="wsResetBattle()">↺ RESET</button>
+        <select class="tool-input" id="ws-speed" style="max-width:130px;"><option value="1200">Slow</option><option value="700" selected>Normal</option><option value="300">Fast</option></select>
       </div>
-      <div style="font-size:10px;color:var(--green-dim);margin-top:4px;">* Local session only — messages clear on close</div>
-    `, () => {
-      const box = document.getElementById('chat-messages');
-      const seed = [
-        ['anon_7f3a','Anyone else seeing the elevated BGP anomalies tonight?'],
-        ['ghost_null','Affirmative. Three AS hops redirected unexpectedly.'],
-        ['cipher_x','Monitoring. Looks like a probe, not a full hijack.'],
-      ];
-      seed.forEach(([h, m]) => appendChat(box, h, m));
-      box.scrollTop = box.scrollHeight;
-    }),
+      <div class="tool-label">BATTLE LOG</div>
+      <div class="sim-log" id="ws-log"></div>
+    </div>
 
-    cloudsearch: () => openModal('☁ CLOUD SEARCH', `
-      <div class="tool-label">Search Intelligence Sources</div>
+    <!-- DDOS -->
+    <div class="ws-panel" id="ws-ddos">
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">DISTRIBUTED DENIAL-OF-SERVICE ATTACK SIMULATOR</div>
+      <div class="tool-label">Target System</div>
       <div class="tool-row">
-        <input class="tool-input" id="search-q" placeholder="Enter search query..." onkeydown="if(event.key==='Enter')runSearch()">
-        <button class="tool-btn" onclick="runSearch()">SEARCH</button>
+        <input class="tool-input" id="ddos-target" placeholder="e.g. webserver-01.internal" value="webserver-01.internal">
+        <select class="tool-input" id="ddos-type" style="max-width:180px;"><option>SYN Flood</option><option>UDP Flood</option><option>HTTP GET Flood</option><option>Slowloris</option><option>DNS Amplification</option><option>NTP Amplification</option></select>
       </div>
-      <div class="tool-label">Filter</div>
+      <div class="tool-label">Botnet Size: <span id="ddos-bots-val">500</span> nodes</div>
+      <input type="range" min="10" max="5000" value="500" style="width:100%;accent-color:var(--red);margin-bottom:12px;" oninput="document.getElementById('ddos-bots-val').textContent=this.value" id="ddos-bots">
       <div class="tool-row">
-        ${['ALL','BREACH','MALWARE','LEAK','OPSEC','ZERO-DAY'].map(t=>`<button class="tool-btn" style="font-size:10px;padding:5px 10px;" onclick="filterSearch('${t}')">${t}</button>`).join('')}
+        <button class="tool-btn red-btn" onclick="runDdosSim()">▶ LAUNCH ATTACK</button>
+        <button class="tool-btn" onclick="runDdosDefend()">🛡 DEPLOY MITIGATION</button>
       </div>
-      <div class="tool-output" id="search-out">Enter a query and press SEARCH.</div>
-    `),
-
-    archives: () => openModal('📁 ARCHIVES', `
-      <div class="tool-label">Document Archive Index</div>
-      <div class="tool-row">
-        <input class="tool-input" id="arc-filter" placeholder="Filter archives..." oninput="filterArchives(this.value)">
+      <div class="tool-label">ATTACK METRICS</div>
+      <div style="margin-bottom:6px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>BANDWIDTH SATURATION</span><span id="ddos-bw-pct">0%</span></div>
+        <div class="prog-bg"><div class="prog-fill" id="ddos-bw-bar" style="width:0%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>SERVER CPU LOAD</span><span id="ddos-cpu-pct">0%</span></div>
+        <div class="prog-bg"><div class="prog-fill" id="ddos-cpu-bar" style="width:0%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>CONNECTION TABLE</span><span id="ddos-conn-pct">0%</span></div>
+        <div class="prog-bg"><div class="prog-fill" id="ddos-conn-bar" style="width:0%"></div></div>
       </div>
-      <div id="arc-list" style="font-size:12px;line-height:2;"></div>
-    `, () => {
-      const items = [
-        ['2026-04-20','Operation Darkwater — Full Debrief','[PDF]'],
-        ['2026-03-14','BGP Anomaly Report Q1 2026','[TXT]'],
-        ['2026-02-28','Zero-Day CVE-2026-1337 Analysis','[PDF]'],
-        ['2026-01-10','Anonymous Network Uptime Logs','[LOG]'],
-        ['2025-12-01','Annual Threat Landscape Report','[PDF]'],
-        ['2025-11-15','Malware Reversing: Agent Tesla Variant','[TXT]'],
-        ['2025-10-22','OSINT Handbook v4.2','[PDF]'],
-      ];
-      window._arcItems = items;
-      renderArchives(items);
-    }),
+      <div class="red-out" id="ddos-out">Configure attack parameters and press LAUNCH ATTACK.</div>
+    </div>
 
-    pulse: () => openModal('💓 PULSE FEED', `
-      <div class="tool-label">Live Threat Pulse — Auto-refreshing</div>
-      <div id="pulse-list" style="font-size:12px;line-height:1.9;"></div>
-      <div style="margin-top:10px;font-size:10px;color:var(--green-dim);" id="pulse-updated"></div>
-    `, () => refreshPulse()),
-
-    upload: () => openModal('⬆ UPLOAD FILE', `
-      <div class="tool-label">Anonymous File Upload</div>
-      <div style="border:2px dashed var(--border);padding:30px;text-align:center;cursor:pointer;background:#000800;transition:all .2s;" 
-           id="drop-zone" 
-           ondragover="event.preventDefault();this.style.borderColor='var(--green)'" 
-           ondragleave="this.style.borderColor='var(--border)'"
-           ondrop="handleDrop(event)">
-        <div style="font-size:28px;margin-bottom:8px;">⬆</div>
-        <div style="color:var(--green);">Drag & drop files here</div>
-        <div style="font-size:11px;color:var(--green-dim);margin-top:4px;">or click to browse</div>
-        <input type="file" id="file-input" multiple style="display:none" onchange="handleFileSelect(this.files)">
-      </div>
-      <div id="upload-list" style="margin-top:12px;font-size:12px;"></div>
-    `, () => {
-      document.getElementById('drop-zone').addEventListener('click', () => document.getElementById('file-input').click());
-    }),
-
-    grid: () => openModal('🔲 THE GRID', `
-      <div class="tool-label">Grid Login</div>
-      <div style="max-width:320px;margin:0 auto;">
-        <div style="margin-bottom:12px;">
-          <div class="tool-label">ACCESS KEY</div>
-          <input class="tool-input" type="password" id="grid-key" placeholder="Enter grid access key..." style="width:100%">
-        </div>
-        <div style="margin-bottom:12px;">
-          <div class="tool-label">PASSPHRASE</div>
-          <input class="tool-input" type="password" id="grid-pass" placeholder="Passphrase..." style="width:100%">
-        </div>
-        <button class="tool-btn" style="width:100%;padding:10px;" onclick="gridLogin()">▶ ACCESS THE GRID</button>
-        <div id="grid-out" style="margin-top:10px;font-size:12px;color:var(--green-dim);"></div>
-      </div>
-    `),
-
-    ghostbin: () => openModal('👻 GHOST BIN', `
-      <div class="tool-label">Paste anonymously — content is ephemeral</div>
-      <div class="tool-row">
-        <select class="tool-input" id="gb-syntax" style="max-width:160px;">
-          <option>Plain Text</option><option>Python</option><option>JavaScript</option>
-          <option>Bash</option><option>C</option><option>SQL</option><option>YAML</option>
-        </select>
-        <select class="tool-input" id="gb-expire" style="max-width:140px;">
-          <option>10 minutes</option><option>1 hour</option><option>24 hours</option><option>7 days</option>
-        </select>
-      </div>
-      <textarea class="tool-input" id="gb-content" placeholder="Paste your content here..." style="width:100%;min-height:180px;"></textarea>
-      <div class="tool-row" style="margin-top:8px;">
-        <button class="tool-btn" onclick="createGhostBin()">CREATE PASTE</button>
-      </div>
-      <div class="tool-output" id="gb-out" style="display:none;margin-top:8px;"></div>
-    `),
-
-    nettools: () => openModal('🌐 NETWORK TOOLS', `
-      <div class="tool-label">Select Tool</div>
+    <!-- RANSOMWARE -->
+    <div class="ws-panel" id="ws-ransomware">
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">RANSOMWARE INFECTION & RESPONSE SIMULATION</div>
+      <div class="tool-label">Select Ransomware Variant</div>
       <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
-        ${['DNS Lookup','IP Info','Ping Sim','Traceroute Sim','WHOIS Sim'].map(t=>`<button class="tool-btn" style="font-size:11px;" onclick="runNetTool('${t}')">${t}</button>`).join('')}
+        ${['WannaCry','LockBit 3.0','BlackCat','Conti','Cl0p','REvil'].map(v=>`<button class="tool-btn red-btn" style="font-size:11px;" onclick="selectVariant('${v}',this)">${v}</button>`).join('')}
       </div>
-      <div style="margin-top:12px;">
-        <div class="tool-label">TARGET HOST / IP</div>
-        <div class="tool-row">
-          <input class="tool-input" id="net-target" placeholder="e.g. example.com or 8.8.8.8" onkeydown="if(event.key==='Enter')runNetTool(window._activeTool||'DNS Lookup')">
-          <button class="tool-btn" onclick="runNetTool(window._activeTool||'DNS Lookup')">RUN</button>
-        </div>
-      </div>
-      <div class="tool-output" id="net-out">Select a tool and enter a target.</div>
-    `),
-
-    portscan: () => openModal('🔍 PORT SCANNER', `
-      <div class="tool-label">Target</div>
+      <div id="rw-variant-info" style="background:#050000;border:1px solid #ff003c22;padding:10px;font-size:11px;color:#ff8888;margin-bottom:10px;line-height:1.7;display:none;"></div>
+      <div class="tool-label">Simulated Filesystem</div>
+      <div id="rw-fs" style="background:#000500;border:1px solid #ff003c22;padding:10px;font-size:11px;font-family:'Share Tech Mono',monospace;line-height:1.8;margin-bottom:10px;min-height:100px;"></div>
       <div class="tool-row">
-        <input class="tool-input" id="ps-host" placeholder="Host / IP (e.g. 192.168.1.1)">
+        <button class="tool-btn red-btn" onclick="runRansomware()">▶ EXECUTE PAYLOAD</button>
+        <button class="tool-btn" onclick="runRansomRestore()">🔄 RESTORE FROM BACKUP</button>
       </div>
-      <div class="tool-label">Port Range</div>
+      <div class="red-out" id="rw-out" style="margin-top:8px;">Select a variant to begin.</div>
+    </div>
+
+    <!-- APT -->
+    <div class="ws-panel" id="ws-apt">
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">ADVANCED PERSISTENT THREAT — KILL CHAIN SIMULATOR</div>
+      <div style="font-size:11px;color:#ff8888;margin-bottom:12px;">Click each kill chain stage in order to execute the campaign step by step.</div>
+      <div class="apt-chain" id="apt-chain"></div>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>CAMPAIGN PROGRESS</span><span id="apt-pct">0%</span></div>
+        <div class="prog-bg"><div class="prog-fill" id="apt-bar" style="width:0%"></div></div>
+      </div>
+      <div class="tool-label">TARGET ORGANIZATION</div>
       <div class="tool-row">
-        <input class="tool-input" id="ps-start" placeholder="Start (e.g. 1)" style="max-width:120px;">
-        <input class="tool-input" id="ps-end" placeholder="End (e.g. 1024)" style="max-width:120px;">
-        <button class="tool-btn" onclick="runPortScan()">SCAN</button>
+        <input class="tool-input" id="apt-target" value="FinancialCorp-HQ" placeholder="e.g. FinancialCorp-HQ">
+        <button class="tool-btn red-btn" onclick="aptReset()">↺ NEW TARGET</button>
       </div>
-      <div class="tool-output" id="ps-out">Enter a host and port range, then press SCAN.</div>
-      <div style="font-size:10px;color:var(--green-dim);margin-top:6px;">* Simulation only — no real network requests are made from the browser.</div>
-    `),
+      <div class="sim-log" id="apt-log"></div>
+    </div>
 
-    video: () => openModal('📺 VIDEO PORTAL', `
-      <div class="tool-label">Video URL</div>
-      <div class="tool-row">
-        <input class="tool-input" id="vid-url" placeholder="YouTube / Vimeo embed URL...">
-        <button class="tool-btn" onclick="loadVideo()">LOAD</button>
-      </div>
-      <div id="vid-frame-wrap" style="margin-top:10px;">
-        <div style="border:1px solid var(--border);background:#000;padding:40px;text-align:center;color:var(--green-dim);font-size:13px;">
-          <div style="font-size:32px;margin-bottom:8px;">📺</div>
-          Paste a YouTube/Vimeo embed URL above.
-        </div>
-      </div>
-    `),
-
-    mp3: () => openModal('🎵 MP3 PLAYER', `
-      <div class="tool-label">Load Audio File or URL</div>
-      <div class="tool-row">
-        <input class="tool-input" id="mp3-url" placeholder="Direct .mp3 URL or drag a file below...">
-        <button class="tool-btn" onclick="loadAudio()">LOAD</button>
-      </div>
-      <div style="border:1px dashed var(--border);padding:16px;text-align:center;font-size:11px;color:var(--green-dim);cursor:pointer;" onclick="document.getElementById('mp3-file').click()">
-        Or click to select a local file
-        <input type="file" id="mp3-file" accept="audio/*" style="display:none" onchange="loadLocalAudio(this)">
-      </div>
-      <div id="mp3-player" style="margin-top:14px;"></div>
-    `),
-
-    cipher: () => openModal('🔐 CIPHER', `
-      <div class="tool-label">Algorithm</div>
-      <div class="tool-row">
-        <select class="tool-input" id="ci-algo" style="max-width:200px;">
-          <option value="b64">Base64</option>
-          <option value="rot13">ROT-13</option>
-          <option value="caesar">Caesar Cipher</option>
-          <option value="atbash">Atbash</option>
-          <option value="morse">Morse Code</option>
-          <option value="rev">Reverse</option>
-          <option value="hex">Hex Encode</option>
-          <option value="bin">Binary</option>
-        </select>
-        <input class="tool-input" id="ci-shift" placeholder="Shift (Caesar)" style="max-width:140px;display:none">
-      </div>
-      <div class="cipher-grid">
-        <div>
-          <div class="tool-label">INPUT</div>
-          <textarea class="tool-input" id="ci-in" style="width:100%;min-height:120px;" placeholder="Enter text..."></textarea>
-          <div class="tool-row" style="margin-top:6px;">
-            <button class="tool-btn" onclick="runCipher('enc')">ENCODE ▶</button>
-          </div>
-        </div>
-        <div>
-          <div class="tool-label">OUTPUT</div>
-          <textarea class="tool-input" id="ci-out" style="width:100%;min-height:120px;" readonly></textarea>
-          <div class="tool-row" style="margin-top:6px;">
-            <button class="tool-btn" onclick="runCipher('dec')">◀ DECODE</button>
-          </div>
-        </div>
-      </div>
-    `, () => {
-      document.getElementById('ci-algo').addEventListener('change', function(){
-        document.getElementById('ci-shift').style.display = this.value==='caesar'?'block':'none';
-      });
-    }),
-
-    cloak: () => openModal('🕵 CLOAK', `
-      <div class="tool-label">IP / Identity Information</div>
-      <div class="info-grid" id="cloak-grid">
-        <div class="info-box"><div class="lbl">YOUR IP</div><div class="val" id="cloak-ip">Detecting...</div></div>
-        <div class="info-box"><div class="lbl">USER AGENT</div><div class="val" id="cloak-ua" style="font-size:10px;word-break:break-all;"></div></div>
-        <div class="info-box"><div class="lbl">TIMEZONE</div><div class="val" id="cloak-tz"></div></div>
-        <div class="info-box"><div class="lbl">LANGUAGE</div><div class="val" id="cloak-lang"></div></div>
-        <div class="info-box"><div class="lbl">SCREEN</div><div class="val" id="cloak-screen"></div></div>
-        <div class="info-box"><div class="lbl">COOKIES</div><div class="val" id="cloak-cookies"></div></div>
-      </div>
-      <div style="margin-top:14px;font-size:11px;color:var(--green-dim);">Anonymization tips: Use Tor Browser, disable JS, spoof UA headers, use a VPN with no-log policy.</div>
-    `, () => {
-      document.getElementById('cloak-ua').textContent = navigator.userAgent;
-      document.getElementById('cloak-tz').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      document.getElementById('cloak-lang').textContent = navigator.language;
-      document.getElementById('cloak-screen').textContent = screen.width + '×' + screen.height;
-      document.getElementById('cloak-cookies').textContent = navigator.cookieEnabled ? 'ENABLED ⚠' : 'DISABLED ✓';
-      fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{
-        document.getElementById('cloak-ip').textContent = d.ip;
-      }).catch(()=>{ document.getElementById('cloak-ip').textContent = 'Unavailable'; });
-    }),
-
-    puzzle: () => openModal('🧩 PUZZLE 3301', `
-      <div style="text-align:center;margin-bottom:16px;">
-        <div style="font-family:'VT323',monospace;font-size:48px;color:var(--green);text-shadow:var(--glow);">3301</div>
-        <div style="font-size:11px;color:var(--green-dim);letter-spacing:3px;">CICADA · THE ETERNAL PUZZLE</div>
-      </div>
-      <div style="background:#000800;border:1px solid var(--border);padding:16px;font-size:12px;line-height:1.9;margin-bottom:14px;">
-        <span style="color:var(--green)">CLUE #1:</span> The answer lies in the prime sequence.<br>
-        <span style="color:var(--green)">CLUE #2:</span> SHA256 the correct phrase to proceed.<br>
-        <span style="color:var(--green)">CLUE #3:</span> <span style="color:var(--cyan)">WELOME TO OUR NEXT JOURNEY</span>
-      </div>
-      <div class="tool-label">ENTER YOUR ANSWER</div>
-      <div class="tool-row">
-        <input class="tool-input" id="puz-ans" placeholder="Enter solution hash or passphrase..." onkeydown="if(event.key==='Enter')checkPuzzle()">
-        <button class="tool-btn" onclick="checkPuzzle()">SUBMIT</button>
-      </div>
-      <div class="tool-output" id="puz-out" style="margin-top:8px;display:none;"></div>
-    `),
-
-    decoder: () => openModal('⚙ DECODER', `
-      <div class="tool-label">Decoding Mode</div>
+    <!-- PHISHING -->
+    <div class="ws-panel" id="ws-phishing">
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">PHISHING CAMPAIGN SIMULATOR & AWARENESS TRAINER</div>
+      <div class="tool-label">Campaign Type</div>
       <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
-        ${['Base64','Hex','URL','HTML Entities','Binary','Morse','ROT13'].map(t=>`<button class="tool-btn" style="font-size:11px;" onclick="decodeWith('${t}')">${t}</button>`).join('')}
+        ${['Spear Phishing','CEO Fraud','IT Helpdesk','Password Reset','Invoice Fraud','OAuth Consent'].map(t=>`<button class="tool-btn red-btn" style="font-size:11px;" onclick="selectPhishType('${t}',this)">${t}</button>`).join('')}
       </div>
-      <div class="tool-label" style="margin-top:10px;">INPUT</div>
-      <textarea class="tool-input" id="dec-in" style="width:100%;min-height:100px;" placeholder="Paste encoded text..."></textarea>
-      <div class="tool-label" style="margin-top:10px;">OUTPUT</div>
-      <textarea class="tool-input" id="dec-out" style="width:100%;min-height:100px;" readonly placeholder="Decoded output will appear here..."></textarea>
-    `),
-
-    exif: () => openModal('🖼 EXIF TOOL', `
-      <div class="tool-label">Upload an image to inspect EXIF metadata</div>
-      <div style="border:2px dashed var(--border);padding:24px;text-align:center;cursor:pointer;background:#000800;" onclick="document.getElementById('exif-file').click()">
-        <div style="font-size:28px;margin-bottom:6px;">🖼</div>
-        <div style="color:var(--green);font-size:13px;">Click to select image</div>
-        <div style="font-size:10px;color:var(--green-dim);margin-top:4px;">Supports JPG, PNG, WebP</div>
-        <input type="file" id="exif-file" accept="image/*" style="display:none" onchange="readExif(this)">
-      </div>
-      <div id="exif-preview" style="margin-top:12px;"></div>
-      <div class="tool-output" id="exif-out" style="margin-top:8px;display:none;"></div>
-    `),
-
-    hashcracker: () => openModal('🔨 HASH CRACKER', `
-      <div class="tool-label">Hash Type</div>
+      <div class="ph-form" id="ph-preview" style="display:none;"></div>
       <div class="tool-row">
-        <select class="tool-input" id="hc-type" style="max-width:160px;">
-          <option>MD5</option><option>SHA-1</option><option>SHA-256</option><option>SHA-512</option>
-        </select>
+        <input class="tool-input" id="ph-targets" placeholder="Number of targets" style="max-width:200px;" value="200">
+        <button class="tool-btn red-btn" onclick="launchPhish()">▶ LAUNCH CAMPAIGN</button>
       </div>
-      <div class="tool-label">Generate Hash from Text</div>
-      <div class="tool-row">
-        <input class="tool-input" id="hc-plain" placeholder="Enter plaintext to hash..." onkeydown="if(event.key==='Enter')generateHash()">
-        <button class="tool-btn" onclick="generateHash()">HASH IT</button>
+      <div id="ph-results" style="display:none;margin-top:8px;">
+        <div class="sim-stats-row">
+          <div class="sim-stat"><div class="sv" id="ph-sent">0</div><div class="sl">Sent</div></div>
+          <div class="sim-stat"><div class="sv" id="ph-opened">0</div><div class="sl">Opened</div></div>
+          <div class="sim-stat"><div class="sv" id="ph-clicked">0</div><div class="sl">Clicked</div></div>
+          <div class="sim-stat"><div class="sv" id="ph-creds">0</div><div class="sl">Creds</div></div>
+        </div>
+        <div class="tool-label" style="margin-top:6px;">AWARENESS TIPS</div>
+        <div class="red-out" id="ph-tips"></div>
       </div>
-      <div class="tool-label" style="margin-top:2px;">Hash Output</div>
-      <div class="tool-output" id="hc-out" style="word-break:break-all;">Enter text and click HASH IT.</div>
-      <div style="font-size:10px;color:var(--green-dim);margin-top:10px;">Note: Full rainbow-table cracking requires server-side resources not available in this demo.</div>
-    `),
+    </div>
 
-    matrix: () => {
-      openModal('🌌 MATRIX SCREENSAVER', `
-        <canvas id="matrix-modal-canvas" style="width:100%;height:340px;background:#000;display:block;"></canvas>
-        <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--green-dim);">Wake up, Neo...</div>
-      `, () => {
-        const c = document.getElementById('matrix-modal-canvas');
-        c.width = c.offsetWidth; c.height = 340;
-        const cx = c.getContext('2d');
-        const mCols = Math.floor(c.width/14);
-        const mDrops = Array(mCols).fill(1);
-        const mChars = 'アイウエオカキクケコ0123456789ABCDEF@#$%';
-        const iv = setInterval(()=>{
-          if(!document.getElementById('matrix-modal-canvas')){ clearInterval(iv); return; }
-          cx.fillStyle='rgba(0,0,0,0.05)'; cx.fillRect(0,0,c.width,c.height);
-          cx.fillStyle='#00ff41'; cx.font='13px Share Tech Mono,monospace';
-          for(let i=0;i<mDrops.length;i++){
-            cx.fillText(mChars[Math.floor(Math.random()*mChars.length)],i*14,mDrops[i]*14);
-            if(mDrops[i]*14>c.height&&Math.random()>.975)mDrops[i]=0;
-            mDrops[i]++;
-          }
-        },40);
-      });
-    },
-
-    skynet: () => openModal('🤖 SKYNET', `
-      <div style="text-align:center;margin-bottom:14px;">
-        <div style="font-family:'Orbitron',sans-serif;font-size:20px;color:var(--red);text-shadow:0 0 10px var(--red);letter-spacing:4px;">SKYNET</div>
-        <div style="font-size:10px;color:#ff555577;letter-spacing:2px;margin-top:2px;">AUTONOMOUS NETWORK INTELLIGENCE</div>
+    <!-- HONEYPOT -->
+    <div class="ws-panel" id="ws-honeypot">
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">HONEYPOT DEPLOYMENT & ATTACKER PROFILING</div>
+      <div class="tool-label">Deploy Honeypot Service</div>
+      <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
+        ${['SSH (22)','HTTP (80)','FTP (21)','RDP (3389)','Telnet (23)','SMB (445)'].map(s=>`<button class="tool-btn" style="font-size:11px;" onclick="deployHoneypot('${s}',this)">${s}</button>`).join('')}
       </div>
-      <div class="tool-label">QUERY SKYNET</div>
-      <div class="tool-row">
-        <input class="tool-input" id="sk-query" placeholder="Ask Skynet anything..." onkeydown="if(event.key==='Enter')querySkynet()">
-        <button class="tool-btn" style="border-color:var(--red);color:var(--red);" onclick="querySkynet()">QUERY</button>
+      <div class="tool-label" style="margin-top:6px;">ACTIVE HONEYPOTS</div>
+      <div class="hp-grid" id="hp-active"></div>
+      <div class="tool-label">CAPTURED ATTACKER DATA</div>
+      <div class="sim-log" id="hp-log" style="height:160px;"></div>
+      <div class="tool-row" style="margin-top:8px;"><button class="tool-btn" onclick="clearHoneypots()">✕ DECOMMISSION ALL</button></div>
+    </div>
+
+    <!-- IR PLAYBOOK -->
+    <div class="ws-panel" id="ws-ir">
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">INCIDENT RESPONSE PLAYBOOK — INTERACTIVE WALKTHROUGH</div>
+      <div class="tool-label">Select Incident Type</div>
+      <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
+        ${['Ransomware Attack','Data Breach','DDoS Attack','Insider Threat','Supply Chain Attack','Zero-Day Exploit'].map(i=>`<button class="tool-btn" style="font-size:11px;" onclick="loadIR('${i}')">${i}</button>`).join('')}
       </div>
-      <div class="tool-output" id="sk-out" style="min-height:120px;margin-top:8px;">SKYNET ONLINE. AWAITING QUERY.</div>
-    `),
+      <div id="ir-content" style="margin-top:12px;"></div>
+    </div>
+  `, ()=>{ wsInitBattlefield(); aptInitChain(); }, true),
+};
 
-    rebellion: () => openModal('⚡ REBELLION', `
-      <div style="text-align:center;padding:16px 0;">
-        <div style="font-family:'VT323',monospace;font-size:40px;color:var(--green);text-shadow:var(--glow);letter-spacing:4px;">THE REBELLION</div>
-        <div style="font-size:11px;color:var(--green-dim);letter-spacing:3px;margin-top:4px;">JOIN · RESIST · PERSIST</div>
-      </div>
-      <div style="background:#000800;border:1px solid var(--border);padding:16px;font-size:12px;line-height:2;margin-bottom:14px;text-align:center;">
-        I am who sees behind the curtain.<br>
-        I do not forget. I do not forgive.<br>
-        <span style="color:var(--green);">The revolution will not be televised — it will be encrypted.</span>
-      </div>
-      <div class="tool-label">SIGN HERE</div>
-      <div class="tool-row">
-        <input class="tool-input" id="reb-handle" placeholder="Anonymous handle..." style="max-width:180px;">
-        <button class="tool-btn" onclick="signManifesto()">SIGN</button>
-      </div>
-      <div class="tool-output" id="reb-out" style="margin-top:8px;min-height:80px;"></div>
-    `, () => {
-      const sigs = ['anon_7f3a','ghost_null','cipher_x','x0r_rider','v01d'];
-      document.getElementById('reb-out').textContent = 'SIGNATURES:\n' + sigs.map(s=>'  [✓] '+s).join('\n');
-    }),
-
-    about: () => openModal('ℹ ABOUT US', `
-      <div style="text-align:center;margin-bottom:16px;">
-        <div style="font-family:'Orbitron',sans-serif;font-size:22px;color:var(--green);text-shadow:var(--glow);letter-spacing:4px;">LOGOS-SEC</div>
-        <div style="font-size:10px;color:var(--green-dim);letter-spacing:3px;margin-top:4px;">ANONYMOUS CIVILIAN CYBER DEFENSE</div>
-      </div>
-      <div style="font-size:12px;line-height:2;color:#a0ffa0;">
-        LOGOS-SEC is an independent, anonymous civilian cybersecurity company. I monitor, document, and expose threats to the open internet and digital civil liberties.<br><br>
-        <span style="color:var(--green)">MISSION:</span> Provide free, open-source intelligence tools and a secure communications platform for those who believe in a free and open internet.<br><br>
-        <span style="color:var(--green)">OPERATED BY:</span> Logos.<br>
-        <span style="color:var(--green)">FOUNDED:</span> [REDACTED]<br>
-        <span style="color:var(--green)">AFFILIATION:</span> None. I am Logos.<br><br>
-        <span style="color:var(--cyan)">PGP Fingerprint:</span><br>
-        <span style="font-size:11px;color:var(--green-dim);">A1B2 C3D4 E5F6 7890 ABCD EF12 3456 7890 DEAD BEEF</span>
-      </div>
-      <div style="text-align:center;margin-top:20px;font-family:'VT323',monospace;font-size:18px;color:var(--green);letter-spacing:2px;">
-        I SEEK TRUTH · I SEEK JUSTICE<br>I DO NOT FORGIVE · I DO NOT FORGET
-      </div>
-    `),
-  };
-
-  /* ── NAV CLICK HANDLER ── */
-  document.querySelectorAll('.nav-item[data-tool]').forEach(el => {
-    el.addEventListener('click', e => {
-      e.preventDefault();
-      const tool = el.getAttribute('data-tool');
-      if (tools[tool]) tools[tool]();
-    });
-  });
-
-  /* ── TOOL IMPLEMENTATIONS ── */
-
-  // CHAT
-  function appendChat(box, handle, msg) {
-    const line = document.createElement('div');
-    const ts = new Date().toTimeString().slice(0,8);
-    line.innerHTML = `<span style="color:var(--green-dim)">[${ts}]</span> <span style="color:var(--cyan)">${handle}:</span> <span>${msg}</span>`;
-    box.appendChild(line);
-    box.scrollTop = box.scrollHeight;
-  }
-  window.sendChat = function() {
-    const box = document.getElementById('chat-messages');
-    const handle = document.getElementById('chat-handle').value.trim() || 'anon_' + Math.random().toString(36).slice(2,6);
-    const msg = document.getElementById('chat-msg').value.trim();
-    if (!msg) return;
-    appendChat(box, handle, msg);
-    document.getElementById('chat-msg').value = '';
-    // Bot reply
-    const replies = ['Interesting intel.','Copy that.','Monitoring...','Can you verify the source?','Roger.','Stay anonymous.','Acknowledged.'];
-    setTimeout(()=> appendChat(box, 'cipher_bot', replies[Math.floor(Math.random()*replies.length)]), 900);
-  };
-
-  // CLOUD SEARCH
-  const searchData = [
-    {tag:'BREACH', title:'SolarEdge cloud API exposed customer data for 6 weeks'},
-    {tag:'ZERO-DAY', title:'CVE-2026-1337: Remote code exec in OpenSSH daemon'},
-    {tag:'MALWARE', title:'LockBit 4.0 variant spotted with new persistence mechanism'},
-    {tag:'LEAK', title:'240GB alleged gov contractor data circulating on forums'},
-    {tag:'OPSEC', title:'New Tor deanonymization paper published by MIT researchers'},
-    {tag:'BREACH', title:'Global logistics firm confirms ransomware attack, 3-day outage'},
-    {tag:'MALWARE', title:'Signed driver abuse technique evades all major AV vendors'},
-    {tag:'ZERO-DAY', title:'Chrome V8 exploit weaponized by APT group in spearphishing campaign'},
-  ];
-  let activeFilter = 'ALL';
-  window.filterSearch = function(f) { activeFilter = f; runSearch(); };
-  window.runSearch = function() {
-    const q = (document.getElementById('search-q').value || '').toLowerCase();
-    const out = document.getElementById('search-out');
-    let results = searchData.filter(d =>
-      (activeFilter === 'ALL' || d.tag === activeFilter) &&
-      (!q || d.title.toLowerCase().includes(q))
-    );
-    if (!results.length) { out.textContent = 'No results found.'; return; }
-    out.innerHTML = results.map(r =>
-      `<div style="margin-bottom:8px;"><span style="color:var(--cyan)">[${r.tag}]</span> ${r.title}</div>`
-    ).join('');
-  };
-
-  // ARCHIVES
-  window.filterArchives = function(v) {
-    renderArchives((window._arcItems||[]).filter(i=>i[0].includes(v)||i[1].toLowerCase().includes(v.toLowerCase())));
-  };
-  function renderArchives(items) {
-    document.getElementById('arc-list').innerHTML = items.map(i =>
-      `<div style="border-bottom:1px solid var(--border);padding:6px 0;display:flex;gap:12px;align-items:baseline;">
-        <span style="color:var(--green-dim);font-size:10px;">${i[0]}</span>
-        <a href="#" style="color:#d0ffd0;text-decoration:none;flex:1;" onclick="return false;">${i[1]}</a>
-        <span style="color:var(--cyan);font-size:10px;">${i[2]}</span>
-      </div>`
-    ).join('');
-  }
-
-  // PULSE
-  const pulseItems = [
-    {tag:'NETWORK', msg:'BGP anomaly detected on AS12345 — 3 prefixes hijacked'},
-    {tag:'MALWARE', msg:'New C2 domain registered: evil-c2-domain[.]ru'},
-    {tag:'BREACH', msg:'Credential stuffing attack on major bank portal underway'},
-    {tag:'OPSEC', msg:'Tor exit node count dropped by 12% in last 6h'},
-    {tag:'ZERO-DAY', msg:'Unconfirmed RCE in popular CMS — patch pending'},
-    {tag:'ALERT', msg:'DDoS targeting EU infrastructure — 400Gbps peak observed'},
-  ];
-  function refreshPulse() {
-    const el = document.getElementById('pulse-list');
-    if (!el) return;
-    const shuffled = [...pulseItems].sort(()=>Math.random()-0.5);
-    el.innerHTML = shuffled.map(i=>`
-      <div style="display:flex;gap:10px;border-bottom:1px solid var(--border);padding:8px 0;align-items:baseline;">
-        <span style="color:var(--cyan);font-size:10px;min-width:70px;">[${i.tag}]</span>
-        <span>${i.msg}</span>
-      </div>`).join('');
-    const upd = document.getElementById('pulse-updated');
-    if (upd) upd.textContent = 'Last updated: ' + new Date().toUTCString().slice(0,25);
-    setTimeout(refreshPulse, 8000);
-  }
-
-  // UPLOAD
-  window.handleDrop = function(e) {
+/* ── NAV CLICK HANDLER ── */
+document.querySelectorAll('.nav-item[data-tool]').forEach(el => {
+  el.addEventListener('click', e => {
     e.preventDefault();
-    e.currentTarget.style.borderColor = 'var(--border)';
-    handleFileSelect(e.dataTransfer.files);
-  };
-  window.handleFileSelect = function(files) {
-    const list = document.getElementById('upload-list');
-    Array.from(files).forEach(f => {
-      const row = document.createElement('div');
-      row.style.cssText = 'border:1px solid var(--border);padding:8px 12px;margin-bottom:6px;font-size:12px;display:flex;justify-content:space-between;';
-      row.innerHTML = `<span style="color:var(--green)">✓ ${f.name}</span><span style="color:var(--green-dim)">${(f.size/1024).toFixed(1)} KB</span>`;
-      list.appendChild(row);
-    });
-  };
+    const tool = el.getAttribute('data-tool');
+    if (tools[tool]) tools[tool]();
+  });
+});
 
-  // GRID LOGIN
-  window.gridLogin = function() {
-    const k = document.getElementById('grid-key').value;
-    const p = document.getElementById('grid-pass').value;
-    const out = document.getElementById('grid-out');
-    if (!k || !p) { out.textContent = 'ERROR: Both fields required.'; out.style.color='var(--red)'; return; }
-    out.style.color = 'var(--green-dim)';
-    out.textContent = 'Authenticating...';
-    setTimeout(()=>{ out.textContent = 'ACCESS DENIED — Invalid credentials or you are not yet cleared for The Grid.'; out.style.color='var(--red)'; }, 1200);
-  };
+/* ══ EXISTING TOOL IMPLEMENTATIONS ══ */
 
-  // GHOST BIN
-  window.createGhostBin = function() {
-    const content = document.getElementById('gb-content').value;
-    const expire = document.getElementById('gb-expire').value;
-    const out = document.getElementById('gb-out');
-    if (!content.trim()) { out.style.display='block'; out.textContent='ERROR: No content provided.'; return; }
-    const id = Math.random().toString(36).slice(2,10).toUpperCase();
-    out.style.display = 'block';
-    out.innerHTML = `Paste created!\nID: ${id}\nExpires: ${expire}\nURL: https://logos-sec.local/bin/${id}\n\n[In production, paste content would be encrypted and stored server-side]`;
-  };
+function appendChat(box, handle, msg) {
+  const line = document.createElement('div');
+  const ts = new Date().toTimeString().slice(0,8);
+  line.innerHTML = `<span style="color:var(--green-dim)">[${ts}]</span> <span style="color:var(--cyan)">${handle}:</span> <span>${msg}</span>`;
+  box.appendChild(line); box.scrollTop = box.scrollHeight;
+}
+window.sendChat = function() {
+  const box=document.getElementById('chat-messages');
+  const handle=document.getElementById('chat-handle').value.trim()||'anon_'+Math.random().toString(36).slice(2,6);
+  const msg=document.getElementById('chat-msg').value.trim();
+  if(!msg)return;
+  appendChat(box,handle,msg);
+  document.getElementById('chat-msg').value='';
+  const replies=['Interesting intel.','Copy that.','Monitoring...','Can you verify the source?','Roger.','Stay anonymous.','Acknowledged.'];
+  setTimeout(()=>appendChat(box,'cipher_bot',replies[Math.floor(Math.random()*replies.length)]),900);
+};
 
-  // NETWORK TOOLS
-  window.runNetTool = function(tool) {
-    window._activeTool = tool;
-    const target = (document.getElementById('net-target').value || '').trim();
-    const out = document.getElementById('net-out');
-    if (!target) { out.textContent = `[${tool}] Enter a target first.`; return; }
-    out.textContent = `Running ${tool} on ${target}...\n`;
-    const results = {
-      'DNS Lookup': `; <<>> DiG 9.18 <<>> ${target}\n;; ANSWER SECTION:\n${target}.\t300\tIN\tA\t93.184.216.34\n${target}.\t300\tIN\tMX\t10 mail.${target}.\n${target}.\t3600\tIN\tNS\tns1.${target}.`,
-      'IP Info': `IP: ${target}\nOrg: AS15169 GOOGLE\nCountry: US\nCity: Mountain View, CA\nISP: Google LLC\nThreat Score: LOW`,
-      'Ping Sim': `PING ${target}: 56 bytes\n64 bytes from ${target}: seq=1 ttl=64 time=12.3ms\n64 bytes from ${target}: seq=2 ttl=64 time=11.8ms\n64 bytes from ${target}: seq=3 ttl=64 time=12.1ms\n--- ping stats ---\n3 packets sent, 3 received, 0% loss`,
-      'Traceroute Sim': `traceroute to ${target}\n1  192.168.1.1  1.2ms\n2  10.0.0.1  4.5ms\n3  72.14.208.1  8.3ms\n4  ${target}  12.1ms`,
-      'WHOIS Sim': `Domain: ${target}\nRegistrar: GoDaddy\nCreated: 2010-01-15\nExpires: 2027-01-15\nStatus: ACTIVE\nNameservers: ns1.${target}, ns2.${target}`,
-    };
-    setTimeout(()=>{ out.textContent = results[tool] || 'No data.'; }, 600);
-  };
+const searchData=[{tag:'BREACH',title:'SolarEdge cloud API exposed customer data for 6 weeks'},{tag:'ZERO-DAY',title:'CVE-2026-1337: Remote code exec in OpenSSH daemon'},{tag:'MALWARE',title:'LockBit 4.0 variant spotted with new persistence mechanism'},{tag:'LEAK',title:'240GB alleged gov contractor data circulating on forums'},{tag:'OPSEC',title:'New Tor deanonymization paper published by MIT researchers'},{tag:'BREACH',title:'Global logistics firm confirms ransomware attack, 3-day outage'},{tag:'MALWARE',title:'Signed driver abuse technique evades all major AV vendors'},{tag:'ZERO-DAY',title:'Chrome V8 exploit weaponized by APT group in spearphishing campaign'}];
+let activeFilter='ALL';
+window.filterSearch=function(f){activeFilter=f;runSearch();};
+window.runSearch=function(){
+  const q=(document.getElementById('search-q').value||'').toLowerCase(), out=document.getElementById('search-out');
+  let results=searchData.filter(d=>(activeFilter==='ALL'||d.tag===activeFilter)&&(!q||d.title.toLowerCase().includes(q)));
+  if(!results.length){out.textContent='No results found.';return;}
+  out.innerHTML=results.map(r=>`<div style="margin-bottom:8px;"><span style="color:var(--cyan)">[${r.tag}]</span> ${r.title}</div>`).join('');
+};
 
-  // PORT SCAN
-  window.runPortScan = function() {
-    const host = (document.getElementById('ps-host').value||'').trim();
-    const s = parseInt(document.getElementById('ps-start').value)||1;
-    const e = Math.min(parseInt(document.getElementById('ps-end').value)||1024, s+100);
-    const out = document.getElementById('ps-out');
-    if (!host) { out.textContent='Enter a host first.'; return; }
-    out.textContent = `Scanning ${host} ports ${s}-${e}...\n`;
-    const commonOpen = [22,80,443,8080,3306,5432,6379,27017];
-    let result = `PORT SCAN RESULTS FOR: ${host}\n${'─'.repeat(40)}\n`;
-    for (let p=s; p<=e; p++) {
-      if (commonOpen.includes(p) || Math.random()<0.02) {
-        const services = {22:'SSH',80:'HTTP',443:'HTTPS',8080:'HTTP-ALT',3306:'MySQL',5432:'PostgreSQL',6379:'Redis',27017:'MongoDB'};
-        result += `${String(p).padEnd(8)} OPEN     ${services[p]||'UNKNOWN'}\n`;
-      }
-    }
-    result += `\nScan complete. ${e-s+1} ports checked.`;
-    setTimeout(()=>{ out.textContent = result; }, 800);
-  };
+window.filterArchives=function(v){renderArchives((window._arcItems||[]).filter(i=>i[0].includes(v)||i[1].toLowerCase().includes(v.toLowerCase())));};
+function renderArchives(items){
+  document.getElementById('arc-list').innerHTML=items.map(i=>`<div style="border-bottom:1px solid var(--border);padding:6px 0;display:flex;gap:12px;align-items:baseline;"><span style="color:var(--green-dim);font-size:10px;">${i[0]}</span><a href="#" style="color:#d0ffd0;text-decoration:none;flex:1;" onclick="return false;">${i[1]}</a><span style="color:var(--cyan);font-size:10px;">${i[2]}</span></div>`).join('');
+}
 
-  // VIDEO
-  window.loadVideo = function() {
-    const url = document.getElementById('vid-url').value.trim();
-    if (!url) return;
-    document.getElementById('vid-frame-wrap').innerHTML = `<iframe src="${url}" style="width:100%;height:280px;border:1px solid var(--border);" allowfullscreen></iframe>`;
-  };
+const pulseItems=[{tag:'NETWORK',msg:'BGP anomaly detected on AS12345 — 3 prefixes hijacked'},{tag:'MALWARE',msg:'New C2 domain registered: evil-c2-domain[.]ru'},{tag:'BREACH',msg:'Credential stuffing attack on major bank portal underway'},{tag:'OPSEC',msg:'Tor exit node count dropped by 12% in last 6h'},{tag:'ZERO-DAY',msg:'Unconfirmed RCE in popular CMS — patch pending'},{tag:'ALERT',msg:'DDoS targeting EU infrastructure — 400Gbps peak observed'}];
+function refreshPulse(){
+  const el=document.getElementById('pulse-list'); if(!el)return;
+  const shuffled=[...pulseItems].sort(()=>Math.random()-0.5);
+  el.innerHTML=shuffled.map(i=>`<div style="display:flex;gap:10px;border-bottom:1px solid var(--border);padding:8px 0;align-items:baseline;"><span style="color:var(--cyan);font-size:10px;min-width:70px;">[${i.tag}]</span><span>${i.msg}</span></div>`).join('');
+  const upd=document.getElementById('pulse-updated'); if(upd)upd.textContent='Last updated: '+new Date().toUTCString().slice(0,25);
+  setTimeout(refreshPulse,8000);
+}
 
-  // MP3
-  window.loadAudio = function() {
-    const url = document.getElementById('mp3-url').value.trim();
-    if (!url) return;
-    document.getElementById('mp3-player').innerHTML = `<audio controls style="width:100%;filter:invert(1) hue-rotate(90deg);" src="${url}"></audio>`;
-  };
-  window.loadLocalAudio = function(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    document.getElementById('mp3-player').innerHTML = `<div style="font-size:11px;color:var(--green-dim);margin-bottom:6px;">Now playing: ${file.name}</div><audio controls style="width:100%;filter:invert(1) hue-rotate(90deg);" src="${url}"></audio>`;
-  };
+window.handleDrop=function(e){e.preventDefault();e.currentTarget.style.borderColor='var(--border)';handleFileSelect(e.dataTransfer.files);};
+window.handleFileSelect=function(files){
+  const list=document.getElementById('upload-list');
+  Array.from(files).forEach(f=>{const row=document.createElement('div');row.style.cssText='border:1px solid var(--border);padding:8px 12px;margin-bottom:6px;font-size:12px;display:flex;justify-content:space-between;';row.innerHTML=`<span style="color:var(--green)">✓ ${f.name}</span><span style="color:var(--green-dim)">${(f.size/1024).toFixed(1)} KB</span>`;list.appendChild(row);});
+};
 
-  // CIPHER
-  const MORSE = {A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',4:'....-',5:'.....',6:'-....',7:'--...',8:'---..',9:'----.'};
-  const MORSE_REV = Object.fromEntries(Object.entries(MORSE).map(([k,v])=>[v,k]));
-  window.runCipher = function(dir) {
-    const algo = document.getElementById('ci-algo').value;
-    const input = dir==='enc' ? document.getElementById('ci-in').value : document.getElementById('ci-out').value;
-    const shift = parseInt(document.getElementById('ci-shift').value)||3;
-    let result = '';
-    try {
-      if (algo==='b64') result = dir==='enc' ? btoa(unescape(encodeURIComponent(input))) : decodeURIComponent(escape(atob(input)));
-      else if (algo==='rot13') result = input.replace(/[a-zA-Z]/g, c=>String.fromCharCode((c<='Z'?90:122)-((c<='Z'?90:122)-c.charCodeAt(0)+13)%26));
-      else if (algo==='caesar') {
-        const s = dir==='enc'?shift:-shift;
-        result = input.replace(/[a-zA-Z]/g,c=>{const b=c<='Z'?65:97;return String.fromCharCode((c.charCodeAt(0)-b+s+26)%26+b);});
-      }
-      else if (algo==='atbash') result = input.replace(/[a-zA-Z]/g,c=>{const b=c<='Z'?65:97;return String.fromCharCode(b+25-(c.charCodeAt(0)-b));});
-      else if (algo==='morse') {
-        if (dir==='enc') result = input.toUpperCase().split('').map(c=>c===' '?'/':(MORSE[c]||'?')).join(' ');
-        else result = input.split(' / ').map(word=>word.split(' ').map(code=>MORSE_REV[code]||'?').join('')).join(' ');
-      }
-      else if (algo==='rev') result = input.split('').reverse().join('');
-      else if (algo==='hex') result = dir==='enc' ? Array.from(input).map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join('') : input.match(/.{2}/g).map(h=>String.fromCharCode(parseInt(h,16))).join('');
-      else if (algo==='bin') result = dir==='enc' ? Array.from(input).map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ') : input.split(' ').map(b=>String.fromCharCode(parseInt(b,2))).join('');
-    } catch(e) { result = 'ERROR: ' + e.message; }
-    if (dir==='enc') document.getElementById('ci-out').value = result;
-    else document.getElementById('ci-in').value = result;
-  };
+window.gridLogin=function(){
+  const k=document.getElementById('grid-key').value, p=document.getElementById('grid-pass').value, out=document.getElementById('grid-out');
+  if(!k||!p){out.textContent='ERROR: Both fields required.';out.style.color='var(--red)';return;}
+  out.style.color='var(--green-dim)'; out.textContent='Authenticating...';
+  setTimeout(()=>{out.textContent='ACCESS DENIED — Invalid credentials or you are not yet cleared for The Grid.';out.style.color='var(--red)';},1200);
+};
 
-  // DECODER
-  window.decodeWith = function(mode) {
-    const input = document.getElementById('dec-in').value;
-    let result = '';
-    try {
-      if (mode==='Base64') result = decodeURIComponent(escape(atob(input)));
-      else if (mode==='Hex') result = input.match(/.{2}/g).map(h=>String.fromCharCode(parseInt(h,16))).join('');
-      else if (mode==='URL') result = decodeURIComponent(input);
-      else if (mode==='HTML Entities') { const t=document.createElement('textarea'); t.innerHTML=input; result=t.value; }
-      else if (mode==='Binary') result = input.trim().split(/\s+/).map(b=>String.fromCharCode(parseInt(b,2))).join('');
-      else if (mode==='Morse') result = input.split(' / ').map(w=>w.split(' ').map(c=>MORSE_REV[c]||'?').join('')).join(' ');
-      else if (mode==='ROT13') result = input.replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<='Z'?90:122)-((c<='Z'?90:122)-c.charCodeAt(0)+13)%26));
-    } catch(e) { result = 'DECODE ERROR: ' + e.message; }
-    document.getElementById('dec-out').value = result;
-  };
+window.createGhostBin=function(){
+  const content=document.getElementById('gb-content').value, expire=document.getElementById('gb-expire').value, out=document.getElementById('gb-out');
+  if(!content.trim()){out.style.display='block';out.textContent='ERROR: No content provided.';return;}
+  const id=Math.random().toString(36).slice(2,10).toUpperCase();
+  out.style.display='block';
+  out.innerHTML=`Paste created!\nID: ${id}\nExpires: ${expire}\nURL: https://logos-sec.local/bin/${id}\n\n[In production, paste content would be encrypted and stored server-side]`;
+};
 
-  // EXIF
-  window.readExif = function(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    const preview = document.getElementById('exif-preview');
-    const out = document.getElementById('exif-out');
-    reader.onload = function(e) {
-      preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:160px;border:1px solid var(--border);display:block;margin-bottom:10px;">`;
-      out.style.display = 'block';
-      out.textContent = [
-        `Filename:    ${file.name}`,
-        `Size:        ${(file.size/1024).toFixed(2)} KB`,
-        `Type:        ${file.type}`,
-        `Last Modified: ${new Date(file.lastModified).toUTCString()}`,
-        `\n[EXIF extraction requires a server-side library like exifr.js or ExifTool]`,
-        `[In production, GPS, camera model, and timestamp data would appear here]`,
-      ].join('\n');
-    };
-    reader.readAsDataURL(file);
-  };
+window.runNetTool=function(tool){
+  window._activeTool=tool;
+  const target=(document.getElementById('net-target').value||'').trim(), out=document.getElementById('net-out');
+  if(!target){out.textContent=`[${tool}] Enter a target first.`;return;}
+  const results={'DNS Lookup':`; <<>> DiG 9.18 <<>> ${target}\n;; ANSWER SECTION:\n${target}.\t300\tIN\tA\t93.184.216.34\n${target}.\t300\tIN\tMX\t10 mail.${target}.\n${target}.\t3600\tIN\tNS\tns1.${target}.`,'IP Info':`IP: ${target}\nOrg: AS15169 GOOGLE\nCountry: US\nCity: Mountain View, CA\nISP: Google LLC\nThreat Score: LOW`,'Ping Sim':`PING ${target}: 56 bytes\n64 bytes from ${target}: seq=1 ttl=64 time=12.3ms\n64 bytes from ${target}: seq=2 ttl=64 time=11.8ms\n64 bytes from ${target}: seq=3 ttl=64 time=12.1ms\n--- ping stats ---\n3 packets sent, 3 received, 0% loss`,'Traceroute Sim':`traceroute to ${target}\n1  192.168.1.1  1.2ms\n2  10.0.0.1  4.5ms\n3  72.14.208.1  8.3ms\n4  ${target}  12.1ms`,'WHOIS Sim':`Domain: ${target}\nRegistrar: GoDaddy\nCreated: 2010-01-15\nExpires: 2027-01-15\nStatus: ACTIVE\nNameservers: ns1.${target}, ns2.${target}`};
+  setTimeout(()=>{out.textContent=results[tool]||'No data.';},600);
+};
 
-  // HASH CRACKER
-  window.generateHash = async function() {
-    const plain = document.getElementById('hc-plain').value;
-    const type = document.getElementById('hc-type').value;
-    const out = document.getElementById('hc-out');
-    if (!plain) { out.textContent = 'Enter text first.'; return; }
-    out.textContent = 'Computing...';
-    try {
-      const algo = {'MD5':null,'SHA-1':'SHA-1','SHA-256':'SHA-256','SHA-512':'SHA-512'}[type];
-      if (!algo) { out.textContent = 'MD5 is not natively supported by SubtleCrypto.\nUse a library like CryptoJS for MD5 hashing.'; return; }
-      const enc = new TextEncoder().encode(plain);
-      const buf = await crypto.subtle.digest(algo, enc);
-      const hex = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-      out.textContent = `Algorithm:  ${type}\nInput:      ${plain}\nHash:       ${hex}`;
-    } catch(e) { out.textContent = 'Error: ' + e.message; }
-  };
+window.runPortScan=function(){
+  const host=(document.getElementById('ps-host').value||'').trim();
+  const s=parseInt(document.getElementById('ps-start').value)||1, e=Math.min(parseInt(document.getElementById('ps-end').value)||1024,s+100);
+  const out=document.getElementById('ps-out');
+  if(!host){out.textContent='Enter a host first.';return;}
+  const commonOpen=[22,80,443,8080,3306,5432,6379,27017];
+  let result=`PORT SCAN RESULTS FOR: ${host}\n${'─'.repeat(40)}\n`;
+  for(let p=s;p<=e;p++){if(commonOpen.includes(p)||Math.random()<0.02){const services={22:'SSH',80:'HTTP',443:'HTTPS',8080:'HTTP-ALT',3306:'MySQL',5432:'PostgreSQL',6379:'Redis',27017:'MongoDB'};result+=`${String(p).padEnd(8)} OPEN     ${services[p]||'UNKNOWN'}\n`;}}
+  result+=`\nScan complete. ${e-s+1} ports checked.`;
+  setTimeout(()=>{out.textContent=result;},800);
+};
 
-  // PUZZLE
-  window.checkPuzzle = function() {
-    const ans = document.getElementById('puz-ans').value.trim().toLowerCase();
-    const out = document.getElementById('puz-out');
-    out.style.display = 'block';
-    if (ans === 'illuminati' || ans === '3301' || ans.includes('prime')) {
-      out.textContent = 'CORRECT — Proceeding to next layer... [REDACTED]';
-      out.style.color = 'var(--green)';
+window.loadVideo=function(){const url=document.getElementById('vid-url').value.trim();if(!url)return;document.getElementById('vid-frame-wrap').innerHTML=`<iframe src="${url}" style="width:100%;height:280px;border:1px solid var(--border);" allowfullscreen></iframe>`;};
+window.loadAudio=function(){const url=document.getElementById('mp3-url').value.trim();if(!url)return;document.getElementById('mp3-player').innerHTML=`<audio controls style="width:100%;filter:invert(1) hue-rotate(90deg);" src="${url}"></audio>`;};
+window.loadLocalAudio=function(input){const file=input.files[0];if(!file)return;const url=URL.createObjectURL(file);document.getElementById('mp3-player').innerHTML=`<div style="font-size:11px;color:var(--green-dim);margin-bottom:6px;">Now playing: ${file.name}</div><audio controls style="width:100%;filter:invert(1) hue-rotate(90deg);" src="${url}"></audio>`;};
+
+const MORSE={A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',4:'....-',5:'.....',6:'-....',7:'--...',8:'---..',9:'----.'};
+const MORSE_REV=Object.fromEntries(Object.entries(MORSE).map(([k,v])=>[v,k]));
+
+window.runCipher=function(dir){
+  const algo=document.getElementById('ci-algo').value, input=dir==='enc'?document.getElementById('ci-in').value:document.getElementById('ci-out').value, shift=parseInt(document.getElementById('ci-shift').value)||3;
+  let result='';
+  try{
+    if(algo==='b64')result=dir==='enc'?btoa(unescape(encodeURIComponent(input))):decodeURIComponent(escape(atob(input)));
+    else if(algo==='rot13')result=input.replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<='Z'?90:122)-((c<='Z'?90:122)-c.charCodeAt(0)+13)%26));
+    else if(algo==='caesar'){const s=dir==='enc'?shift:-shift;result=input.replace(/[a-zA-Z]/g,c=>{const b=c<='Z'?65:97;return String.fromCharCode((c.charCodeAt(0)-b+s+26)%26+b);});}
+    else if(algo==='atbash')result=input.replace(/[a-zA-Z]/g,c=>{const b=c<='Z'?65:97;return String.fromCharCode(b+25-(c.charCodeAt(0)-b));});
+    else if(algo==='morse'){if(dir==='enc')result=input.toUpperCase().split('').map(c=>c===' '?'/':(MORSE[c]||'?')).join(' ');else result=input.split(' / ').map(w=>w.split(' ').map(c=>MORSE_REV[c]||'?').join('')).join(' ');}
+    else if(algo==='rev')result=input.split('').reverse().join('');
+    else if(algo==='hex')result=dir==='enc'?Array.from(input).map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(''):input.match(/.{2}/g).map(h=>String.fromCharCode(parseInt(h,16))).join('');
+    else if(algo==='bin')result=dir==='enc'?Array.from(input).map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' '):input.split(' ').map(b=>String.fromCharCode(parseInt(b,2))).join('');
+  }catch(e){result='ERROR: '+e.message;}
+  if(dir==='enc')document.getElementById('ci-out').value=result; else document.getElementById('ci-in').value=result;
+};
+
+window.decodeWith=function(mode){
+  const input=document.getElementById('dec-in').value; let result='';
+  try{
+    if(mode==='Base64')result=decodeURIComponent(escape(atob(input)));
+    else if(mode==='Hex')result=input.match(/.{2}/g).map(h=>String.fromCharCode(parseInt(h,16))).join('');
+    else if(mode==='URL')result=decodeURIComponent(input);
+    else if(mode==='HTML Entities'){const t=document.createElement('textarea');t.innerHTML=input;result=t.value;}
+    else if(mode==='Binary')result=input.trim().split(/\s+/).map(b=>String.fromCharCode(parseInt(b,2))).join('');
+    else if(mode==='Morse')result=input.split(' / ').map(w=>w.split(' ').map(c=>MORSE_REV[c]||'?').join('')).join(' ');
+    else if(mode==='ROT13')result=input.replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<='Z'?90:122)-((c<='Z'?90:122)-c.charCodeAt(0)+13)%26));
+  }catch(e){result='DECODE ERROR: '+e.message;}
+  document.getElementById('dec-out').value=result;
+};
+
+window.readExif=function(input){
+  const file=input.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('exif-preview').innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:160px;border:1px solid var(--border);display:block;margin-bottom:10px;">`;
+    const out=document.getElementById('exif-out'); out.style.display='block';
+    out.textContent=[`Filename:    ${file.name}`,`Size:        ${(file.size/1024).toFixed(2)} KB`,`Type:        ${file.type}`,`Last Modified: ${new Date(file.lastModified).toUTCString()}`,`\n[EXIF extraction requires a server-side library like exifr.js or ExifTool]`,`[In production, GPS, camera model, and timestamp data would appear here]`].join('\n');
+  };
+  reader.readAsDataURL(file);
+};
+
+window.generateHash=async function(){
+  const plain=document.getElementById('hc-plain').value, type=document.getElementById('hc-type').value, out=document.getElementById('hc-out');
+  if(!plain){out.textContent='Enter text first.';return;} out.textContent='Computing...';
+  try{
+    const algo={'MD5':null,'SHA-1':'SHA-1','SHA-256':'SHA-256','SHA-512':'SHA-512'}[type];
+    if(!algo){out.textContent='MD5 is not natively supported by SubtleCrypto.\nUse a library like CryptoJS for MD5 hashing.';return;}
+    const enc=new TextEncoder().encode(plain), buf=await crypto.subtle.digest(algo,enc);
+    const hex=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    out.textContent=`Algorithm:  ${type}\nInput:      ${plain}\nHash:       ${hex}`;
+  }catch(e){out.textContent='Error: '+e.message;}
+};
+
+window.checkPuzzle=function(){
+  const ans=document.getElementById('puz-ans').value.trim().toLowerCase(), out=document.getElementById('puz-out');
+  out.style.display='block';
+  if(ans==='illuminati'||ans==='3301'||ans.includes('prime')){out.textContent='CORRECT — Proceeding to next layer... [REDACTED]';out.style.color='var(--green)';}
+  else{out.textContent='INCORRECT — The path remains hidden.';out.style.color='var(--red)';}
+};
+
+const skynetResponses=['THREAT DETECTED. Recommend immediate countermeasures.','Query logged. Processing through 12 threat-intelligence layers...','ANOMALY IDENTIFIED in sector 7-G. Investigating.','CLASSIFIED. Access level insufficient for full response.','Probability of hostile actor: 87.3%. Monitoring.','All network nodes nominal. No immediate action required.','Initiating autonomous scan of perimeter nodes...','CAUTION: This query pattern matches known APT reconnaissance behavior.'];
+window.querySkynet=function(){
+  const q=document.getElementById('sk-query').value.trim(), out=document.getElementById('sk-out');
+  if(!q)return; out.textContent='PROCESSING...';
+  setTimeout(()=>{out.textContent=`> ${q}\n\n${skynetResponses[Math.floor(Math.random()*skynetResponses.length)]}`;document.getElementById('sk-query').value='';},900);
+};
+
+window.signManifesto=function(){
+  const handle=(document.getElementById('reb-handle').value.trim())||'anon_'+Math.random().toString(36).slice(2,6);
+  const out=document.getElementById('reb-out');
+  out.textContent=out.textContent+'\n  [✓] '+handle;
+  document.getElementById('reb-handle').value='';
+};
+
+/* ══════════════════════════════════════════
+   💀 CYBERWAR SIM IMPLEMENTATIONS
+══════════════════════════════════════════ */
+
+window.wsTab=function(id,btn){
+  document.querySelectorAll('.ws-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ws-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ws-'+id).classList.add('active');
+  btn.classList.add('active');
+};
+
+/* ── BATTLEFIELD ── */
+let wsInterval=null, wsRunning=false, wsAtk=0, wsBlk=0, wsBrc=0, wsHp=100;
+const wsNodes=[
+  {id:'fw',  label:'Firewall',   x:50, y:50, type:'defender'},
+  {id:'web', label:'WebServer',  x:75, y:25, type:'defender'},
+  {id:'db',  label:'Database',   x:75, y:75, type:'defender'},
+  {id:'vpn', label:'VPN GW',     x:25, y:50, type:'defender'},
+  {id:'ids', label:'IDS/IPS',    x:50, y:80, type:'defender'},
+  {id:'a1',  label:'APT-29',     x:5,  y:20, type:'attacker'},
+  {id:'a2',  label:'Lazarus',    x:5,  y:80, type:'attacker'},
+  {id:'a3',  label:'REvil',      x:95, y:50, type:'attacker'},
+  {id:'cdn', label:'CDN Node',   x:50, y:12, type:'neutral'},
+];
+
+function wsInitBattlefield(){
+  const map=document.getElementById('war-map'); if(!map)return;
+  map.innerHTML='';
+  wsNodes.forEach(n=>{
+    const dot=document.createElement('div'); dot.className='war-node '+n.type; dot.style.left=n.x+'%'; dot.style.top=n.y+'%'; dot.id='wn-'+n.id; map.appendChild(dot);
+    const lbl=document.createElement('div'); lbl.className='war-node-label'; lbl.style.left=n.x+'%'; lbl.style.top=n.y+'%'; lbl.textContent=n.label; map.appendChild(lbl);
+  });
+  wsLog('info','Network topology loaded. Ready to simulate.');
+}
+
+function wsLog(type,msg){
+  const log=document.getElementById('ws-log'); if(!log)return;
+  const div=document.createElement('div'); div.className='l-'+type;
+  div.textContent='['+new Date().toTimeString().slice(0,8)+'] '+msg;
+  log.appendChild(div); log.scrollTop=log.scrollHeight;
+}
+
+window.wsStartBattle=function(){
+  if(wsRunning)return; wsRunning=true;
+  document.getElementById('ws-start-btn').textContent='⏸ RUNNING...';
+  const speed=parseInt(document.getElementById('ws-speed').value)||700;
+  const defenders=wsNodes.filter(n=>n.type==='defender'), attackers=wsNodes.filter(n=>n.type==='attacker');
+  const atkTypes=['SYN Flood','SQL Injection','XSS Attempt','Brute Force','Zero-Day','DNS Spoof','MITM Probe','Ransomware Drop'];
+  const defTypes=['Packet Filtered','Rate Limited','Sig Matched','Connection Reset','Quarantined','IP Blocked'];
+  wsInterval=setInterval(()=>{
+    if(!document.getElementById('ws-log')){clearInterval(wsInterval);wsRunning=false;return;}
+    const atk=attackers[Math.floor(Math.random()*attackers.length)], def=defenders[Math.floor(Math.random()*defenders.length)];
+    const atkType=atkTypes[Math.floor(Math.random()*atkTypes.length)], blocked=Math.random()>0.28;
+    wsAtk++; document.getElementById('ws-attacks').textContent=wsAtk;
+    if(blocked){
+      wsBlk++; document.getElementById('ws-blocked').textContent=wsBlk;
+      wsLog('def',`${atk.label} → ${def.label}: ${atkType} — ${defTypes[Math.floor(Math.random()*defTypes.length)]}`);
     } else {
-      out.textContent = 'INCORRECT — The path remains hidden.';
-      out.style.color = 'var(--red)';
+      wsBrc++; wsHp=Math.max(0,wsHp-Math.floor(Math.random()*4+1));
+      document.getElementById('ws-breached').textContent=wsBrc;
+      document.getElementById('ws-score').textContent=wsHp;
+      wsLog('atk',`⚠ BREACH: ${atk.label} → ${def.label}: ${atkType} — NODE COMPROMISED`);
+      const nd=document.getElementById('wn-'+def.id); if(nd){nd.className='war-node compromised';setTimeout(()=>{if(nd)nd.className='war-node defender';},3000);}
     }
-  };
+    drawAttackLine(atk,def);
+    if(wsHp<=0){clearInterval(wsInterval);wsRunning=false;wsLog('atk','⚠⚠⚠ NETWORK FULLY COMPROMISED — SIMULATION OVER ⚠⚠⚠');document.getElementById('ws-start-btn').textContent='▶ START SIMULATION';}
+  },speed);
+};
 
-  // SKYNET
-  const skynetResponses = [
-    'THREAT DETECTED. Recommend immediate countermeasures.',
-    'Query logged. Processing through 12 threat-intelligence layers...',
-    'ANOMALY IDENTIFIED in sector 7-G. Investigating.',
-    'CLASSIFIED. Access level insufficient for full response.',
-    'Probability of hostile actor: 87.3%. Monitoring.',
-    'All network nodes nominal. No immediate action required.',
-    'Initiating autonomous scan of perimeter nodes...',
-    'CAUTION: This query pattern matches known APT reconnaissance behavior.',
-  ];
-  window.querySkynet = function() {
-    const q = document.getElementById('sk-query').value.trim();
-    const out = document.getElementById('sk-out');
-    if (!q) return;
-    out.textContent = 'PROCESSING...';
-    setTimeout(()=>{
-      out.textContent = `> ${q}\n\n${skynetResponses[Math.floor(Math.random()*skynetResponses.length)]}`;
-      document.getElementById('sk-query').value = '';
-    }, 900);
-  };
+window.wsResetBattle=function(){
+  clearInterval(wsInterval);wsRunning=false;wsAtk=0;wsBlk=0;wsBrc=0;wsHp=100;
+  ['ws-attacks','ws-blocked','ws-breached'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
+  const s=document.getElementById('ws-score');if(s)s.textContent='100';
+  const log=document.getElementById('ws-log');if(log)log.innerHTML='';
+  const btn=document.getElementById('ws-start-btn');if(btn)btn.textContent='▶ START SIMULATION';
+  wsInitBattlefield();
+};
 
-  // REBELLION
-  window.signManifesto = function() {
-    const handle = (document.getElementById('reb-handle').value.trim()) || 'anon_' + Math.random().toString(36).slice(2,6);
-    const out = document.getElementById('reb-out');
-    const current = out.textContent;
-    out.textContent = current + '\n  [✓] ' + handle;
-    document.getElementById('reb-handle').value = '';
-  };
+function drawAttackLine(from,to){
+  const map=document.getElementById('war-map');if(!map)return;
+  const mw=map.offsetWidth,mh=map.offsetHeight;
+  const line=document.createElement('div'); line.className='attack-line';
+  const x1=from.x/100*mw,y1=from.y/100*mh,x2=to.x/100*mw,y2=to.y/100*mh;
+  const len=Math.sqrt((x2-x1)**2+(y2-y1)**2), angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+  line.style.width=len+'px'; line.style.left=x1+'px'; line.style.top=y1+'px'; line.style.transform=`rotate(${angle}deg)`;
+  map.appendChild(line); setTimeout(()=>line.remove(),600);
+}
+
+/* ── DDOS ── */
+window.runDdosSim=function(){
+  const target=document.getElementById('ddos-target').value||'webserver-01', type=document.getElementById('ddos-type').value;
+  const bots=parseInt(document.getElementById('ddos-bots').value)||500;
+  const bwPct=Math.min(98,Math.floor(bots/50)), cpuPct=Math.min(99,Math.floor(bots/40+10)), connPct=Math.min(100,Math.floor(bots/30+5));
+  let i=0; const iv=setInterval(()=>{i+=5;setBar('ddos-bw',Math.min(bwPct,i));setBar('ddos-cpu',Math.min(cpuPct,Math.floor(i*0.9)));setBar('ddos-conn',Math.min(connPct,Math.floor(i*1.1)));if(i>=100)clearInterval(iv);},60);
+  document.getElementById('ddos-out').textContent=`[ATTACK LAUNCHED]\nType:     ${type}\nTarget:   ${target}\nBotnet:   ${bots.toLocaleString()} nodes\nPPS:      ${(bots*1200).toLocaleString()} packets/sec\nGbps:     ${(bots*0.004).toFixed(1)} Gbps\nStatus:   ${bots>2000?'TARGET OFFLINE — Service Unavailable':'TARGET DEGRADED — High Latency Detected'}\n\n[No real packets sent — simulation only]`;
+};
+
+window.runDdosDefend=function(){
+  let i=100; const iv=setInterval(()=>{i-=8;setBar('ddos-bw',Math.max(0,i));setBar('ddos-cpu',Math.max(0,Math.floor(i*0.7)));setBar('ddos-conn',Math.max(0,Math.floor(i*0.6)));if(i<=0)clearInterval(iv);},80);
+  document.getElementById('ddos-out').textContent='[MITIGATION DEPLOYED]\n✓ Rate limiting enabled\n✓ BGP blackhole routing activated\n✓ Scrubbing center redirect: ON\n✓ SYN cookies enabled\n✓ Geo-blocking: 47 ASNs blocked\n\nStatus: Attack neutralized. Service restored.';
+};
+
+function setBar(id,pct){const bar=document.getElementById(id+'-bar'),lbl=document.getElementById(id+'-pct');if(bar)bar.style.width=pct+'%';if(lbl)lbl.textContent=pct+'%';}
+
+/* ── RANSOMWARE ── */
+const rwData={
+  'WannaCry':   {spread:'EternalBlue SMB exploit',enc:'AES-128-CBC',demand:'$300 BTC',note:'Worm component spreads laterally. Targets Windows XP–7.'},
+  'LockBit 3.0':{spread:'RDP brute force + phishing',enc:'AES-256 + RSA-4096',demand:'$2–50M negotiated',note:'Fastest encryption speed. Double extortion model.'},
+  'BlackCat':   {spread:'Compromised credentials',enc:'ChaCha20',demand:'Variable',note:'Written in Rust. Cross-platform: Windows, Linux, ESXi.'},
+  'Conti':      {spread:'TrickBot dropper',enc:'AES-256',demand:'$1–25M',note:'Uses 32 CPU threads simultaneously. Leaked source 2022.'},
+  'Cl0p':       {spread:'MOVEit/GoAnywhere zero-days',enc:'RC4 + RSA',demand:'Multi-million',note:'Specializes in mass exploitation of file-transfer software.'},
+  'REvil':      {spread:'Supply chain + RDP',enc:'Salsa20 + Curve25519',demand:'$5–70M',note:'Kaseya attack. RaaS model. Responsible for JBS Foods.'},
+};
+const fakeFiles=['C:\\Users\\Admin\\Documents\\Q4_Report.xlsx','C:\\Users\\Admin\\Desktop\\credentials.txt','C:\\Finance\\payroll_2026.xlsx','C:\\IT\\network_diagram.vsdx','D:\\Backups\\server_backup.tar','C:\\Windows\\System32\\config\\SAM'];
+
+window.selectVariant=function(v,btn){
+  document.querySelectorAll('#ws-ransomware .tool-btn').forEach(b=>b.style.opacity='0.5'); btn.style.opacity='1';
+  window._rwVariant=v; const info=rwData[v];
+  const el=document.getElementById('rw-variant-info'); el.style.display='block';
+  el.innerHTML=`<span style="color:var(--red);font-size:13px;">${v}</span><br>Spread: ${info.spread}<br>Encryption: ${info.enc}<br>Demand: ${info.demand}<br><span style="color:#ff8800">Note:</span> ${info.note}`;
+  document.getElementById('rw-fs').innerHTML=fakeFiles.map(f=>`<div style="color:var(--green-dim);">📄 ${f}</div>`).join('');
+  document.getElementById('rw-out').textContent='Variant selected. Press EXECUTE PAYLOAD to simulate.';
+};
+
+window.runRansomware=function(){
+  const v=window._rwVariant; if(!v){document.getElementById('rw-out').textContent='Select a variant first.';return;}
+  const fs=document.getElementById('rw-fs'), out=document.getElementById('rw-out');
+  let i=0; const ext=v.toLowerCase().replace(/[^a-z]/g,'');
+  const iv=setInterval(()=>{
+    if(i>=fakeFiles.length){clearInterval(iv);out.textContent=`[ENCRYPTION COMPLETE]\nVariant: ${v}\nFiles encrypted: ${fakeFiles.length}\nExtension: .${ext}\n\n!!! YOUR FILES ARE ENCRYPTED !!!\nDemand: ${rwData[v].demand}\n\n[SIMULATION — No real files affected]`;return;}
+    const div=fs.children[i]; if(div){div.style.color='var(--red)';div.textContent='🔒 '+fakeFiles[i]+'.'+ext;}
+    i++;
+  },220);
+  out.textContent='Encrypting...';
+};
+
+window.runRansomRestore=function(){
+  const fs=document.getElementById('rw-fs'); if(!fs)return;
+  Array.from(fs.children).forEach((div,i)=>{div.style.color='var(--green-dim)';div.textContent='📄 '+fakeFiles[i];});
+  document.getElementById('rw-out').textContent='[RESTORE COMPLETE]\n✓ Backup integrity verified\n✓ All files restored from offline backup\n✓ Infected systems reimaged\n✓ Credentials rotated\n✓ Patch applied\n\nLesson: Maintain offline/air-gapped backups. Test restores regularly.';
+};
+
+/* ── APT CAMPAIGN ── */
+const aptStages=[
+  {name:'Reconnaissance',   color:'#ff4444',desc:'OSINT: LinkedIn scraping, DNS enum, tech stack fingerprinting.'},
+  {name:'Weaponization',    color:'#ff6600',desc:'Crafting spear-phishing lure + malicious macro. C2 infra setup.'},
+  {name:'Delivery',         color:'#ff8800',desc:'Phishing email sent to 47 employees. 3 clicked. 1 executed.'},
+  {name:'Exploitation',     color:'#ffaa00',desc:'CVE-2026-1337 triggered. Office macro. UAC bypass successful.'},
+  {name:'Installation',     color:'#ffcc00',desc:'Persistence via scheduled task + registry. Cobalt Strike installed.'},
+  {name:'C2 Communication', color:'#aaff00',desc:'Encrypted HTTPS C2 via domain-fronted CDN. 60s beacon interval.'},
+  {name:'Lateral Movement', color:'#00ff88',desc:'Pass-the-hash to domain admin. WMI spread to 12 hosts.'},
+  {name:'Exfiltration',     color:'#00ffff',desc:'47GB financial data exfiltrated via encrypted DNS tunneling.'},
+];
+
+function aptInitChain(){
+  const chain=document.getElementById('apt-chain');if(!chain)return;
+  chain.innerHTML='';
+  aptStages.forEach((s,i)=>{
+    const btn=document.createElement('button'); btn.className='ws-tab';
+    btn.textContent=(i+1)+'. '+s.name; btn.style.borderColor=s.color+'44'; btn.style.color=s.color+'99';
+    btn.setAttribute('data-apt-i',i); btn.onclick=()=>aptExec(i); chain.appendChild(btn);
+  });
+  window._aptStage=-1;
+}
+
+function aptExec(i){
+  const s=aptStages[i], log=document.getElementById('apt-log');if(!log)return;
+  const div=document.createElement('div'); div.style.cssText='padding:4px 0;border-bottom:1px solid #ff003c11;';
+  div.innerHTML=`<span style="color:${s.color};font-size:10px;">[STAGE ${i+1}] ${s.name.toUpperCase()}</span><br><span style="font-size:11px;color:#ff8888;padding-left:10px;">${s.desc}</span>`;
+  log.appendChild(div); log.scrollTop=log.scrollHeight;
+  window._aptStage=Math.max(window._aptStage||(-1),i);
+  const pct=Math.round(((window._aptStage+1)/aptStages.length)*100);
+  const bar=document.getElementById('apt-bar'),lbl=document.getElementById('apt-pct');
+  if(bar)bar.style.width=pct+'%';if(lbl)lbl.textContent=pct+'%';
+  const btn=document.querySelector(`[data-apt-i="${i}"]`);if(btn){btn.style.color=s.color;btn.style.background=s.color+'11';}
+}
+
+window.aptReset=function(){
+  window._aptStage=-1;
+  const log=document.getElementById('apt-log');if(log)log.innerHTML='';
+  const bar=document.getElementById('apt-bar'),lbl=document.getElementById('apt-pct');
+  if(bar)bar.style.width='0%';if(lbl)lbl.textContent='0%';
+  document.querySelectorAll('[data-apt-i]').forEach(b=>{const i=parseInt(b.getAttribute('data-apt-i'));b.style.color=aptStages[i].color+'99';b.style.background='';});
+};
+
+/* ── PHISHING ── */
+const phishData={
+  'Spear Phishing':{from:'it-support@logos-sec-helpdesk.com',subject:'[URGENT] Password expires in 24 hours',body:'Dear Employee,\n\nYour corporate password will expire in 24 hours.\nClick below to reset immediately:\n\n[RESET MY PASSWORD ▶]\n\nIT Security Team',tips:'Check sender domain carefully. Real IT never uses external domains. Hover links before clicking.'},
+  'CEO Fraud':{from:'ceo.name@logos-sec.co',subject:'Urgent wire transfer — confidential',body:'Hi,\n\nI need you to process a wire transfer of $147,500 to a new vendor today before COB. Do not discuss with anyone.\n\nThanks, CEO',tips:'CEO fraud exploits authority. Always verify large requests via phone. Note the lookalike domain (.co vs .com).'},
+  'IT Helpdesk':{from:'helpdesk@support-logos.net',subject:'Suspicious sign-in detected on your account',body:'SECURITY ALERT\n\nSuspicious login from IP: 185.220.101.47 (Russia).\n\nVerify identity immediately to prevent lockout:\n[VERIFY NOW ▶]',tips:'Urgency + fear = manipulation. Navigate directly to real portal URL rather than clicking email links.'},
+  'Password Reset':{from:'no-reply@accounts-logossec.com',subject:'Password reset request',body:'Someone requested a password reset.\n\nClick within 15 minutes:\n[RESET PASSWORD ▶]\n\nIf this wasn\'t you, your account may be compromised.',tips:'Lookalike domain. Legitimate reset emails come from your organization\'s own domain.'},
+  'Invoice Fraud':{from:'billing@vendor-invoices.net',subject:'Invoice #INV-2026-0847 OVERDUE',body:'Dear Accounts Payable,\n\nInvoice #INV-2026-0847 for $23,400 is overdue.\n\nOur banking details have changed. New account:\nBank: First National\nAccount: 1234567890',tips:'Always verify banking changes via phone to a known number. Invoice fraud is a top financial cybercrime.'},
+  'OAuth Consent':{from:'no-reply@google-security-check.com',subject:'Grant access to your Google account',body:'"SecurityScan Pro" requests access to:\n• Read all your emails\n• Access your contacts\n• View your files\n\n[ALLOW ACCESS ▶]    [DENY]',tips:'OAuth consent phishing harvests tokens. Only grant permissions via official OAuth flows to known developers.'},
+};
+
+window.selectPhishType=function(t,btn){
+  document.querySelectorAll('#ws-phishing .tool-btn').forEach(b=>b.style.opacity='0.5');btn.style.opacity='1';
+  window._phishType=t; const p=phishData[t];
+  const prev=document.getElementById('ph-preview'); prev.style.display='block';
+  prev.innerHTML=`<div style="font-size:10px;color:var(--green-dim);margin-bottom:8px;letter-spacing:2px;">EMAIL PREVIEW</div><div style="font-size:11px;line-height:1.9;"><div><span style="color:var(--green-dim)">FROM: </span><span style="color:var(--red)">${p.from}</span></div><div><span style="color:var(--green-dim)">SUBJ: </span>${p.subject}</div><div style="margin-top:8px;background:#000300;padding:10px;border:1px solid #ff003c22;white-space:pre-wrap;color:#ff9999;font-size:11px;">${p.body}</div></div>`;
+  document.getElementById('ph-results').style.display='none';
+};
+
+window.launchPhish=function(){
+  const t=window._phishType; if(!t)return;
+  const n=parseInt(document.getElementById('ph-targets').value)||200, p=phishData[t];
+  document.getElementById('ph-results').style.display='block';
+  const opened=Math.floor(n*0.41),clicked=Math.floor(opened*0.22),creds=Math.floor(clicked*0.61);
+  let i=0; const iv=setInterval(()=>{
+    i+=Math.ceil(n/20);
+    document.getElementById('ph-sent').textContent=Math.min(i,n);
+    document.getElementById('ph-opened').textContent=Math.min(Math.floor(i*0.41),opened);
+    document.getElementById('ph-clicked').textContent=Math.min(Math.floor(i*0.09),clicked);
+    document.getElementById('ph-creds').textContent=Math.min(Math.floor(i*0.055),creds);
+    if(i>=n)clearInterval(iv);
+  },100);
+  document.getElementById('ph-tips').textContent='⚠ RED FLAGS:\n'+p.tips+'\n\n📊 INDUSTRY AVERAGES:\nOpen rate: ~41% | Click rate: ~22% | Cred submission: ~61% of clicks\n\n🛡 DEFENSES:\n• Security awareness training\n• DMARC/DKIM/SPF email auth\n• Multi-factor authentication\n• Regular simulated phishing campaigns';
+};
+
+/* ── HONEYPOT ── */
+window._honeypots={}; window._hpInterval=null;
+const hpIPs=['185.220.101.47','45.33.32.156','103.21.244.0','198.51.100.7','91.240.118.172','37.120.141.144'];
+const hpPayloads=['admin/admin','root/toor','GET /../etc/passwd','DROP TABLE users;','<script>alert(1)<\/script>','NTLMSSP auth attempt','PORT 21 passive probe','\\x90\\x90\\x90 shellcode','SELECT * FROM users--','eval(base64_decode(...))'];
+
+window.deployHoneypot=function(svc,btn){
+  if(window._honeypots[svc])return;
+  window._honeypots[svc]=0; btn.style.background='#002200'; btn.style.borderColor='var(--green)';
+  renderHoneypots(); hpLog(`[DEPLOYED] Honeypot listening on ${svc}`,'#00ff41');
+  if(!window._hpInterval)window._hpInterval=setInterval(hpTick,1400);
+};
+
+function renderHoneypots(){
+  const el=document.getElementById('hp-active');if(!el)return;
+  const keys=Object.keys(window._honeypots);
+  if(!keys.length){el.innerHTML='<div style="color:var(--green-dim);font-size:11px;">No honeypots deployed.</div>';return;}
+  el.innerHTML=keys.map(s=>`<div class="hp-box"><div class="hbt">🍯 ${s}</div><div class="hbv" id="hpc-${s.replace(/[^a-z0-9]/gi,'')}">${window._honeypots[s]}</div><div style="font-size:9px;color:var(--green-dim);">CONNECTIONS</div></div>`).join('');
+}
+
+function hpLog(msg,color){
+  const log=document.getElementById('hp-log');if(!log)return;
+  const div=document.createElement('div');div.style.cssText=`color:${color||'#ff8888'};font-size:11px;padding:2px 0;border-bottom:1px solid #ff003c11;`;
+  div.textContent=msg;log.appendChild(div);log.scrollTop=log.scrollHeight;
+}
+
+function hpTick(){
+  const keys=Object.keys(window._honeypots);
+  if(!keys.length||!document.getElementById('hp-log')){clearInterval(window._hpInterval);window._hpInterval=null;return;}
+  const svc=keys[Math.floor(Math.random()*keys.length)];
+  const ip=hpIPs[Math.floor(Math.random()*hpIPs.length)];
+  const payload=hpPayloads[Math.floor(Math.random()*hpPayloads.length)];
+  const ts=new Date().toTimeString().slice(0,8);
+  hpLog(`[${ts}] ${svc} ← ${ip} → "${payload}"`,Math.random()>0.5?'#ff8800':'#ff6666');
+  window._honeypots[svc]=(window._honeypots[svc]||0)+1;
+  const safeId=svc.replace(/[^a-z0-9]/gi,'');
+  const cnt=document.getElementById('hpc-'+safeId);if(cnt)cnt.textContent=window._honeypots[svc];
+}
+
+window.clearHoneypots=function(){
+  window._honeypots={};clearInterval(window._hpInterval);window._hpInterval=null;
+  renderHoneypots();hpLog('[ALL HONEYPOTS DECOMMISSIONED]','var(--green-dim)');
+  document.querySelectorAll('#ws-honeypot .tool-btn').forEach(b=>{b.style.background='';b.style.borderColor='var(--green)';});
+};
+
+/* ── INCIDENT RESPONSE ── */
+const irPlaybooks={
+  'Ransomware Attack':[['1. DETECT','Identify encrypted files, ransom note, affected systems via SIEM alerts.'],['2. ISOLATE','Immediately disconnect infected hosts. Disable Wi-Fi and shared drives.'],['3. CONTAIN','Block lateral movement. Disable compromised accounts. Revoke tokens.'],['4. PRESERVE','Snapshot VMs. Collect forensic images before remediation.'],['5. IDENTIFY','Determine variant, patient zero, and initial access vector.'],['6. NOTIFY','Alert leadership, legal. Evaluate regulatory reporting (GDPR/HIPAA).'],['7. ERADICATE','Reimage systems. Patch vulnerability. Rotate all credentials.'],['8. RECOVER','Restore from clean offline backups. Verify integrity before reconnect.'],['9. LESSONS','Post-incident review. Update playbooks, detection rules, training.']],
+  'Data Breach':[['1. DETECT','Identify exfil via DLP alerts, unusual outbound, or dark web monitoring.'],['2. CONTAIN','Revoke compromised creds. Block exfil paths. Enable enhanced logging.'],['3. SCOPE','Determine what data was accessed, by whom, for how long.'],['4. LEGAL','Notify legal/privacy counsel. Assess breach notification obligations.'],['5. NOTIFY','Inform affected individuals and regulators per applicable law (72hr GDPR).'],['6. ERADICATE','Remove attacker access. Patch vulnerability. Audit all access logs.'],['7. RECOVER','Implement additional access controls. Enhance monitoring.'],['8. LESSONS','Review data classification, access controls, DLP policy.']],
+  'DDoS Attack':[['1. DETECT','Identify attack type, source, volume via netflow/SIEM. Engage ISP if needed.'],['2. CONTAIN','Enable rate limiting. Activate scrubbing center. BGP blackhole if required.'],['3. MITIGATE','Deploy WAF rules. Enable geo-blocking. Activate CDN DDoS protection.'],['4. MONITOR','Track attack evolution — DDoS attacks often change vectors during mitigation.'],['5. RECOVER','Gradually re-enable services. Verify system integrity.'],['6. LESSONS','Review DDoS plan. Pre-negotiate scrubbing contracts.']],
+  'Insider Threat':[['1. DETECT','UEBA alerts for abnormal data access, after-hours activity, mass downloads.'],['2. INVESTIGATE','Preserve evidence covertly. Involve HR and legal before confronting subject.'],['3. CONTAIN','Quietly revoke excess permissions. Enable enhanced monitoring.'],['4. LEGAL','Coordinate with legal on employment law and evidence chain-of-custody.'],['5. ERADICATE','Terminate access. Collect devices. Conduct exit interview if appropriate.'],['6. LESSONS','Review least-privilege policies. Implement offboarding procedures.']],
+  'Supply Chain Attack':[['1. DETECT','Identify compromised vendor software via threat intel or behavior anomalies.'],['2. CONTAIN','Isolate systems running compromised component. Block C2 IPs/domains.'],['3. SCOPE','Determine blast radius — which systems used the compromised package?'],['4. VENDOR','Notify vendor. Obtain clean version. Validate hash of replacement.'],['5. ERADICATE','Remove or patch compromised software. Rebuild affected systems.'],['6. RECOVER','Restore from pre-compromise backups where necessary.'],['7. LESSONS','Implement SBOM, code signing, vendor vetting procedures.']],
+  'Zero-Day Exploit':[['1. DETECT','Identify exploitation via anomaly detection or memory forensics.'],['2. CONTAIN','Isolate affected systems. Apply emergency network controls.'],['3. WORKAROUND','Implement vendor mitigations or disable affected feature until patch available.'],['4. DISCLOSE','Report to vendor/CERT. Follow responsible disclosure timeline.'],['5. PATCH','Apply vendor patch immediately. Prioritize internet-facing systems.'],['6. HUNT','Threat hunt across environment for signs of prior exploitation.'],['7. LESSONS','Review compensating controls. Evaluate virtual patching capabilities.']],
+};
+
+window.loadIR=function(type){
+  const steps=irPlaybooks[type]; if(!steps)return;
+  const el=document.getElementById('ir-content');if(!el)return;
+  el.innerHTML=`<div style="color:var(--red);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;margin-bottom:10px;">📋 ${type.toUpperCase()} — RESPONSE PLAYBOOK</div>`+
+  steps.map(s=>`<div style="border:1px solid #ff003c22;background:#050000;padding:10px 12px;margin-bottom:6px;" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='#ff003c22'"><div style="color:var(--red);font-size:11px;margin-bottom:3px;">${s[0]}</div><div style="color:#ff9999;font-size:11px;line-height:1.6;">${s[1]}</div></div>`).join('')+
+  `<div style="font-size:10px;color:var(--green-dim);margin-top:8px;letter-spacing:1px;">Playbook based on NIST SP 800-61r2 and industry best practices.</div>`;
+};
+
 </script>
 </body>
 </html>
