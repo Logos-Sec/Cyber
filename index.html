@@ -715,7 +715,8 @@ const tools = {
 
     <!-- BATTLEFIELD -->
     <div class="ws-panel active" id="ws-battlefield">
-      <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:2px;">LIVE NETWORK BATTLE MAP — ATTACK/DEFEND SIMULATION</div>
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:4px;letter-spacing:2px;">LIVE NETWORK BATTLE MAP — CLICK FLASHING NODES TO DEFEND</div>
+      <div style="font-size:10px;color:#ff8800;margin-bottom:8px;">Nodes flash ORANGE when under attack. Click them fast to block the breach before damage occurs!</div>
       <div class="sim-stats-row">
         <div class="sim-stat"><div class="sv" id="ws-attacks">0</div><div class="sl">Attacks</div></div>
         <div class="sim-stat"><div class="sv" id="ws-blocked">0</div><div class="sl">Blocked</div></div>
@@ -723,10 +724,25 @@ const tools = {
         <div class="sim-stat"><div class="sv" id="ws-score">100</div><div class="sl">Defense %</div></div>
       </div>
       <div class="war-map" id="war-map"></div>
+      <div style="background:#000800;border:1px solid #00ff4122;padding:10px;margin-bottom:8px;">
+        <div style="font-size:10px;color:var(--green-dim);letter-spacing:2px;margin-bottom:6px;">DEFENSE ACTIONS — Each costs 1 Action Point</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+          <button class="tool-btn" style="font-size:10px;padding:5px 10px;" onclick="wsAction('patch')">Patch Vuln</button>
+          <button class="tool-btn" style="font-size:10px;padding:5px 10px;" onclick="wsAction('ids')">Boost IDS</button>
+          <button class="tool-btn" style="font-size:10px;padding:5px 10px;" onclick="wsAction('blackhole')">BGP Blackhole</button>
+          <button class="tool-btn" style="font-size:10px;padding:5px 10px;" onclick="wsAction('honeytrap')">Honeytrap</button>
+          <button class="tool-btn" style="font-size:10px;padding:5px 10px;" onclick="wsAction('restore')">Restore HP (+15)</button>
+        </div>
+        <div style="display:flex;gap:16px;font-size:11px;align-items:center;flex-wrap:wrap;">
+          <span>Action Points: <span id="ws-ap" style="color:var(--green);font-family:'VT323',monospace;font-size:18px;">5</span> / 10</span>
+          <span style="color:var(--green-dim);font-size:10px;">+1 every 8s</span>
+          <span id="ws-effect-label" style="color:#ff8800;font-size:10px;letter-spacing:1px;"></span>
+        </div>
+      </div>
       <div class="tool-row">
-        <button class="tool-btn red-btn" id="ws-start-btn" onclick="wsStartBattle()">▶ START SIMULATION</button>
-        <button class="tool-btn" onclick="wsResetBattle()">↺ RESET</button>
-        <select class="tool-input" id="ws-speed" style="max-width:130px;"><option value="1200">Slow</option><option value="700" selected>Normal</option><option value="300">Fast</option></select>
+        <button class="tool-btn red-btn" id="ws-start-btn" onclick="wsStartBattle()">START</button>
+        <button class="tool-btn" onclick="wsResetBattle()">RESET</button>
+        <select class="tool-input" id="ws-speed" style="max-width:120px;"><option value="1800">Easy</option><option value="1000" selected>Normal</option><option value="500">Hard</option></select>
       </div>
       <div class="tool-label">BATTLE LOG</div>
       <div class="sim-log" id="ws-log"></div>
@@ -734,110 +750,160 @@ const tools = {
 
     <!-- DDOS -->
     <div class="ws-panel" id="ws-ddos">
-      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">DISTRIBUTED DENIAL-OF-SERVICE ATTACK SIMULATOR</div>
-      <div class="tool-label">Target System</div>
-      <div class="tool-row">
-        <input class="tool-input" id="ddos-target" placeholder="e.g. webserver-01.internal" value="webserver-01.internal">
-        <select class="tool-input" id="ddos-type" style="max-width:180px;"><option>SYN Flood</option><option>UDP Flood</option><option>HTTP GET Flood</option><option>Slowloris</option><option>DNS Amplification</option><option>NTP Amplification</option></select>
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:2px;">DDoS INCIDENT RESPONSE — YOU ARE THE DEFENDER</div>
+      <div style="font-size:11px;color:#ff8800;margin-bottom:10px;">A DDoS attack is hitting your server. Identify the attack type, then apply mitigations in the correct order before health reaches 0.</div>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>SERVER HEALTH</span><span id="ddos-health-pct">100%</span></div>
+        <div class="prog-bg"><div class="prog-fill" id="ddos-health-bar" style="width:100%;background:linear-gradient(90deg,var(--green),#00ff88);"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;margin-top:6px;"><span>ATTACK INTENSITY</span><span id="ddos-atk-pct">0%</span></div>
+        <div class="prog-bg"><div class="prog-fill" id="ddos-atk-bar" style="width:0%"></div></div>
       </div>
-      <div class="tool-label">Botnet Size: <span id="ddos-bots-val">500</span> nodes</div>
-      <input type="range" min="10" max="5000" value="500" style="width:100%;accent-color:var(--red);margin-bottom:12px;" oninput="document.getElementById('ddos-bots-val').textContent=this.value" id="ddos-bots">
-      <div class="tool-row">
-        <button class="tool-btn red-btn" onclick="runDdosSim()">▶ LAUNCH ATTACK</button>
-        <button class="tool-btn" onclick="runDdosDefend()">🛡 DEPLOY MITIGATION</button>
+      <div style="font-size:10px;color:var(--green-dim);letter-spacing:2px;margin-bottom:6px;">STEP 1 — IDENTIFY THE ATTACK TYPE:</div>
+      <div class="tool-row" style="flex-wrap:wrap;gap:5px;margin-bottom:10px;">
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="ddosIdentify('SYN Flood')">SYN Flood?</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="ddosIdentify('UDP Flood')">UDP Flood?</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="ddosIdentify('HTTP Flood')">HTTP Flood?</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="ddosIdentify('Slowloris')">Slowloris?</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="ddosIdentify('DNS Amp')">DNS Amplification?</button>
       </div>
-      <div class="tool-label">ATTACK METRICS</div>
-      <div style="margin-bottom:6px;">
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>BANDWIDTH SATURATION</span><span id="ddos-bw-pct">0%</span></div>
-        <div class="prog-bg"><div class="prog-fill" id="ddos-bw-bar" style="width:0%"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>SERVER CPU LOAD</span><span id="ddos-cpu-pct">0%</span></div>
-        <div class="prog-bg"><div class="prog-fill" id="ddos-cpu-bar" style="width:0%"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>CONNECTION TABLE</span><span id="ddos-conn-pct">0%</span></div>
-        <div class="prog-bg"><div class="prog-fill" id="ddos-conn-bar" style="width:0%"></div></div>
+      <div id="ddos-mitigations" style="display:none;">
+        <div style="font-size:10px;color:var(--green-dim);letter-spacing:2px;margin-bottom:6px;">STEP 2 — APPLY MITIGATIONS IN ORDER:</div>
+        <div id="ddos-mitigation-btns" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
       </div>
-      <div class="red-out" id="ddos-out">Configure attack parameters and press LAUNCH ATTACK.</div>
+      <div class="tool-output" id="ddos-out" style="min-height:60px;">Analyze the clues and identify the attack type first.</div>
+      <div id="ddos-score-box" style="display:none;margin-top:8px;padding:10px;border:1px solid var(--green);background:#000800;font-size:12px;color:#a0ffa0;white-space:pre-wrap;"></div>
+      <div class="tool-row" style="margin-top:8px;"><button class="tool-btn" onclick="ddosReset()">NEW SCENARIO</button></div>
     </div>
 
     <!-- RANSOMWARE -->
     <div class="ws-panel" id="ws-ransomware">
-      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">RANSOMWARE INFECTION & RESPONSE SIMULATION</div>
-      <div class="tool-label">Select Ransomware Variant</div>
-      <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
-        ${['WannaCry','LockBit 3.0','BlackCat','Conti','Cl0p','REvil'].map(v=>`<button class="tool-btn red-btn" style="font-size:11px;" onclick="selectVariant('${v}',this)">${v}</button>`).join('')}
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:2px;">RANSOMWARE RESPONSE DRILL — MAKE THE RIGHT CALLS</div>
+      <div style="font-size:11px;color:#ff8800;margin-bottom:10px;">Ransomware detected. Make decisions at each stage — wrong choices cause more data loss and longer downtime.</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:100px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">FILES LOST</div><div style="font-family:'VT323',monospace;font-size:24px;color:var(--red);" id="rw-enc-count">0</div></div>
+        <div style="flex:1;min-width:100px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">RISK LEVEL</div><div style="font-family:'VT323',monospace;font-size:24px;color:#ff8800;" id="rw-risk">LOW</div></div>
+        <div style="flex:1;min-width:100px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">RECOVERY</div><div style="font-family:'VT323',monospace;font-size:24px;color:var(--green);" id="rw-recovery">--</div></div>
       </div>
-      <div id="rw-variant-info" style="background:#050000;border:1px solid #ff003c22;padding:10px;font-size:11px;color:#ff8888;margin-bottom:10px;line-height:1.7;display:none;"></div>
-      <div class="tool-label">Simulated Filesystem</div>
-      <div id="rw-fs" style="background:#000500;border:1px solid #ff003c22;padding:10px;font-size:11px;font-family:'Share Tech Mono',monospace;line-height:1.8;margin-bottom:10px;min-height:100px;"></div>
-      <div class="tool-row">
-        <button class="tool-btn red-btn" onclick="runRansomware()">▶ EXECUTE PAYLOAD</button>
-        <button class="tool-btn" onclick="runRansomRestore()">🔄 RESTORE FROM BACKUP</button>
+      <div id="rw-fs" style="background:#000500;border:1px solid #ff003c22;padding:10px;font-size:11px;line-height:1.8;margin-bottom:10px;min-height:60px;max-height:100px;overflow-y:auto;"></div>
+      <div id="rw-decision-box" style="background:#050000;border:1px solid #ff003c33;padding:12px;margin-bottom:10px;display:none;">
+        <div style="color:var(--red);font-size:11px;letter-spacing:1px;margin-bottom:8px;" id="rw-question"></div>
+        <div id="rw-choices" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
-      <div class="red-out" id="rw-out" style="margin-top:8px;">Select a variant to begin.</div>
+      <div class="tool-output" id="rw-out" style="min-height:60px;">Choose a scenario to begin your response drill.</div>
+      <div class="tool-row" style="margin-top:8px;flex-wrap:wrap;gap:6px;">
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="rwStartScenario('WannaCry')">WannaCry Outbreak</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="rwStartScenario('LockBit')">LockBit Attack</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="rwStartScenario('Cl0p')">Cl0p Supply Chain</button>
+      </div>
     </div>
 
     <!-- APT -->
     <div class="ws-panel" id="ws-apt">
-      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">ADVANCED PERSISTENT THREAT — KILL CHAIN SIMULATOR</div>
-      <div style="font-size:11px;color:#ff8888;margin-bottom:12px;">Click each kill chain stage in order to execute the campaign step by step.</div>
-      <div class="apt-chain" id="apt-chain"></div>
-      <div style="margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>CAMPAIGN PROGRESS</span><span id="apt-pct">0%</span></div>
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:2px;">APT DEFENDER — DETECT AND DISRUPT THE KILL CHAIN</div>
+      <div style="font-size:11px;color:#ff8800;margin-bottom:10px;">An APT is moving through your network. At each kill chain stage you get one chance to detect and stop them. Choose the right action.</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:80px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">DETECTIONS</div><div style="font-family:'VT323',monospace;font-size:22px;color:var(--green);" id="apt-detections">0</div></div>
+        <div style="flex:1;min-width:80px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">MISSED</div><div style="font-family:'VT323',monospace;font-size:22px;color:var(--red);" id="apt-missed">0</div></div>
+        <div style="flex:1;min-width:80px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">STAGE</div><div style="font-family:'VT323',monospace;font-size:22px;color:#ff8800;" id="apt-stage-lbl">--</div></div>
+      </div>
+      <div style="margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--green-dim);margin-bottom:2px;"><span>ATTACKER PROGRESS</span><span id="apt-pct">0%</span></div>
         <div class="prog-bg"><div class="prog-fill" id="apt-bar" style="width:0%"></div></div>
       </div>
-      <div class="tool-label">TARGET ORGANIZATION</div>
-      <div class="tool-row">
-        <input class="tool-input" id="apt-target" value="FinancialCorp-HQ" placeholder="e.g. FinancialCorp-HQ">
-        <button class="tool-btn red-btn" onclick="aptReset()">↺ NEW TARGET</button>
+      <div id="apt-scenario-box" style="background:#050000;border:1px solid #ff003c33;padding:12px;margin-bottom:8px;display:none;">
+        <div style="color:var(--red);font-size:10px;letter-spacing:2px;margin-bottom:4px;" id="apt-stage-name"></div>
+        <div style="color:#ff9999;font-size:12px;line-height:1.6;margin-bottom:8px;" id="apt-clue"></div>
+        <div style="color:var(--green-dim);font-size:10px;margin-bottom:8px;">WHAT DO YOU DO?</div>
+        <div id="apt-choices" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
-      <div class="sim-log" id="apt-log"></div>
+      <div class="tool-output" id="apt-out" style="min-height:60px;">Press START DEFENSE to begin the APT scenario.</div>
+      <div class="tool-row" style="margin-top:8px;">
+        <button class="tool-btn red-btn" id="apt-start-btn" onclick="aptStartDefend()">START DEFENSE</button>
+        <button class="tool-btn" onclick="aptResetDefend()">RESET</button>
+      </div>
+      <div class="sim-log" id="apt-log" style="margin-top:8px;"></div>
     </div>
 
     <!-- PHISHING -->
     <div class="ws-panel" id="ws-phishing">
-      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">PHISHING CAMPAIGN SIMULATOR & AWARENESS TRAINER</div>
-      <div class="tool-label">Campaign Type</div>
-      <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
-        ${['Spear Phishing','CEO Fraud','IT Helpdesk','Password Reset','Invoice Fraud','OAuth Consent'].map(t=>`<button class="tool-btn red-btn" style="font-size:11px;" onclick="selectPhishType('${t}',this)">${t}</button>`).join('')}
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:2px;">PHISHING AWARENESS TRAINER — SPOT THE ATTACK</div>
+      <div style="font-size:11px;color:#ff8800;margin-bottom:10px;">Read each email. Spot the red flags, then decide: REAL or PHISHING? Learn what to look for in real attacks.</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        <div style="flex:1;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">SCORE</div><div style="font-family:'VT323',monospace;font-size:24px;color:var(--green);" id="ph-score">0</div></div>
+        <div style="flex:1;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">CORRECT</div><div style="font-family:'VT323',monospace;font-size:24px;color:var(--green);" id="ph-correct">0</div></div>
+        <div style="flex:1;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">WRONG</div><div style="font-family:'VT323',monospace;font-size:24px;color:var(--red);" id="ph-wrong">0</div></div>
+        <div style="flex:1;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">LEFT</div><div style="font-family:'VT323',monospace;font-size:24px;color:#ff8800;" id="ph-remaining">--</div></div>
       </div>
-      <div class="ph-form" id="ph-preview" style="display:none;"></div>
-      <div class="tool-row">
-        <input class="tool-input" id="ph-targets" placeholder="Number of targets" style="max-width:200px;" value="200">
-        <button class="tool-btn red-btn" onclick="launchPhish()">▶ LAUNCH CAMPAIGN</button>
-      </div>
-      <div id="ph-results" style="display:none;margin-top:8px;">
-        <div class="sim-stats-row">
-          <div class="sim-stat"><div class="sv" id="ph-sent">0</div><div class="sl">Sent</div></div>
-          <div class="sim-stat"><div class="sv" id="ph-opened">0</div><div class="sl">Opened</div></div>
-          <div class="sim-stat"><div class="sv" id="ph-clicked">0</div><div class="sl">Clicked</div></div>
-          <div class="sim-stat"><div class="sv" id="ph-creds">0</div><div class="sl">Creds</div></div>
+      <div id="ph-email-box" style="display:none;margin-bottom:10px;">
+        <div style="background:#050000;border:1px solid #ff003c33;padding:12px;">
+          <div style="font-size:10px;color:var(--green-dim);margin-bottom:8px;letter-spacing:2px;">INCOMING EMAIL</div>
+          <div style="font-size:11px;line-height:1.9;" id="ph-email-content"></div>
         </div>
-        <div class="tool-label" style="margin-top:6px;">AWARENESS TIPS</div>
-        <div class="red-out" id="ph-tips"></div>
+        <div style="margin-top:8px;">
+          <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:1px;">WHAT RED FLAGS DO YOU SEE? (tap all that apply)</div>
+          <div id="ph-flags" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;"></div>
+          <div style="display:flex;gap:8px;">
+            <button class="tool-btn" style="flex:1;font-size:11px;" onclick="phJudge('real')">LOOKS REAL — I'd act on it</button>
+            <button class="tool-btn red-btn" style="flex:1;font-size:11px;" onclick="phJudge('phish')">PHISHING — I'd report it</button>
+          </div>
+        </div>
+      </div>
+      <div class="tool-output" id="ph-feedback" style="min-height:60px;display:none;"></div>
+      <div class="tool-row" style="margin-top:8px;">
+        <button class="tool-btn red-btn" id="ph-start-btn" onclick="phStart()">START TRAINING</button>
+        <button class="tool-btn" id="ph-next-btn" onclick="phNext()" style="display:none;">NEXT EMAIL</button>
       </div>
     </div>
 
     <!-- HONEYPOT -->
     <div class="ws-panel" id="ws-honeypot">
-      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">HONEYPOT DEPLOYMENT & ATTACKER PROFILING</div>
-      <div class="tool-label">Deploy Honeypot Service</div>
-      <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
-        ${['SSH (22)','HTTP (80)','FTP (21)','RDP (3389)','Telnet (23)','SMB (445)'].map(s=>`<button class="tool-btn" style="font-size:11px;" onclick="deployHoneypot('${s}',this)">${s}</button>`).join('')}
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:2px;">HONEYPOT ANALYST — PROFILE AND RESPOND TO ATTACKERS</div>
+      <div style="font-size:11px;color:#ff8800;margin-bottom:10px;">Deploy honeypots, watch attackers connect, profile them, then choose the right response action.</div>
+      <div class="tool-label">1. DEPLOY SERVICES</div>
+      <div class="tool-row" style="flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+        <button class="tool-btn" style="font-size:11px;" onclick="deployHoneypot('SSH-22',this)">SSH (22)</button>
+        <button class="tool-btn" style="font-size:11px;" onclick="deployHoneypot('HTTP-80',this)">HTTP (80)</button>
+        <button class="tool-btn" style="font-size:11px;" onclick="deployHoneypot('FTP-21',this)">FTP (21)</button>
+        <button class="tool-btn" style="font-size:11px;" onclick="deployHoneypot('RDP-3389',this)">RDP (3389)</button>
+        <button class="tool-btn" style="font-size:11px;" onclick="deployHoneypot('SMB-445',this)">SMB (445)</button>
       </div>
-      <div class="tool-label" style="margin-top:6px;">ACTIVE HONEYPOTS</div>
-      <div class="hp-grid" id="hp-active"></div>
-      <div class="tool-label">CAPTURED ATTACKER DATA</div>
-      <div class="sim-log" id="hp-log" style="height:160px;"></div>
-      <div class="tool-row" style="margin-top:8px;"><button class="tool-btn" onclick="clearHoneypots()">✕ DECOMMISSION ALL</button></div>
+      <div class="tool-label">2. LIVE FEED</div>
+      <div class="hp-grid" id="hp-active" style="margin-bottom:6px;"></div>
+      <div class="sim-log" id="hp-log" style="height:100px;margin-bottom:8px;"></div>
+      <div class="tool-label">3. CLICK AN ATTACKER IP TO INVESTIGATE AND RESPOND</div>
+      <div id="hp-attacker-list" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;"></div>
+      <div id="hp-analysis-box" style="background:#050000;border:1px solid #ff003c33;padding:10px;display:none;margin-bottom:8px;">
+        <div style="color:var(--red);font-size:11px;margin-bottom:6px;white-space:pre-wrap;" id="hp-attacker-profile"></div>
+        <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;">CHOOSE YOUR RESPONSE:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;" id="hp-response-btns"></div>
+        <div class="tool-output" id="hp-response-out" style="margin-top:8px;min-height:40px;display:none;white-space:pre-wrap;"></div>
+      </div>
+      <div class="tool-row"><button class="tool-btn" onclick="clearHoneypots()">DECOMMISSION ALL</button></div>
     </div>
 
     <!-- IR PLAYBOOK -->
     <div class="ws-panel" id="ws-ir">
-      <div style="font-size:10px;color:var(--green-dim);margin-bottom:10px;letter-spacing:2px;">INCIDENT RESPONSE PLAYBOOK — INTERACTIVE WALKTHROUGH</div>
-      <div class="tool-label">Select Incident Type</div>
-      <div class="tool-row" style="flex-wrap:wrap;gap:6px;">
-        ${['Ransomware Attack','Data Breach','DDoS Attack','Insider Threat','Supply Chain Attack','Zero-Day Exploit'].map(i=>`<button class="tool-btn" style="font-size:11px;" onclick="loadIR('${i}')">${i}</button>`).join('')}
+      <div style="font-size:10px;color:var(--green-dim);margin-bottom:6px;letter-spacing:2px;">INCIDENT RESPONSE DRILL — MAKE THE RIGHT CALLS UNDER PRESSURE</div>
+      <div style="font-size:11px;color:#ff8800;margin-bottom:10px;">An incident is unfolding. At each step choose the correct action. Wrong calls cost you time and data. Scored on accuracy and speed.</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:80px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">SCORE</div><div style="font-family:'VT323',monospace;font-size:22px;color:var(--green);" id="ir-score">0</div></div>
+        <div style="flex:1;min-width:80px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">TIME LOST</div><div style="font-family:'VT323',monospace;font-size:22px;color:var(--red);" id="ir-time">0h</div></div>
+        <div style="flex:1;min-width:80px;background:#000500;border:1px solid #ff003c22;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--green-dim);">STEP</div><div style="font-family:'VT323',monospace;font-size:22px;color:#ff8800;" id="ir-step">--</div></div>
       </div>
-      <div id="ir-content" style="margin-top:12px;"></div>
+      <div id="ir-scenario-box" style="background:#050000;border:1px solid #ff003c33;padding:12px;margin-bottom:10px;display:none;">
+        <div style="color:var(--red);font-size:10px;letter-spacing:2px;margin-bottom:4px;" id="ir-step-label"></div>
+        <div style="color:#ff9999;font-size:12px;line-height:1.6;margin-bottom:8px;" id="ir-situation"></div>
+        <div style="color:var(--green-dim);font-size:10px;margin-bottom:8px;">WHAT DO YOU DO FIRST?</div>
+        <div id="ir-choices" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+      <div class="tool-output" id="ir-out" style="min-height:60px;">Select an incident type to begin.</div>
+      <div class="tool-row" style="margin-top:8px;flex-wrap:wrap;gap:5px;">
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="irStart('ransomware')">Ransomware</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="irStart('breach')">Data Breach</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="irStart('insider')">Insider Threat</button>
+        <button class="tool-btn red-btn" style="font-size:11px;" onclick="irStart('zeroday')">Zero-Day</button>
+        <button class="tool-btn" style="font-size:11px;" onclick="irReset()">Reset</button>
+      </div>
     </div>
   `, ()=>{ wsInitBattlefield(); aptInitChain(); }, true),
 };
@@ -1027,275 +1093,751 @@ window.wsTab=function(id,btn){
   btn.classList.add('active');
 };
 
+/* ── WARSIM TAB SWITCHER ── */
+window.wsTab=function(id,btn){
+  document.querySelectorAll('.ws-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ws-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ws-'+id).classList.add('active');
+  btn.classList.add('active');
+};
+
 /* ── BATTLEFIELD ── */
-let wsInterval=null, wsRunning=false, wsAtk=0, wsBlk=0, wsBrc=0, wsHp=100;
+let wsInterval=null,wsRunning=false,wsAtk=0,wsBlk=0,wsBrc=0,wsHp=100,wsAp=5,wsApInterval=null,wsEffects={};
 const wsNodes=[
-  {id:'fw',  label:'Firewall',   x:50, y:50, type:'defender'},
-  {id:'web', label:'WebServer',  x:75, y:25, type:'defender'},
-  {id:'db',  label:'Database',   x:75, y:75, type:'defender'},
-  {id:'vpn', label:'VPN GW',     x:25, y:50, type:'defender'},
-  {id:'ids', label:'IDS/IPS',    x:50, y:80, type:'defender'},
-  {id:'a1',  label:'APT-29',     x:5,  y:20, type:'attacker'},
-  {id:'a2',  label:'Lazarus',    x:5,  y:80, type:'attacker'},
-  {id:'a3',  label:'REvil',      x:95, y:50, type:'attacker'},
-  {id:'cdn', label:'CDN Node',   x:50, y:12, type:'neutral'},
+  {id:'fw', label:'Firewall', x:50,y:50,type:'defender'},
+  {id:'web',label:'WebSrv',   x:75,y:25,type:'defender'},
+  {id:'db', label:'Database', x:75,y:75,type:'defender'},
+  {id:'vpn',label:'VPN GW',   x:25,y:50,type:'defender'},
+  {id:'ids',label:'IDS/IPS',  x:50,y:80,type:'defender'},
+  {id:'a1', label:'APT-29',   x:5, y:20,type:'attacker'},
+  {id:'a2', label:'Lazarus',  x:5, y:80,type:'attacker'},
+  {id:'a3', label:'REvil',    x:95,y:50,type:'attacker'},
 ];
 
 function wsInitBattlefield(){
-  const map=document.getElementById('war-map'); if(!map)return;
+  const map=document.getElementById('war-map');if(!map)return;
   map.innerHTML='';
   wsNodes.forEach(n=>{
-    const dot=document.createElement('div'); dot.className='war-node '+n.type; dot.style.left=n.x+'%'; dot.style.top=n.y+'%'; dot.id='wn-'+n.id; map.appendChild(dot);
-    const lbl=document.createElement('div'); lbl.className='war-node-label'; lbl.style.left=n.x+'%'; lbl.style.top=n.y+'%'; lbl.textContent=n.label; map.appendChild(lbl);
+    const dot=document.createElement('div');
+    dot.className='war-node '+n.type;
+    dot.style.left=n.x+'%';dot.style.top=n.y+'%';dot.id='wn-'+n.id;dot.title=n.label;
+    if(n.type==='defender'){dot.style.cursor='pointer';dot.onclick=()=>wsClickDefend(n.id);}
+    map.appendChild(dot);
+    const lbl=document.createElement('div');lbl.className='war-node-label';
+    lbl.style.left=n.x+'%';lbl.style.top=n.y+'%';lbl.textContent=n.label;
+    map.appendChild(lbl);
   });
-  wsLog('info','Network topology loaded. Ready to simulate.');
+  wsLog('info','Network loaded. Click orange nodes to intercept attacks!');
 }
 
 function wsLog(type,msg){
-  const log=document.getElementById('ws-log'); if(!log)return;
-  const div=document.createElement('div'); div.className='l-'+type;
+  const log=document.getElementById('ws-log');if(!log)return;
+  const div=document.createElement('div');div.className='l-'+type;
   div.textContent='['+new Date().toTimeString().slice(0,8)+'] '+msg;
-  log.appendChild(div); log.scrollTop=log.scrollHeight;
+  log.appendChild(div);log.scrollTop=log.scrollHeight;
 }
 
+window.wsClickDefend=function(nodeId){
+  if(!wsRunning)return;
+  const nd=document.getElementById('wn-'+nodeId);if(!nd)return;
+  if(nd.classList.contains('under-attack')){
+    nd.classList.remove('under-attack');nd.className='war-node defender';
+    wsBlk++;document.getElementById('ws-blocked').textContent=wsBlk;
+    wsLog('def','[MANUAL BLOCK] '+nodeId.toUpperCase()+' — Intercepted by operator!');
+    nd.style.boxShadow='0 0 16px var(--cyan)';
+    setTimeout(()=>{if(nd)nd.style.boxShadow='';},600);
+  }
+};
+
+window.wsAction=function(type){
+  const apEl=document.getElementById('ws-ap');
+  const ap=parseInt(apEl.textContent||'0');
+  if(ap<1){wsLog('info','No action points! Wait for regeneration.');return;}
+  apEl.textContent=ap-1;
+  const effectEl=document.getElementById('ws-effect-label');
+  const actions={
+    patch:    {msg:'[PATCH] Breach chance reduced 15s',  effect:'breach_reduced',dur:15000,label:'Patch active (15s)'},
+    ids:      {msg:'[IDS BOOST] Block rate doubled 12s',  effect:'ids_boost',    dur:12000,label:'IDS boosted (12s)'},
+    blackhole:{msg:'[BLACKHOLE] Attacker silenced 20s',   effect:'blackhole',    dur:20000,label:'Blackhole (20s)'},
+    honeytrap:{msg:'[HONEYTRAP] Next attack auto-blocked', effect:'honeytrap',   dur:0,    label:'Honeytrap armed'},
+    restore:  {msg:'[RESTORE] Defense HP +15',             effect:'none',        dur:0,    label:''},
+  };
+  const a=actions[type];if(!a)return;
+  wsLog('def',a.msg);
+  if(type==='restore'){wsHp=Math.min(100,wsHp+15);document.getElementById('ws-score').textContent=wsHp;}
+  if(a.dur>0){wsEffects[a.effect]=true;effectEl.textContent=a.label;setTimeout(()=>{delete wsEffects[a.effect];effectEl.textContent='';},a.dur);}
+  else if(a.effect==='honeytrap'){wsEffects.honeytrap=true;effectEl.textContent=a.label;}
+};
+
 window.wsStartBattle=function(){
-  if(wsRunning)return; wsRunning=true;
-  document.getElementById('ws-start-btn').textContent='⏸ RUNNING...';
-  const speed=parseInt(document.getElementById('ws-speed').value)||700;
-  const defenders=wsNodes.filter(n=>n.type==='defender'), attackers=wsNodes.filter(n=>n.type==='attacker');
-  const atkTypes=['SYN Flood','SQL Injection','XSS Attempt','Brute Force','Zero-Day','DNS Spoof','MITM Probe','Ransomware Drop'];
-  const defTypes=['Packet Filtered','Rate Limited','Sig Matched','Connection Reset','Quarantined','IP Blocked'];
+  if(wsRunning)return;wsRunning=true;
+  document.getElementById('ws-start-btn').textContent='RUNNING...';
+  const speed=parseInt(document.getElementById('ws-speed').value)||1000;
+  const defenders=wsNodes.filter(n=>n.type==='defender');
+  const attackers=wsNodes.filter(n=>n.type==='attacker');
+  const atkTypes=['SYN Flood','SQL Injection','Brute Force','Zero-Day','DNS Spoof','MITM','Ransomware','XSS'];
+  const defTypes=['Rate Limited','Sig Matched','Reset','IP Blocked','Quarantined'];
+
+  wsApInterval=setInterval(()=>{
+    const apEl=document.getElementById('ws-ap');if(!apEl)return;
+    const ap=parseInt(apEl.textContent||'0');if(ap<10)apEl.textContent=ap+1;
+  },8000);
+
   wsInterval=setInterval(()=>{
-    if(!document.getElementById('ws-log')){clearInterval(wsInterval);wsRunning=false;return;}
-    const atk=attackers[Math.floor(Math.random()*attackers.length)], def=defenders[Math.floor(Math.random()*defenders.length)];
-    const atkType=atkTypes[Math.floor(Math.random()*atkTypes.length)], blocked=Math.random()>0.28;
-    wsAtk++; document.getElementById('ws-attacks').textContent=wsAtk;
-    if(blocked){
-      wsBlk++; document.getElementById('ws-blocked').textContent=wsBlk;
-      wsLog('def',`${atk.label} → ${def.label}: ${atkType} — ${defTypes[Math.floor(Math.random()*defTypes.length)]}`);
-    } else {
-      wsBrc++; wsHp=Math.max(0,wsHp-Math.floor(Math.random()*4+1));
-      document.getElementById('ws-breached').textContent=wsBrc;
-      document.getElementById('ws-score').textContent=wsHp;
-      wsLog('atk',`⚠ BREACH: ${atk.label} → ${def.label}: ${atkType} — NODE COMPROMISED`);
-      const nd=document.getElementById('wn-'+def.id); if(nd){nd.className='war-node compromised';setTimeout(()=>{if(nd)nd.className='war-node defender';},3000);}
-    }
+    if(!document.getElementById('ws-log')){clearInterval(wsInterval);clearInterval(wsApInterval);wsRunning=false;return;}
+    const atk=attackers[Math.floor(Math.random()*attackers.length)];
+    const def=defenders[Math.floor(Math.random()*defenders.length)];
+    const atkType=atkTypes[Math.floor(Math.random()*atkTypes.length)];
+    wsAtk++;document.getElementById('ws-attacks').textContent=wsAtk;
+    const idsBoosted=!!wsEffects.ids_boost,breachReduced=!!wsEffects.breach_reduced,blackholed=!!wsEffects.blackhole,honeytrapped=!!wsEffects.honeytrap;
+    if(honeytrapped){delete wsEffects.honeytrap;document.getElementById('ws-effect-label').textContent='';wsBlk++;document.getElementById('ws-blocked').textContent=wsBlk;wsLog('def',atk.label+' fell into HONEYTRAP!');drawAttackLine(atk,def);return;}
+    if(blackholed&&Math.random()<0.7){wsBlk++;document.getElementById('ws-blocked').textContent=wsBlk;wsLog('def',atk.label+' blackholed — '+atkType+' dropped.');drawAttackLine(atk,def);return;}
+    let blockChance=idsBoosted?0.75:0.45;if(breachReduced)blockChance+=0.2;
+    const nd=document.getElementById('wn-'+def.id);
+    if(nd){nd.className='war-node compromised under-attack';}
     drawAttackLine(atk,def);
-    if(wsHp<=0){clearInterval(wsInterval);wsRunning=false;wsLog('atk','⚠⚠⚠ NETWORK FULLY COMPROMISED — SIMULATION OVER ⚠⚠⚠');document.getElementById('ws-start-btn').textContent='▶ START SIMULATION';}
+    setTimeout(()=>{
+      const stillUnder=nd&&nd.classList.contains('under-attack');
+      const autoBlocked=Math.random()<blockChance;
+      if(!stillUnder){/* player intercepted */}
+      else if(autoBlocked){wsBlk++;document.getElementById('ws-blocked').textContent=wsBlk;wsLog('def',atk.label+'->'+def.label+': '+atkType+' — '+defTypes[Math.floor(Math.random()*defTypes.length)]);if(nd)nd.className='war-node defender';}
+      else{wsBrc++;wsHp=Math.max(0,wsHp-Math.floor(Math.random()*5+2));document.getElementById('ws-breached').textContent=wsBrc;document.getElementById('ws-score').textContent=wsHp;wsLog('atk','BREACH: '+atk.label+'->'+def.label+': '+atkType);if(nd)nd.className='war-node defender';
+        if(wsHp<=0){clearInterval(wsInterval);clearInterval(wsApInterval);wsRunning=false;wsLog('atk','NETWORK COMPROMISED — GAME OVER. Blocked:'+wsBlk+' Breached:'+wsBrc);document.getElementById('ws-start-btn').textContent='START';}}
+    },speed*0.85);
   },speed);
 };
 
 window.wsResetBattle=function(){
-  clearInterval(wsInterval);wsRunning=false;wsAtk=0;wsBlk=0;wsBrc=0;wsHp=100;
-  ['ws-attacks','ws-blocked','ws-breached'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
+  clearInterval(wsInterval);clearInterval(wsApInterval);wsRunning=false;
+  wsAtk=0;wsBlk=0;wsBrc=0;wsHp=100;wsAp=5;wsEffects={};
+  ['ws-attacks','ws-blocked','ws-breached'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='0';});
   const s=document.getElementById('ws-score');if(s)s.textContent='100';
+  const a=document.getElementById('ws-ap');if(a)a.textContent='5';
+  const ef=document.getElementById('ws-effect-label');if(ef)ef.textContent='';
   const log=document.getElementById('ws-log');if(log)log.innerHTML='';
-  const btn=document.getElementById('ws-start-btn');if(btn)btn.textContent='▶ START SIMULATION';
+  const btn=document.getElementById('ws-start-btn');if(btn)btn.textContent='START';
   wsInitBattlefield();
 };
 
 function drawAttackLine(from,to){
   const map=document.getElementById('war-map');if(!map)return;
   const mw=map.offsetWidth,mh=map.offsetHeight;
-  const line=document.createElement('div'); line.className='attack-line';
+  const line=document.createElement('div');line.className='attack-line';
   const x1=from.x/100*mw,y1=from.y/100*mh,x2=to.x/100*mw,y2=to.y/100*mh;
-  const len=Math.sqrt((x2-x1)**2+(y2-y1)**2), angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
-  line.style.width=len+'px'; line.style.left=x1+'px'; line.style.top=y1+'px'; line.style.transform=`rotate(${angle}deg)`;
-  map.appendChild(line); setTimeout(()=>line.remove(),600);
+  const len=Math.sqrt((x2-x1)**2+(y2-y1)**2),angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+  line.style.width=len+'px';line.style.left=x1+'px';line.style.top=y1+'px';line.style.transform='rotate('+angle+'deg)';
+  map.appendChild(line);setTimeout(()=>line.remove(),600);
 }
 
-/* ── DDOS ── */
-window.runDdosSim=function(){
-  const target=document.getElementById('ddos-target').value||'webserver-01', type=document.getElementById('ddos-type').value;
-  const bots=parseInt(document.getElementById('ddos-bots').value)||500;
-  const bwPct=Math.min(98,Math.floor(bots/50)), cpuPct=Math.min(99,Math.floor(bots/40+10)), connPct=Math.min(100,Math.floor(bots/30+5));
-  let i=0; const iv=setInterval(()=>{i+=5;setBar('ddos-bw',Math.min(bwPct,i));setBar('ddos-cpu',Math.min(cpuPct,Math.floor(i*0.9)));setBar('ddos-conn',Math.min(connPct,Math.floor(i*1.1)));if(i>=100)clearInterval(iv);},60);
-  document.getElementById('ddos-out').textContent=`[ATTACK LAUNCHED]\nType:     ${type}\nTarget:   ${target}\nBotnet:   ${bots.toLocaleString()} nodes\nPPS:      ${(bots*1200).toLocaleString()} packets/sec\nGbps:     ${(bots*0.004).toFixed(1)} Gbps\nStatus:   ${bots>2000?'TARGET OFFLINE — Service Unavailable':'TARGET DEGRADED — High Latency Detected'}\n\n[No real packets sent — simulation only]`;
-};
-
-window.runDdosDefend=function(){
-  let i=100; const iv=setInterval(()=>{i-=8;setBar('ddos-bw',Math.max(0,i));setBar('ddos-cpu',Math.max(0,Math.floor(i*0.7)));setBar('ddos-conn',Math.max(0,Math.floor(i*0.6)));if(i<=0)clearInterval(iv);},80);
-  document.getElementById('ddos-out').textContent='[MITIGATION DEPLOYED]\n✓ Rate limiting enabled\n✓ BGP blackhole routing activated\n✓ Scrubbing center redirect: ON\n✓ SYN cookies enabled\n✓ Geo-blocking: 47 ASNs blocked\n\nStatus: Attack neutralized. Service restored.';
-};
-
-function setBar(id,pct){const bar=document.getElementById(id+'-bar'),lbl=document.getElementById(id+'-pct');if(bar)bar.style.width=pct+'%';if(lbl)lbl.textContent=pct+'%';}
-
-/* ── RANSOMWARE ── */
-const rwData={
-  'WannaCry':   {spread:'EternalBlue SMB exploit',enc:'AES-128-CBC',demand:'$300 BTC',note:'Worm component spreads laterally. Targets Windows XP–7.'},
-  'LockBit 3.0':{spread:'RDP brute force + phishing',enc:'AES-256 + RSA-4096',demand:'$2–50M negotiated',note:'Fastest encryption speed. Double extortion model.'},
-  'BlackCat':   {spread:'Compromised credentials',enc:'ChaCha20',demand:'Variable',note:'Written in Rust. Cross-platform: Windows, Linux, ESXi.'},
-  'Conti':      {spread:'TrickBot dropper',enc:'AES-256',demand:'$1–25M',note:'Uses 32 CPU threads simultaneously. Leaked source 2022.'},
-  'Cl0p':       {spread:'MOVEit/GoAnywhere zero-days',enc:'RC4 + RSA',demand:'Multi-million',note:'Specializes in mass exploitation of file-transfer software.'},
-  'REvil':      {spread:'Supply chain + RDP',enc:'Salsa20 + Curve25519',demand:'$5–70M',note:'Kaseya attack. RaaS model. Responsible for JBS Foods.'},
-};
-const fakeFiles=['C:\\Users\\Admin\\Documents\\Q4_Report.xlsx','C:\\Users\\Admin\\Desktop\\credentials.txt','C:\\Finance\\payroll_2026.xlsx','C:\\IT\\network_diagram.vsdx','D:\\Backups\\server_backup.tar','C:\\Windows\\System32\\config\\SAM'];
-
-window.selectVariant=function(v,btn){
-  document.querySelectorAll('#ws-ransomware .tool-btn').forEach(b=>b.style.opacity='0.5'); btn.style.opacity='1';
-  window._rwVariant=v; const info=rwData[v];
-  const el=document.getElementById('rw-variant-info'); el.style.display='block';
-  el.innerHTML=`<span style="color:var(--red);font-size:13px;">${v}</span><br>Spread: ${info.spread}<br>Encryption: ${info.enc}<br>Demand: ${info.demand}<br><span style="color:#ff8800">Note:</span> ${info.note}`;
-  document.getElementById('rw-fs').innerHTML=fakeFiles.map(f=>`<div style="color:var(--green-dim);">📄 ${f}</div>`).join('');
-  document.getElementById('rw-out').textContent='Variant selected. Press EXECUTE PAYLOAD to simulate.';
-};
-
-window.runRansomware=function(){
-  const v=window._rwVariant; if(!v){document.getElementById('rw-out').textContent='Select a variant first.';return;}
-  const fs=document.getElementById('rw-fs'), out=document.getElementById('rw-out');
-  let i=0; const ext=v.toLowerCase().replace(/[^a-z]/g,'');
-  const iv=setInterval(()=>{
-    if(i>=fakeFiles.length){clearInterval(iv);out.textContent=`[ENCRYPTION COMPLETE]\nVariant: ${v}\nFiles encrypted: ${fakeFiles.length}\nExtension: .${ext}\n\n!!! YOUR FILES ARE ENCRYPTED !!!\nDemand: ${rwData[v].demand}\n\n[SIMULATION — No real files affected]`;return;}
-    const div=fs.children[i]; if(div){div.style.color='var(--red)';div.textContent='🔒 '+fakeFiles[i]+'.'+ext;}
-    i++;
-  },220);
-  out.textContent='Encrypting...';
-};
-
-window.runRansomRestore=function(){
-  const fs=document.getElementById('rw-fs'); if(!fs)return;
-  Array.from(fs.children).forEach((div,i)=>{div.style.color='var(--green-dim)';div.textContent='📄 '+fakeFiles[i];});
-  document.getElementById('rw-out').textContent='[RESTORE COMPLETE]\n✓ Backup integrity verified\n✓ All files restored from offline backup\n✓ Infected systems reimaged\n✓ Credentials rotated\n✓ Patch applied\n\nLesson: Maintain offline/air-gapped backups. Test restores regularly.';
-};
-
-/* ── APT CAMPAIGN ── */
-const aptStages=[
-  {name:'Reconnaissance',   color:'#ff4444',desc:'OSINT: LinkedIn scraping, DNS enum, tech stack fingerprinting.'},
-  {name:'Weaponization',    color:'#ff6600',desc:'Crafting spear-phishing lure + malicious macro. C2 infra setup.'},
-  {name:'Delivery',         color:'#ff8800',desc:'Phishing email sent to 47 employees. 3 clicked. 1 executed.'},
-  {name:'Exploitation',     color:'#ffaa00',desc:'CVE-2026-1337 triggered. Office macro. UAC bypass successful.'},
-  {name:'Installation',     color:'#ffcc00',desc:'Persistence via scheduled task + registry. Cobalt Strike installed.'},
-  {name:'C2 Communication', color:'#aaff00',desc:'Encrypted HTTPS C2 via domain-fronted CDN. 60s beacon interval.'},
-  {name:'Lateral Movement', color:'#00ff88',desc:'Pass-the-hash to domain admin. WMI spread to 12 hosts.'},
-  {name:'Exfiltration',     color:'#00ffff',desc:'47GB financial data exfiltrated via encrypted DNS tunneling.'},
+/* ── DDOS DEFENDER ── */
+const ddosScenarios=[
+  {type:'SYN Flood',hint:'SYN',
+   clue:'Millions of half-open TCP connections. Connection table 98% full. Source IPs are spoofed and randomised. CPU normal. Bandwidth moderate.',
+   mitigations:[
+     {label:'Enable SYN Cookies',correct:true,score:30,explain:'Correct! SYN cookies eliminate storing half-open connections — the ideal countermeasure.'},
+     {label:'Rate-limit all traffic',correct:true,score:15,explain:'Helpful but not targeted. SYN cookies are more surgical.'},
+     {label:'Block all UDP traffic',correct:false,score:-10,explain:'Wrong — this is a TCP attack. Blocking UDP has no effect.'},
+     {label:'BGP Blackhole top source ASNs',correct:true,score:20,explain:'Correct — reduces volume from major source networks.'},
+     {label:'Increase server RAM',correct:false,score:-5,explain:'Wrong — RAM does not fix connection table exhaustion.'},
+   ]},
+  {type:'HTTP Flood',hint:'HTTP',
+   clue:'Legitimate-looking GET requests overwhelming web server. Each request fetches a unique URL. CPU at 99%. Bandwidth normal. Requests come from thousands of IPs worldwide.',
+   mitigations:[
+     {label:'Deploy WAF with rate limiting',correct:true,score:30,explain:'Correct! WAF fingerprints bot patterns and rate-limits abusers.'},
+     {label:'Enable CAPTCHA / JS challenge',correct:true,score:25,explain:'Correct — challenges filter bots that cannot run JavaScript.'},
+     {label:'Block port 80 and 443',correct:false,score:-20,explain:'Wrong — this takes your site offline for real users too.'},
+     {label:'Enable CDN DDoS protection',correct:true,score:20,explain:'Correct — CDN absorbs and distributes the traffic globally.'},
+     {label:'Enable SYN cookies',correct:false,score:-5,explain:'Wrong — SYN cookies target TCP handshake attacks, not HTTP floods.'},
+   ]},
+  {type:'DNS Amp',hint:'DNS',
+   clue:'Small UDP packets sent to open DNS resolvers, generating responses up to 4000x larger hitting your IP. 300Gbps inbound. Your link is saturated.',
+   mitigations:[
+     {label:'Contact ISP for upstream scrubbing',correct:true,score:35,explain:'Correct — amplification attacks must be mitigated upstream. You cannot absorb 300Gbps alone.'},
+     {label:'Implement BCP38 ingress filtering',correct:true,score:25,explain:'Correct — BCP38 blocks spoofed source IPs required for amplification.'},
+     {label:'Close your own open DNS resolver',correct:true,score:20,explain:'Correct — prevents your infrastructure from being abused for amplification.'},
+     {label:'Rate-limit inbound port 53 UDP',correct:true,score:15,explain:'Correct — limits reflection traffic reaching your server.'},
+     {label:'Add more bandwidth',correct:false,score:-5,explain:'Wrong — 300Gbps amplification will outpace any bandwidth you add.'},
+   ]},
 ];
 
-function aptInitChain(){
-  const chain=document.getElementById('apt-chain');if(!chain)return;
-  chain.innerHTML='';
-  aptStages.forEach((s,i)=>{
-    const btn=document.createElement('button'); btn.className='ws-tab';
-    btn.textContent=(i+1)+'. '+s.name; btn.style.borderColor=s.color+'44'; btn.style.color=s.color+'99';
-    btn.setAttribute('data-apt-i',i); btn.onclick=()=>aptExec(i); chain.appendChild(btn);
+let ddosCurrent=null,ddosHealth=100,ddosAtkLevel=0,ddosTimer=null,ddosApplied=[],ddosScore=0;
+function ddosReset(){
+  clearInterval(ddosTimer);ddosHealth=100;ddosAtkLevel=0;ddosApplied=[];ddosScore=0;ddosCurrent=null;
+  setDdosBar('ddos-health',100);setDdosBar('ddos-atk',0);
+  document.getElementById('ddos-health-bar').style.background='linear-gradient(90deg,var(--green),#00ff88)';
+  document.getElementById('ddos-mitigations').style.display='none';
+  document.getElementById('ddos-score-box').style.display='none';
+  document.getElementById('ddos-out').textContent='Analyze the clues and identify the attack type first.';
+  document.querySelectorAll('#ws-ddos .tool-btn.red-btn').forEach(b=>{b.style.opacity='1';b.disabled=false;});
+}
+window.ddosReset=ddosReset;
+
+window.ddosIdentify=function(guess){
+  if(ddosCurrent)return;
+  const sc=ddosScenarios[Math.floor(Math.random()*ddosScenarios.length)];
+  ddosCurrent=sc;
+  document.getElementById('ddos-out').textContent='TRAFFIC ANALYSIS:\n'+sc.clue;
+  document.querySelectorAll('#ws-ddos .tool-btn.red-btn').forEach(b=>{b.disabled=true;b.style.opacity='0.4';});
+  const correct=guess.toLowerCase().includes(sc.hint.toLowerCase());
+  ddosScore+=correct?40:-15;
+  document.getElementById('ddos-out').textContent+=correct
+    ?'\n\nCORRECT (+40pts): '+sc.type+' confirmed. Now apply mitigations.'
+    :'\n\nWRONG (-15pts). This is a '+sc.type+'. Apply mitigations anyway.';
+  const container=document.getElementById('ddos-mitigation-btns');container.innerHTML='';
+  sc.mitigations.forEach(m=>{
+    const btn=document.createElement('button');btn.className='tool-btn';btn.style.fontSize='11px';btn.textContent=m.label;
+    btn.onclick=()=>ddosApplyMitigation(m,btn);container.appendChild(btn);
   });
-  window._aptStage=-1;
+  document.getElementById('ddos-mitigations').style.display='block';
+  ddosTimer=setInterval(()=>{
+    ddosAtkLevel=Math.min(100,ddosAtkLevel+4);setDdosBar('ddos-atk',ddosAtkLevel);
+    ddosHealth=Math.max(0,ddosHealth-2);setDdosBar('ddos-health',ddosHealth);
+    if(ddosHealth<=30)document.getElementById('ddos-health-bar').style.background='linear-gradient(90deg,var(--red),#ff8800)';
+    if(ddosHealth<=0){clearInterval(ddosTimer);showDdosScore('SERVER DOWN — ran out of time!');}
+  },800);
+};
+
+function ddosApplyMitigation(m,btn){
+  if(ddosApplied.includes(m.label))return;ddosApplied.push(m.label);
+  btn.disabled=true;btn.style.opacity='0.5';ddosScore+=m.score;
+  const fb=document.createElement('div');fb.style.cssText='font-size:10px;color:'+(m.correct?'var(--green)':'var(--red)')+';padding:4px 0;border-bottom:1px solid #ff003c11;';
+  fb.textContent=(m.correct?'+ ':'-  ')+m.label+': '+m.explain;
+  document.getElementById('ddos-mitigation-btns').appendChild(fb);
+  if(m.correct){ddosHealth=Math.min(100,ddosHealth+15);setDdosBar('ddos-health',ddosHealth);}
+  if(ddosApplied.length>=3)showDdosScore('Mitigations applied.');
 }
 
-function aptExec(i){
-  const s=aptStages[i], log=document.getElementById('apt-log');if(!log)return;
-  const div=document.createElement('div'); div.style.cssText='padding:4px 0;border-bottom:1px solid #ff003c11;';
-  div.innerHTML=`<span style="color:${s.color};font-size:10px;">[STAGE ${i+1}] ${s.name.toUpperCase()}</span><br><span style="font-size:11px;color:#ff8888;padding-left:10px;">${s.desc}</span>`;
-  log.appendChild(div); log.scrollTop=log.scrollHeight;
-  window._aptStage=Math.max(window._aptStage||(-1),i);
-  const pct=Math.round(((window._aptStage+1)/aptStages.length)*100);
-  const bar=document.getElementById('apt-bar'),lbl=document.getElementById('apt-pct');
+function showDdosScore(msg){
+  clearInterval(ddosTimer);
+  const box=document.getElementById('ddos-score-box');box.style.display='block';
+  box.textContent=msg+'\nFINAL SCORE: '+ddosScore+' pts — Server health: '+ddosHealth+'%\nLesson: '+ddosCurrent.type+' needs specific countermeasures. Wrong identification wastes time.';
+}
+
+function setDdosBar(id,pct){
+  const bar=document.getElementById(id+'-bar'),lbl=document.getElementById(id+'-pct');
   if(bar)bar.style.width=pct+'%';if(lbl)lbl.textContent=pct+'%';
-  const btn=document.querySelector(`[data-apt-i="${i}"]`);if(btn){btn.style.color=s.color;btn.style.background=s.color+'11';}
 }
 
-window.aptReset=function(){
-  window._aptStage=-1;
+/* ── RANSOMWARE DRILL ── */
+const rwScenarios={
+  WannaCry:{variant:'WannaCry',spread:'EternalBlue SMB exploit',
+    files:['\\\\DC01\\SYSVOL\\','C:\\Finance\\payroll.xlsx','C:\\Users\\Documents\\','C:\\Windows\\System32\\'],
+    steps:[
+      {q:'DECISION 1: Security alerts show multiple hosts encrypting files simultaneously. FIRST action?',
+       choices:[
+         {t:'Isolate ALL affected hosts from the network immediately',correct:true,enc:2,risk:'MEDIUM',recovery:'4h',explain:'Correct. Isolation stops lateral spread — the most critical first step with worm-based ransomware.'},
+         {t:'Contact the ransomware group to negotiate payment',correct:false,enc:12,risk:'CRITICAL',recovery:'72h',explain:'Wrong. Negotiating first wastes time while the worm spreads. Isolate first, always.'},
+         {t:'Run antivirus scan on all hosts',correct:false,enc:8,risk:'HIGH',recovery:'24h',explain:'Wrong. AV scan takes time and misses modern ransomware. Isolation must come first.'},
+       ]},
+      {q:'DECISION 2: Hosts isolated. Initial access was an unpatched SMB server. What next?',
+       choices:[
+         {t:'Apply the MS17-010 patch to all remaining clean systems',correct:true,enc:0,risk:'LOW',recovery:'2h',explain:'Correct! Patching the vulnerability prevents further spread to uninfected hosts.'},
+         {t:'Wipe all infected systems immediately before forensics',correct:false,enc:0,risk:'MEDIUM',recovery:'8h',explain:'Wrong. Wiping before forensics destroys evidence needed to understand the full scope.'},
+         {t:'Pay the ransom to get the decryption key',correct:false,enc:0,risk:'HIGH',recovery:'Unknown',explain:'Wrong. Payment funds criminals and does not guarantee decryption.'},
+       ]},
+      {q:'DECISION 3: Clean systems patched. How do you recover encrypted data?',
+       choices:[
+         {t:'Restore from last known-good offline backup',correct:true,enc:0,risk:'LOW',recovery:'6h',explain:'Correct! Offline backups are your best recovery path and cannot be encrypted by ransomware.'},
+         {t:'Use the free WannaCry decryptor (WanaKiwi)',correct:true,enc:0,risk:'LOW',recovery:'4h',explain:'Correct! WannaCry has a known flaw — WanaKiwi can recover keys from memory on Windows 7.'},
+         {t:'Rebuild all systems from scratch',correct:false,enc:0,risk:'MEDIUM',recovery:'48h',explain:'Suboptimal if you have backups. Always try backup restoration first.'},
+       ]},
+    ]},
+  LockBit:{variant:'LockBit 3.0',spread:'RDP brute force + phishing',
+    files:['\\\\FS01\\Finance\\','\\\\FS01\\HR\\','C:\\DB\\customers.sql','C:\\Mail\\archive.pst'],
+    steps:[
+      {q:'DECISION 1: Ransom note on 40 servers. LockBit exfiltrated data before encrypting. First action?',
+       choices:[
+         {t:'Isolate network immediately and preserve forensic images',correct:true,enc:3,risk:'MEDIUM',recovery:'8h',explain:'Correct. LockBit uses double extortion — isolate to stop spread and preserve forensic evidence.'},
+         {t:'Pay ransom before they publish stolen data',correct:false,enc:3,risk:'CRITICAL',recovery:'Unknown',explain:'Wrong. LockBit often publishes data even after payment. Isolate and assess first.'},
+         {t:'Restart affected servers to clear the ransomware',correct:false,enc:15,risk:'CRITICAL',recovery:'72h+',explain:'Wrong. Restarting does NOT remove ransomware and destroys forensic evidence in memory.'},
+       ]},
+      {q:'DECISION 2: Initial access was RDP port 3389 exposed to the internet. Prevent re-infection?',
+       choices:[
+         {t:'Disable public RDP, implement VPN + MFA',correct:true,enc:0,risk:'LOW',recovery:'2h',explain:'Correct! RDP exposed to internet is extremely dangerous. Place it behind VPN with MFA.'},
+         {t:'Change RDP port to a non-standard port',correct:false,enc:0,risk:'HIGH',recovery:'1h',explain:'Wrong. Security through obscurity — attackers scan all ports. Provides almost no real protection.'},
+         {t:'Add a stronger password policy for RDP accounts',correct:false,enc:0,risk:'MEDIUM',recovery:'1h',explain:'Insufficient alone. Credentials can be phished. VPN+MFA is required.'},
+       ]},
+    ]},
+  Cl0p:{variant:'Cl0p',spread:'MOVEit zero-day (CVE-2023-34362)',
+    files:['\\\\FS01\\Transfer\\','\\\\FS01\\Clients\\','Z:\\MOVEit\\storage\\'],
+    steps:[
+      {q:'DECISION 1: Cl0p exploited MOVEit. Data stolen before detection. First action?',
+       choices:[
+         {t:'Take MOVEit offline and apply emergency patch immediately',correct:true,enc:0,risk:'MEDIUM',recovery:'4h',explain:'Correct. Stop active exploitation first. Cl0p exfiltrates data — close the door immediately.'},
+         {t:'Monitor the attacker to gather intelligence',correct:false,enc:0,risk:'CRITICAL',recovery:'24h+',explain:'Wrong. Every minute costs more data. Close the vulnerability first, investigate after.'},
+         {t:'Reset all user passwords in the organization',correct:false,enc:0,risk:'HIGH',recovery:'6h',explain:'Wrong as first step. Passwords are not the vector here — a zero-day exploit is.'},
+       ]},
+      {q:'DECISION 2: MOVEit patched. Cl0p threatens to publish client data in 72 hours. What now?',
+       choices:[
+         {t:'Notify affected clients and regulators immediately',correct:true,enc:0,risk:'LOW',recovery:'Ongoing',explain:'Correct. GDPR/HIPAA require timely notification. Failure to notify carries massive fines.'},
+         {t:'Pay the ransom to prevent publication',correct:false,enc:0,risk:'HIGH',recovery:'Unknown',explain:'Wrong. Payment does not guarantee silence and may violate OFAC sanctions.'},
+         {t:'Wait 72 hours to see if they publish anything',correct:false,enc:0,risk:'CRITICAL',recovery:'72h+',explain:'Wrong. Waiting delays legal obligations and gives attackers control of the timeline.'},
+       ]},
+    ]},
+};
+
+let rwState=null;
+window.rwStartScenario=function(name){
+  const sc=rwScenarios[name];if(!sc)return;
+  rwState={sc,step:0,lostFiles:0};
+  document.getElementById('rw-enc-count').textContent='0';
+  document.getElementById('rw-risk').textContent='LOW';
+  document.getElementById('rw-recovery').textContent='--';
+  const fs=document.getElementById('rw-fs');
+  fs.innerHTML=sc.files.map(f=>'<div style="color:var(--green-dim);">'+f+'</div>').join('');
+  document.getElementById('rw-out').textContent='INCIDENT: '+sc.variant+' | Vector: '+sc.spread+'\n\nMake your decisions below.';
+  rwShowStep();
+};
+
+function rwShowStep(){
+  if(!rwState)return;
+  const {sc,step}=rwState;
+  if(step>=sc.steps.length){
+    document.getElementById('rw-decision-box').style.display='none';
+    document.getElementById('rw-out').textContent='DRILL COMPLETE!\nFiles lost: '+rwState.lostFiles+' | Recovery: '+document.getElementById('rw-recovery').textContent+' | Risk: '+document.getElementById('rw-risk').textContent+'\n\nLesson: Speed and correct decision order dramatically reduce ransomware impact.';
+    return;
+  }
+  const s=sc.steps[step];
+  document.getElementById('rw-question').textContent=s.q;
+  const choicesEl=document.getElementById('rw-choices');choicesEl.innerHTML='';
+  s.choices.forEach(c=>{
+    const btn=document.createElement('button');btn.className='tool-btn';
+    btn.style.cssText='font-size:11px;text-align:left;padding:8px 12px;width:100%;';
+    btn.textContent=c.t;btn.onclick=()=>rwChoose(c,btn);choicesEl.appendChild(btn);
+  });
+  document.getElementById('rw-decision-box').style.display='block';
+}
+
+window.rwChoose=function(choice,btn){
+  document.querySelectorAll('#rw-choices .tool-btn').forEach(b=>{b.disabled=true;b.style.opacity='0.5';});
+  btn.style.opacity='1';btn.style.borderColor=choice.correct?'var(--green)':'var(--red)';btn.style.color=choice.correct?'var(--green)':'var(--red)';
+  rwState.lostFiles+=choice.enc;
+  document.getElementById('rw-enc-count').textContent=rwState.lostFiles;
+  document.getElementById('rw-risk').textContent=choice.risk;
+  if(choice.recovery!=='--')document.getElementById('rw-recovery').textContent=choice.recovery;
+  const fs=document.getElementById('rw-fs');
+  Array.from(fs.children).slice(0,choice.enc).forEach(d=>{d.style.color='var(--red)';d.textContent='LOCKED: '+d.textContent;});
+  const fb=document.createElement('div');
+  fb.style.cssText='font-size:11px;color:'+(choice.correct?'var(--green)':'var(--red)')+';margin-top:6px;padding:6px;background:#000500;';
+  fb.textContent=(choice.correct?'CORRECT: ':'WRONG: ')+choice.explain;
+  document.getElementById('rw-choices').appendChild(fb);
+  document.getElementById('rw-out').textContent=choice.explain;
+  rwState.step++;setTimeout(rwShowStep,1800);
+};
+
+/* ── APT DEFENDER ── */
+const aptDefScenarios=[
+  {name:'1/5 RECON',stage:'Reconnaissance',
+   clue:'Threat intel: your company employee list, org chart and tech stack scraped from LinkedIn and public site in past 48h. DNS queries from Tor exit node probing your mail server MX records.',
+   choices:[
+     {t:'Limit employee info on public website, set LinkedIn visibility policies',correct:true,points:20,explain:'Correct. Reducing public OSINT makes reconnaissance harder and slows attacker planning.'},
+     {t:'Block Tor exit node IPs at the perimeter',correct:true,points:15,explain:'Correct. Blocks some recon channels, though sophisticated attackers use other proxies too.'},
+     {t:'Ignore it — passive recon causes no direct harm',correct:false,points:-20,explain:'Wrong. Recon is the foundation of every attack. Early disruption is your best opportunity.'},
+     {t:'Email all employees about social engineering awareness',correct:true,points:10,explain:'Correct. Awareness helps employees resist the spear-phishing that typically follows recon.'},
+   ]},
+  {name:'2/5 DELIVERY',stage:'Delivery',
+   clue:'Email gateway blocked 3 emails with malicious macro Office docs targeting your CFO and finance team. Sender domains: "microsoft-support-portal.com" and "docusign-secure-verify.net". One email slipped through to a mailbox.',
+   choices:[
+     {t:'Quarantine the delivered email and alert the employee immediately',correct:true,points:25,explain:'Correct. Containing the threat before the user opens it prevents execution.'},
+     {t:'Block the lookalike domains at DNS and email gateway',correct:true,points:20,explain:'Correct. Domain blocking prevents further delivery from the same infrastructure.'},
+     {t:'Delete the email silently without notifying the employee',correct:false,points:-10,explain:'Wrong. The employee may have already opened it, and awareness prevents future clicks.'},
+     {t:'Implement attachment sandboxing for all incoming Office files',correct:true,points:15,explain:'Correct. Sandboxing detonates attachments safely to detect malicious macros.'},
+   ]},
+  {name:'3/5 EXPLOIT',stage:'Exploitation',
+   clue:'EDR alert: macro executed on finance workstation. Process tree: WINWORD.EXE -> cmd.exe -> powershell.exe -encodedCommand [base64]. Network connection attempted to 185.220.101.47:443.',
+   choices:[
+     {t:'Isolate the workstation from the network immediately',correct:true,points:30,explain:'Correct! Isolating the host before C2 connects prevents the attacker gaining interactive control.'},
+     {t:'Kill the PowerShell process only',correct:false,points:-15,explain:'Wrong. The macro may respawn processes. Full isolation is required.'},
+     {t:'Block the C2 IP 185.220.101.47 at the firewall',correct:true,points:20,explain:'Correct. Blocking C2 prevents the attacker receiving a beacon and issuing commands.'},
+     {t:'Collect a memory dump before isolating for forensics',correct:true,points:15,explain:'Correct if done quickly — memory forensics captures the payload. Do not delay isolation.'},
+   ]},
+  {name:'4/5 LATERAL',stage:'Lateral Movement',
+   clue:'Attacker has domain user credentials. SIEM shows pass-the-hash attempts against 6 servers. WMI remote execution detected from compromised host to DC01. No domain admin yet.',
+   choices:[
+     {t:'Reset credentials for all accounts seen in the attack path',correct:true,points:25,explain:'Correct. Resetting compromised credentials revokes attacker access before they escalate.'},
+     {t:'Enable enhanced logging on all domain controllers',correct:true,points:20,explain:'Correct. Enhanced DC logging reveals the full lateral movement path and scope.'},
+     {t:'Shut down all servers to stop movement',correct:false,points:-20,explain:'Wrong. Shutting down all servers causes massive outage and destroys forensic memory evidence.'},
+     {t:'Segment the network to isolate the compromised VLAN',correct:true,points:25,explain:'Correct. Network segmentation prevents pivoting to other VLANs, containing the blast radius.'},
+   ]},
+  {name:'5/5 EXFIL',stage:'Exfiltration',
+   clue:'DLP alert: 40GB uploaded to "dropbox-api.xyz" over HTTPS. Slow drip over 6 hours to avoid bandwidth thresholds. Finance and HR folders accessed.',
+   choices:[
+     {t:'Block the suspicious domain at DNS and proxy level',correct:true,points:25,explain:'Correct. Blocking the exfil domain immediately stops data leaving, even with active attacker access.'},
+     {t:'Throttle outbound bandwidth to cloud storage endpoints',correct:true,points:15,explain:'Correct. Rate limiting buys time even if you cannot immediately block the specific domain.'},
+     {t:'Wait to gather more intelligence before blocking',correct:false,points:-25,explain:'Wrong. Every minute costs more data. Block first, investigate after.'},
+     {t:'Notify legal and privacy teams — breach notification likely required',correct:true,points:20,explain:'Correct. 40GB of HR and finance data likely triggers GDPR/state law breach notification obligations.'},
+   ]},
+];
+
+let aptDefState=null;
+window.aptStartDefend=function(){
+  aptDefState={step:0,detections:0,missed:0,score:0};
+  document.getElementById('apt-detections').textContent='0';
+  document.getElementById('apt-missed').textContent='0';
+  document.getElementById('apt-pct').textContent='0%';
+  document.getElementById('apt-bar').style.width='0%';
+  document.getElementById('apt-log').innerHTML='';
+  document.getElementById('apt-start-btn').disabled=true;
+  document.getElementById('apt-out').textContent='APT scenario started. Read each alert carefully and choose your response.';
+  aptShowStage();
+};
+
+window.aptResetDefend=function(){
+  aptDefState=null;
+  ['apt-detections','apt-missed'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='0';});
+  const lbl=document.getElementById('apt-stage-lbl');if(lbl)lbl.textContent='--';
+  const pct=document.getElementById('apt-pct');if(pct)pct.textContent='0%';
+  const bar=document.getElementById('apt-bar');if(bar)bar.style.width='0%';
+  const box=document.getElementById('apt-scenario-box');if(box)box.style.display='none';
   const log=document.getElementById('apt-log');if(log)log.innerHTML='';
-  const bar=document.getElementById('apt-bar'),lbl=document.getElementById('apt-pct');
-  if(bar)bar.style.width='0%';if(lbl)lbl.textContent='0%';
-  document.querySelectorAll('[data-apt-i]').forEach(b=>{const i=parseInt(b.getAttribute('data-apt-i'));b.style.color=aptStages[i].color+'99';b.style.background='';});
+  const btn=document.getElementById('apt-start-btn');if(btn)btn.disabled=false;
+  document.getElementById('apt-out').textContent='Press START DEFENSE to begin the APT scenario.';
 };
 
-/* ── PHISHING ── */
-const phishData={
-  'Spear Phishing':{from:'it-support@logos-sec-helpdesk.com',subject:'[URGENT] Password expires in 24 hours',body:'Dear Employee,\n\nYour corporate password will expire in 24 hours.\nClick below to reset immediately:\n\n[RESET MY PASSWORD ▶]\n\nIT Security Team',tips:'Check sender domain carefully. Real IT never uses external domains. Hover links before clicking.'},
-  'CEO Fraud':{from:'ceo.name@logos-sec.co',subject:'Urgent wire transfer — confidential',body:'Hi,\n\nI need you to process a wire transfer of $147,500 to a new vendor today before COB. Do not discuss with anyone.\n\nThanks, CEO',tips:'CEO fraud exploits authority. Always verify large requests via phone. Note the lookalike domain (.co vs .com).'},
-  'IT Helpdesk':{from:'helpdesk@support-logos.net',subject:'Suspicious sign-in detected on your account',body:'SECURITY ALERT\n\nSuspicious login from IP: 185.220.101.47 (Russia).\n\nVerify identity immediately to prevent lockout:\n[VERIFY NOW ▶]',tips:'Urgency + fear = manipulation. Navigate directly to real portal URL rather than clicking email links.'},
-  'Password Reset':{from:'no-reply@accounts-logossec.com',subject:'Password reset request',body:'Someone requested a password reset.\n\nClick within 15 minutes:\n[RESET PASSWORD ▶]\n\nIf this wasn\'t you, your account may be compromised.',tips:'Lookalike domain. Legitimate reset emails come from your organization\'s own domain.'},
-  'Invoice Fraud':{from:'billing@vendor-invoices.net',subject:'Invoice #INV-2026-0847 OVERDUE',body:'Dear Accounts Payable,\n\nInvoice #INV-2026-0847 for $23,400 is overdue.\n\nOur banking details have changed. New account:\nBank: First National\nAccount: 1234567890',tips:'Always verify banking changes via phone to a known number. Invoice fraud is a top financial cybercrime.'},
-  'OAuth Consent':{from:'no-reply@google-security-check.com',subject:'Grant access to your Google account',body:'"SecurityScan Pro" requests access to:\n• Read all your emails\n• Access your contacts\n• View your files\n\n[ALLOW ACCESS ▶]    [DENY]',tips:'OAuth consent phishing harvests tokens. Only grant permissions via official OAuth flows to known developers.'},
+function aptShowStage(){
+  if(!aptDefState)return;
+  const {step}=aptDefState;
+  if(step>=aptDefScenarios.length){
+    document.getElementById('apt-scenario-box').style.display='none';
+    const lbl=document.getElementById('apt-stage-lbl');if(lbl)lbl.textContent='DONE';
+    const grade=aptDefState.score>120?'A':aptDefState.score>80?'B':aptDefState.score>40?'C':'D';
+    document.getElementById('apt-out').textContent='COMPLETE! Detections: '+aptDefState.detections+' Missed: '+aptDefState.missed+' Score: '+aptDefState.score+'pts Grade: '+grade+'\n\nLesson: Early detection in Recon or Delivery is far cheaper than catching an attacker post-exfiltration.';
+    const btn=document.getElementById('apt-start-btn');if(btn)btn.disabled=false;
+    return;
+  }
+  const sc=aptDefScenarios[step];
+  document.getElementById('apt-stage-name').textContent=sc.name+' — '+sc.stage.toUpperCase();
+  document.getElementById('apt-clue').textContent=sc.clue;
+  const lbl=document.getElementById('apt-stage-lbl');if(lbl)lbl.textContent=step+1+'/'+aptDefScenarios.length;
+  const pct=Math.round((step/aptDefScenarios.length)*100);
+  const pctEl=document.getElementById('apt-pct');if(pctEl)pctEl.textContent=pct+'%';
+  const bar=document.getElementById('apt-bar');if(bar)bar.style.width=pct+'%';
+  const choicesEl=document.getElementById('apt-choices');choicesEl.innerHTML='';
+  const shuffled=[...sc.choices].sort(()=>Math.random()-0.5);
+  shuffled.forEach(c=>{
+    const btn=document.createElement('button');btn.className='tool-btn';
+    btn.style.cssText='font-size:11px;text-align:left;padding:8px 12px;width:100%;margin-bottom:2px;';
+    btn.textContent=c.t;btn.onclick=()=>aptChoose(c,btn,shuffled);choicesEl.appendChild(btn);
+  });
+  document.getElementById('apt-scenario-box').style.display='block';
+}
+
+function aptChoose(choice,clickedBtn,allChoices){
+  document.querySelectorAll('#apt-choices .tool-btn').forEach(b=>{b.disabled=true;b.style.opacity='0.5';});
+  if(choice.correct){aptDefState.detections++;aptDefState.score+=choice.points;document.getElementById('apt-detections').textContent=aptDefState.detections;clickedBtn.style.borderColor='var(--green)';clickedBtn.style.color='var(--green)';clickedBtn.style.opacity='1';}
+  else{aptDefState.missed++;aptDefState.score+=choice.points;document.getElementById('apt-missed').textContent=aptDefState.missed;clickedBtn.style.borderColor='var(--red)';clickedBtn.style.color='var(--red)';clickedBtn.style.opacity='1';document.querySelectorAll('#apt-choices .tool-btn').forEach((b,i)=>{if(allChoices[i]&&allChoices[i].correct){b.style.borderColor='var(--green)';b.style.opacity='0.8';}});}
+  const fb=document.createElement('div');fb.style.cssText='font-size:11px;color:'+(choice.correct?'var(--green)':'var(--red)')+';margin-top:6px;padding:6px;background:#000500;';
+  fb.textContent=(choice.correct?'CORRECT: ':'WRONG: ')+choice.explain;document.getElementById('apt-choices').appendChild(fb);
+  const logEl=document.getElementById('apt-log');const div=document.createElement('div');div.className=choice.correct?'l-def':'l-atk';
+  div.textContent='['+aptDefScenarios[aptDefState.step].stage+'] '+(choice.correct?'+'+choice.points:''+choice.points)+'pts: '+choice.t;
+  logEl.appendChild(div);logEl.scrollTop=logEl.scrollHeight;
+  aptDefState.step++;setTimeout(aptShowStage,2200);
+}
+
+/* ── PHISHING TRAINER ── */
+const phEmails=[
+  {from:'it-helpdesk@logos-sec-support.net',subject:'[URGENT] Account locked in 2 hours',
+   body:'Dear User,\n\nUnauthorized access detected from Russia (IP: 91.240.118.172).\n\nYour account locks in 2 hours unless you verify:\n\n[ VERIFY MY ACCOUNT ]\n\nIT Security Team',
+   isPhish:true,
+   flags:['Lookalike domain (logos-sec-support.net)','Urgency and fear tactic','Generic greeting (Dear User)','External link for internal account'],
+   explain:'PHISHING: "logos-sec-support.net" is not your company domain. Real IT uses internal addresses. Urgency and generic greetings are classic manipulation tactics.'},
+  {from:'ceo@logos-sec.github.io',subject:'Confidential — Wire transfer needed today',
+   body:'Hi,\n\nI am in a board meeting and need you to process a wire transfer of $87,500 urgently. This is time-sensitive and confidential — please do not discuss with anyone.\n\nI will explain later. Confirm when done.\n\nThanks',
+   isPhish:true,
+   flags:['GitHub.io is not a company email domain','Unusual payment request by email','Secrecy and confidentiality pressure','No vendor details or invoice reference'],
+   explain:'PHISHING (CEO Fraud): No real CEO sends wire requests from github.io. The secrecy demand and urgency bypass normal financial controls. Always verify wire requests by phone to a known number.'},
+  {from:'noreply@github.com',subject:'[GitHub] A new public key was added to your account',
+   body:'Hi logos-sec,\n\nA new SSH key was added to your GitHub account.\n\nKey: SHA256:abc123xyz\nAdded: 2026-04-26 14:32 UTC\n\nIf you did not add this key, remove it at: github.com/settings/keys\n\nThe GitHub Team',
+   isPhish:false,
+   flags:['Real github.com sender domain','Uses your actual account username','No link to click — directs to known settings URL','Informational only — no action demanded'],
+   explain:'LEGITIMATE: Real GitHub security notification. Correct domain, uses your username, provides specific details, directs to github.com. If you did not add a key, check your SSH keys.'},
+  {from:'accounts@paypa1.com',subject:'Your PayPal account has been limited',
+   body:'Dear Customer,\n\nUnusual activity detected. Your account is temporarily limited.\n\nTo restore access confirm your information:\n[ Confirm Now — paypa1.com/restore ]\n\nIf you do not confirm within 24 hours, your account will be permanently suspended.\n\nPayPal Security',
+   isPhish:true,
+   flags:['Typosquat domain: paypa1.com (number 1 not letter l)','Suspension threat creates urgency','Link goes to paypa1.com not paypal.com','Generic greeting (Dear Customer)'],
+   explain:'PHISHING: "paypa1.com" uses a numeral "1" instead of the letter "l" — classic typosquatting. Real PayPal always sends from paypal.com. Always hover over links to check the real destination.'},
+  {from:'security@google.com',subject:'New sign-in on Windows, Phoenix AZ',
+   body:'Hi,\n\nA new sign-in to your Google Account was detected.\n\nWhen: Sunday, April 26, 2026, 10:14 AM MST\nDevice: Windows PC\nLocation: Phoenix, AZ\n\nIf this was you, ignore this email.\nIf not, secure your account: myaccount.google.com/security\n\nThe Google Account Team',
+   isPhish:false,
+   flags:['Real google.com sender domain','Specific time, device and location','No urgency or threats — informational only','Directs to google.com, not a lookalike'],
+   explain:'LEGITIMATE: Real Google sign-in alert. Correct domain, specific details, no pressure tactics. If it was not you, go directly to myaccount.google.com (do not click the email link).'},
+  {from:'invoice@quickbooks-billing.support',subject:'Invoice #QBO-2026-8842 — Payment Due',
+   body:'Dear Accounts Payable,\n\nInvoice #QBO-2026-8842 for $14,750.00 is due April 30.\n\nOur banking details have recently changed. Please update your records:\n\nBank: Wells Fargo\nAccount: 4829301827\nRouting: 121000248\n\nPayment must reference the invoice number.\n\nQuickBooks Billing',
+   isPhish:true,
+   flags:['quickbooks-billing.support is not intuit.com','Banking detail change via email is a major red flag','No prior established vendor relationship','Payment urgency combined with new bank account'],
+   explain:'PHISHING (Invoice Fraud): Always verify banking detail changes via phone to a known number. Legitimate vendors never change bank details by email alone. The domain is not owned by Intuit, the real QuickBooks maker.'},
+];
+
+let phState=null;
+window.phStart=function(){
+  phState={queue:[...phEmails].sort(()=>Math.random()-0.5),idx:0,score:0,correct:0,wrong:0,selectedFlags:[]};
+  document.getElementById('ph-start-btn').style.display='none';
+  document.getElementById('ph-remaining').textContent=phState.queue.length;
+  phShowEmail();
 };
 
-window.selectPhishType=function(t,btn){
-  document.querySelectorAll('#ws-phishing .tool-btn').forEach(b=>b.style.opacity='0.5');btn.style.opacity='1';
-  window._phishType=t; const p=phishData[t];
-  const prev=document.getElementById('ph-preview'); prev.style.display='block';
-  prev.innerHTML=`<div style="font-size:10px;color:var(--green-dim);margin-bottom:8px;letter-spacing:2px;">EMAIL PREVIEW</div><div style="font-size:11px;line-height:1.9;"><div><span style="color:var(--green-dim)">FROM: </span><span style="color:var(--red)">${p.from}</span></div><div><span style="color:var(--green-dim)">SUBJ: </span>${p.subject}</div><div style="margin-top:8px;background:#000300;padding:10px;border:1px solid #ff003c22;white-space:pre-wrap;color:#ff9999;font-size:11px;">${p.body}</div></div>`;
-  document.getElementById('ph-results').style.display='none';
-};
+function phShowEmail(){
+  if(!phState||phState.idx>=phState.queue.length){phEnd();return;}
+  const email=phState.queue[phState.idx];
+  document.getElementById('ph-remaining').textContent=phState.queue.length-phState.idx;
+  document.getElementById('ph-email-content').innerHTML=
+    '<div style="margin-bottom:4px;"><span style="color:var(--green-dim)">FROM: </span><span style="color:'+(email.isPhish?'var(--red)':'var(--cyan)')+'">'+email.from+'</span></div>'+
+    '<div style="margin-bottom:8px;"><span style="color:var(--green-dim)">SUBJ: </span>'+email.subject+'</div>'+
+    '<div style="background:#000300;padding:10px;border:1px solid #ff003c22;white-space:pre-wrap;color:#ccffcc;font-size:11px;">'+email.body+'</div>';
+  phState.selectedFlags=[];
+  const flagsEl=document.getElementById('ph-flags');flagsEl.innerHTML='';
+  email.flags.forEach(f=>{
+    const btn=document.createElement('button');btn.className='tool-btn';btn.style.cssText='font-size:10px;padding:4px 8px;border-color:#00ff4133;';
+    btn.textContent=f;
+    btn.onclick=function(){if(this.dataset.sel==='1'){this.dataset.sel='0';this.style.background='';phState.selectedFlags=phState.selectedFlags.filter(x=>x!==f);}
+      else{this.dataset.sel='1';this.style.background='#002200';phState.selectedFlags.push(f);}};
+    flagsEl.appendChild(btn);
+  });
+  document.getElementById('ph-email-box').style.display='block';
+  document.getElementById('ph-feedback').style.display='none';
+  document.getElementById('ph-next-btn').style.display='none';
+}
 
-window.launchPhish=function(){
-  const t=window._phishType; if(!t)return;
-  const n=parseInt(document.getElementById('ph-targets').value)||200, p=phishData[t];
-  document.getElementById('ph-results').style.display='block';
-  const opened=Math.floor(n*0.41),clicked=Math.floor(opened*0.22),creds=Math.floor(clicked*0.61);
-  let i=0; const iv=setInterval(()=>{
-    i+=Math.ceil(n/20);
-    document.getElementById('ph-sent').textContent=Math.min(i,n);
-    document.getElementById('ph-opened').textContent=Math.min(Math.floor(i*0.41),opened);
-    document.getElementById('ph-clicked').textContent=Math.min(Math.floor(i*0.09),clicked);
-    document.getElementById('ph-creds').textContent=Math.min(Math.floor(i*0.055),creds);
-    if(i>=n)clearInterval(iv);
-  },100);
-  document.getElementById('ph-tips').textContent='⚠ RED FLAGS:\n'+p.tips+'\n\n📊 INDUSTRY AVERAGES:\nOpen rate: ~41% | Click rate: ~22% | Cred submission: ~61% of clicks\n\n🛡 DEFENSES:\n• Security awareness training\n• DMARC/DKIM/SPF email auth\n• Multi-factor authentication\n• Regular simulated phishing campaigns';
+window.phJudge=function(verdict){
+  if(!phState)return;
+  const email=phState.queue[phState.idx];
+  const correct=(verdict==='phish')===email.isPhish;
+  const flagBonus=phState.selectedFlags.filter(f=>email.flags.includes(f)).length;
+  if(correct){phState.correct++;phState.score+=10+flagBonus*3;}else{phState.wrong++;phState.score=Math.max(0,phState.score-5);}
+  document.getElementById('ph-score').textContent=phState.score;
+  document.getElementById('ph-correct').textContent=phState.correct;
+  document.getElementById('ph-wrong').textContent=phState.wrong;
+  const fb=document.getElementById('ph-feedback');fb.style.display='block';fb.style.color=correct?'var(--green)':'var(--red)';
+  fb.textContent=(correct?'CORRECT! ':'WRONG! ')+email.explain+(flagBonus>0?'\n\nGood eye! You spotted '+flagBonus+' red flag(s) (+'+flagBonus*3+' bonus pts).':'\n\nRed flags in this email:\n'+email.flags.map(f=>'- '+f).join('\n'));
+  document.getElementById('ph-email-box').style.display='none';
+  document.getElementById('ph-next-btn').style.display='block';
 };
+window.phNext=function(){phState.idx++;if(phState.idx>=phState.queue.length)phEnd();else phShowEmail();};
+function phEnd(){
+  const pct=Math.round((phState.correct/(phState.correct+phState.wrong||1))*100);
+  const grade=pct>=90?'A':pct>=70?'B':pct>=50?'C':'D';
+  document.getElementById('ph-email-box').style.display='none';
+  const fb=document.getElementById('ph-feedback');fb.style.display='block';fb.style.color='var(--green)';
+  fb.textContent='TRAINING COMPLETE!\nScore: '+phState.score+'pts | Accuracy: '+pct+'% | Grade: '+grade+'\nCorrect: '+phState.correct+' Wrong: '+phState.wrong+'\n\nKey lessons:\n- Always check the sender domain, not just the display name\n- Urgency and threats are manipulation tactics — slow down\n- Never change banking details based on an email alone\n- Hover over links before clicking to check the real URL\n- When in doubt, verify via phone to a known number';
+  document.getElementById('ph-next-btn').style.display='none';
+  document.getElementById('ph-start-btn').textContent='PLAY AGAIN';
+  document.getElementById('ph-start-btn').style.display='block';
+}
 
-/* ── HONEYPOT ── */
-window._honeypots={}; window._hpInterval=null;
-const hpIPs=['185.220.101.47','45.33.32.156','103.21.244.0','198.51.100.7','91.240.118.172','37.120.141.144'];
-const hpPayloads=['admin/admin','root/toor','GET /../etc/passwd','DROP TABLE users;','<script>alert(1)<\/script>','NTLMSSP auth attempt','PORT 21 passive probe','\\x90\\x90\\x90 shellcode','SELECT * FROM users--','eval(base64_decode(...))'];
+/* ── HONEYPOT ANALYST ── */
+window._honeypots={};window._hpInterval=null;window._hpSeenAttackers={};
+const hpAttackers=[
+  {ip:'185.220.101.47',country:'RU',org:'AS60592 Frantech',type:'TOR Exit Node',ttps:['SSH brute force','Credential stuffing','Port scanning'],payloads:['admin/admin','root/password','ubuntu/ubuntu']},
+  {ip:'45.33.32.156',country:'US',org:'AS63949 Linode',type:'VPS/Botnet Node',ttps:['Exploit scanning','CVE probing','SQL injection'],payloads:['GET /../etc/passwd','SELECT * FROM users','UNION SELECT NULL--']},
+  {ip:'103.21.244.0',country:'CN',org:'AS4134 ChinaNet',type:'APT Infrastructure',ttps:['Targeted recon','Lateral movement','Data exfil'],payloads:['NTLMSSP auth attempt','WMI remote exec probe','net user /domain']},
+  {ip:'91.240.118.172',country:'UA',org:'AS34224 NetAssist',type:'Ransomware Operator',ttps:['RDP brute force','SMB exploitation','Ransomware staging'],payloads:['EternalBlue probe','xp_cmdshell exec','WMIC process call create']},
+  {ip:'198.51.100.7',country:'NL',org:'AS6939 HE.NET',type:'Script Kiddie',ttps:['Known exploits','Metasploit modules','Shodan scanning'],payloads:['meterpreter payload','exploit/ms17-010','searchsploit attempt']},
+];
+const hpResponses=[
+  {label:'Block IP at Firewall',explain:'Correct for confirmed malicious IPs. Fast and effective for known bad actors.'},
+  {label:'Add to Threat Intel Feed',explain:'Correct. Sharing IOCs helps block this IP across your org and contributes to community defense.'},
+  {label:'Report to ISP/Abuse Team',explain:'Correct for persistent attackers. ISPs can sometimes take down botnet infrastructure.'},
+  {label:'Continue Monitoring (gather intel)',explain:'Valid if you want to learn attacker TTPs before blocking. Risky if attacker finds real assets.'},
+  {label:'Ignore — just a script kiddie',explain:'Risky. Even unsophisticated attackers can cause damage. Always document and block.'},
+];
 
-window.deployHoneypot=function(svc,btn){
-  if(window._honeypots[svc])return;
-  window._honeypots[svc]=0; btn.style.background='#002200'; btn.style.borderColor='var(--green)';
-  renderHoneypots(); hpLog(`[DEPLOYED] Honeypot listening on ${svc}`,'#00ff41');
-  if(!window._hpInterval)window._hpInterval=setInterval(hpTick,1400);
-};
+function hpLog(msg,color){
+  const log=document.getElementById('hp-log');if(!log)return;
+  const div=document.createElement('div');div.style.cssText='color:'+(color||'#ff8888')+';font-size:11px;padding:2px 0;border-bottom:1px solid #ff003c11;';
+  div.textContent=msg;log.appendChild(div);log.scrollTop=log.scrollHeight;
+}
 
 function renderHoneypots(){
   const el=document.getElementById('hp-active');if(!el)return;
   const keys=Object.keys(window._honeypots);
   if(!keys.length){el.innerHTML='<div style="color:var(--green-dim);font-size:11px;">No honeypots deployed.</div>';return;}
-  el.innerHTML=keys.map(s=>`<div class="hp-box"><div class="hbt">🍯 ${s}</div><div class="hbv" id="hpc-${s.replace(/[^a-z0-9]/gi,'')}">${window._honeypots[s]}</div><div style="font-size:9px;color:var(--green-dim);">CONNECTIONS</div></div>`).join('');
+  el.innerHTML=keys.map(s=>'<div class="hp-box"><div class="hbt">'+s+'</div><div class="hbv" id="hpc-'+s.replace(/[^a-z0-9]/gi,'')+'">'+(window._honeypots[s]||0)+'</div><div style="font-size:9px;color:var(--green-dim);">HITS</div></div>').join('');
 }
 
-function hpLog(msg,color){
-  const log=document.getElementById('hp-log');if(!log)return;
-  const div=document.createElement('div');div.style.cssText=`color:${color||'#ff8888'};font-size:11px;padding:2px 0;border-bottom:1px solid #ff003c11;`;
-  div.textContent=msg;log.appendChild(div);log.scrollTop=log.scrollHeight;
-}
+window.deployHoneypot=function(svc,btn){
+  if(window._honeypots[svc])return;
+  window._honeypots[svc]=0;btn.style.background='#002200';btn.style.borderColor='var(--green)';
+  renderHoneypots();hpLog('[DEPLOYED] '+svc+' honeypot active','#00ff41');
+  if(!window._hpInterval)window._hpInterval=setInterval(hpTick,1600);
+};
 
 function hpTick(){
   const keys=Object.keys(window._honeypots);
   if(!keys.length||!document.getElementById('hp-log')){clearInterval(window._hpInterval);window._hpInterval=null;return;}
   const svc=keys[Math.floor(Math.random()*keys.length)];
-  const ip=hpIPs[Math.floor(Math.random()*hpIPs.length)];
-  const payload=hpPayloads[Math.floor(Math.random()*hpPayloads.length)];
-  const ts=new Date().toTimeString().slice(0,8);
-  hpLog(`[${ts}] ${svc} ← ${ip} → "${payload}"`,Math.random()>0.5?'#ff8800':'#ff6666');
+  const atk=hpAttackers[Math.floor(Math.random()*hpAttackers.length)];
+  const payload=atk.payloads[Math.floor(Math.random()*atk.payloads.length)];
+  hpLog('['+new Date().toTimeString().slice(0,8)+'] '+svc+' <- '+atk.ip+' ('+atk.country+') "'+payload+'"',Math.random()>0.4?'#ff8800':'#ff6666');
   window._honeypots[svc]=(window._honeypots[svc]||0)+1;
-  const safeId=svc.replace(/[^a-z0-9]/gi,'');
-  const cnt=document.getElementById('hpc-'+safeId);if(cnt)cnt.textContent=window._honeypots[svc];
+  const cnt=document.getElementById('hpc-'+svc.replace(/[^a-z0-9]/gi,''));if(cnt)cnt.textContent=window._honeypots[svc];
+  if(!window._hpSeenAttackers[atk.ip]){window._hpSeenAttackers[atk.ip]=atk;renderAttackerList();}
 }
 
+function renderAttackerList(){
+  const el=document.getElementById('hp-attacker-list');if(!el)return;
+  el.innerHTML=Object.keys(window._hpSeenAttackers).map(ip=>'<button class="tool-btn red-btn" style="font-size:10px;padding:4px 8px;" onclick="hpInvestigate(\''+ip+'\')">'+ip+'</button>').join('');
+}
+
+window.hpInvestigate=function(ip){
+  const atk=window._hpSeenAttackers[ip];if(!atk)return;
+  document.getElementById('hp-analysis-box').style.display='block';
+  document.getElementById('hp-attacker-profile').textContent='IP: '+atk.ip+'\nCountry: '+atk.country+'\nOrg: '+atk.org+'\nType: '+atk.type+'\nTTPs: '+atk.ttps.join(', ')+'\nPayloads seen: '+atk.payloads.join(' | ');
+  const btnsEl=document.getElementById('hp-response-btns');btnsEl.innerHTML='';
+  document.getElementById('hp-response-out').style.display='none';
+  hpResponses.forEach(r=>{
+    const btn=document.createElement('button');btn.className='tool-btn';btn.style.cssText='font-size:11px;padding:5px 10px;';btn.textContent=r.label;
+    btn.onclick=()=>{
+      document.getElementById('hp-response-out').style.display='block';
+      document.getElementById('hp-response-out').textContent='ACTION: '+r.label+'\n\n'+r.explain;
+      btnsEl.querySelectorAll('button').forEach(b=>{b.disabled=true;b.style.opacity='0.5';});
+      btn.style.opacity='1';btn.style.borderColor='var(--green)';
+    };
+    btnsEl.appendChild(btn);
+  });
+};
+
 window.clearHoneypots=function(){
-  window._honeypots={};clearInterval(window._hpInterval);window._hpInterval=null;
-  renderHoneypots();hpLog('[ALL HONEYPOTS DECOMMISSIONED]','var(--green-dim)');
+  window._honeypots={};window._hpSeenAttackers={};
+  clearInterval(window._hpInterval);window._hpInterval=null;
+  renderHoneypots();
+  const al=document.getElementById('hp-attacker-list');if(al)al.innerHTML='';
+  const ab=document.getElementById('hp-analysis-box');if(ab)ab.style.display='none';
+  hpLog('[ALL HONEYPOTS DECOMMISSIONED]','var(--green-dim)');
   document.querySelectorAll('#ws-honeypot .tool-btn').forEach(b=>{b.style.background='';b.style.borderColor='var(--green)';});
 };
 
-/* ── INCIDENT RESPONSE ── */
-const irPlaybooks={
-  'Ransomware Attack':[['1. DETECT','Identify encrypted files, ransom note, affected systems via SIEM alerts.'],['2. ISOLATE','Immediately disconnect infected hosts. Disable Wi-Fi and shared drives.'],['3. CONTAIN','Block lateral movement. Disable compromised accounts. Revoke tokens.'],['4. PRESERVE','Snapshot VMs. Collect forensic images before remediation.'],['5. IDENTIFY','Determine variant, patient zero, and initial access vector.'],['6. NOTIFY','Alert leadership, legal. Evaluate regulatory reporting (GDPR/HIPAA).'],['7. ERADICATE','Reimage systems. Patch vulnerability. Rotate all credentials.'],['8. RECOVER','Restore from clean offline backups. Verify integrity before reconnect.'],['9. LESSONS','Post-incident review. Update playbooks, detection rules, training.']],
-  'Data Breach':[['1. DETECT','Identify exfil via DLP alerts, unusual outbound, or dark web monitoring.'],['2. CONTAIN','Revoke compromised creds. Block exfil paths. Enable enhanced logging.'],['3. SCOPE','Determine what data was accessed, by whom, for how long.'],['4. LEGAL','Notify legal/privacy counsel. Assess breach notification obligations.'],['5. NOTIFY','Inform affected individuals and regulators per applicable law (72hr GDPR).'],['6. ERADICATE','Remove attacker access. Patch vulnerability. Audit all access logs.'],['7. RECOVER','Implement additional access controls. Enhance monitoring.'],['8. LESSONS','Review data classification, access controls, DLP policy.']],
-  'DDoS Attack':[['1. DETECT','Identify attack type, source, volume via netflow/SIEM. Engage ISP if needed.'],['2. CONTAIN','Enable rate limiting. Activate scrubbing center. BGP blackhole if required.'],['3. MITIGATE','Deploy WAF rules. Enable geo-blocking. Activate CDN DDoS protection.'],['4. MONITOR','Track attack evolution — DDoS attacks often change vectors during mitigation.'],['5. RECOVER','Gradually re-enable services. Verify system integrity.'],['6. LESSONS','Review DDoS plan. Pre-negotiate scrubbing contracts.']],
-  'Insider Threat':[['1. DETECT','UEBA alerts for abnormal data access, after-hours activity, mass downloads.'],['2. INVESTIGATE','Preserve evidence covertly. Involve HR and legal before confronting subject.'],['3. CONTAIN','Quietly revoke excess permissions. Enable enhanced monitoring.'],['4. LEGAL','Coordinate with legal on employment law and evidence chain-of-custody.'],['5. ERADICATE','Terminate access. Collect devices. Conduct exit interview if appropriate.'],['6. LESSONS','Review least-privilege policies. Implement offboarding procedures.']],
-  'Supply Chain Attack':[['1. DETECT','Identify compromised vendor software via threat intel or behavior anomalies.'],['2. CONTAIN','Isolate systems running compromised component. Block C2 IPs/domains.'],['3. SCOPE','Determine blast radius — which systems used the compromised package?'],['4. VENDOR','Notify vendor. Obtain clean version. Validate hash of replacement.'],['5. ERADICATE','Remove or patch compromised software. Rebuild affected systems.'],['6. RECOVER','Restore from pre-compromise backups where necessary.'],['7. LESSONS','Implement SBOM, code signing, vendor vetting procedures.']],
-  'Zero-Day Exploit':[['1. DETECT','Identify exploitation via anomaly detection or memory forensics.'],['2. CONTAIN','Isolate affected systems. Apply emergency network controls.'],['3. WORKAROUND','Implement vendor mitigations or disable affected feature until patch available.'],['4. DISCLOSE','Report to vendor/CERT. Follow responsible disclosure timeline.'],['5. PATCH','Apply vendor patch immediately. Prioritize internet-facing systems.'],['6. HUNT','Threat hunt across environment for signs of prior exploitation.'],['7. LESSONS','Review compensating controls. Evaluate virtual patching capabilities.']],
+/* ── INCIDENT RESPONSE DRILL ── */
+const irDrills={
+  ransomware:{steps:[
+    {label:'DETECTION',situation:'Monday 08:15. Users report files renamed with .lockbit extension. SIEM shows massive file activity across 30 servers. A ransom note appears on shared drives.',
+     choices:[
+       {t:'Isolate all affected systems from the network',correct:true,points:25,timeLost:0,explain:'Correct. Network isolation stops lateral spread immediately — the most critical first action.'},
+       {t:'Call the ransomware group to negotiate',correct:false,points:-20,timeLost:4,explain:'Wrong. Every minute negotiating allows further encryption. Isolate first, always.'},
+       {t:'Run a full antivirus scan across the network',correct:false,points:-15,timeLost:2,explain:'Wrong. AV scans take time and rarely stop active ransomware. Isolation must come first.'},
+       {t:'Reboot all affected servers',correct:false,points:-20,timeLost:3,explain:'Catastrophic. Rebooting destroys forensic memory evidence and may trigger more encryption.'},
+     ]},
+    {label:'CONTAINMENT',situation:'Systems isolated. Ransomware is LockBit 3.0. Initial access was via RDP. 40 servers encrypted, 200 clean. What next?',
+     choices:[
+       {t:'Disable public-facing RDP and enforce MFA network-wide',correct:true,points:25,timeLost:0,explain:'Correct. Close the initial access vector and harden authentication before attempting recovery.'},
+       {t:'Begin restoring servers immediately from backup',correct:false,points:-10,timeLost:2,explain:'Wrong — restoring before closing the attack vector risks immediate re-infection.'},
+       {t:'Collect forensic images of encrypted systems',correct:true,points:15,timeLost:0,explain:'Correct. Forensics should happen in parallel with containment to preserve evidence.'},
+       {t:'Hire a ransomware negotiation firm immediately',correct:false,points:-5,timeLost:1,explain:'Premature. Negotiate only as a last resort after all recovery options are exhausted.'},
+     ]},
+    {label:'RECOVERY',situation:'RDP secured. Forensics in progress. You have offline backups from 48 hours ago. Leadership asks: pay $2M ransom or restore from backup?',
+     choices:[
+       {t:'Restore from backup and accept 48-hour data loss',correct:true,points:30,timeLost:0,explain:'Correct. Backup restoration is the most reliable path and does not fund criminals.'},
+       {t:'Pay the ransom and also restore from backup',correct:false,points:-10,timeLost:2,explain:'Wrong. Payment funds criminals and the decryptor often does not work. Use your backups.'},
+       {t:'Attempt open-source LockBit decryptors in parallel',correct:true,points:10,timeLost:0,explain:'Correct as a parallel effort — researchers have cracked some LockBit versions.'},
+     ]},
+  ]},
+  breach:{steps:[
+    {label:'DETECTION',situation:'DLP alert: 80GB uploaded from HR file server to an external IP overnight. Login logs show a service account accessed the server at 3AM. No humans logged in. What first?',
+     choices:[
+       {t:'Disable the compromised service account immediately',correct:true,points:25,timeLost:0,explain:'Correct. Revoking the account stops any ongoing exfiltration using those credentials.'},
+       {t:'Email all staff to change their passwords',correct:false,points:-10,timeLost:1,explain:'Wrong first step. A service account was used, not user passwords. Targeted containment first.'},
+       {t:'Block the destination IP at the firewall',correct:true,points:20,timeLost:0,explain:'Correct. Blocking the exfil destination prevents further data leaving via that channel.'},
+       {t:'Wait until business hours to investigate properly',correct:false,points:-25,timeLost:4,explain:'Wrong. Breaches require immediate response. Every hour risks more data loss.'},
+     ]},
+    {label:'SCOPE',situation:'Service account disabled. HR, Finance and Legal folders accessed. 80GB gone. Is this a notifiable breach under GDPR?',
+     choices:[
+       {t:'Identify whether PII, health or financial data was in those folders',correct:true,points:30,timeLost:0,explain:'Correct. The TYPE of data determines breach notification obligations under GDPR, HIPAA, etc.'},
+       {t:'Determine the source country of the attacker',correct:false,points:5,timeLost:0,explain:'Useful for threat intel but not the primary factor in notification requirements.'},
+       {t:'Count the total number of records potentially exposed',correct:true,points:20,timeLost:0,explain:'Correct. Volume affects severity and sometimes determines reporting thresholds.'},
+       {t:'Check if the data was encrypted at rest',correct:true,points:15,timeLost:0,explain:'Correct. Encryption at rest may exempt you from some notification requirements.'},
+     ]},
+    {label:'NOTIFICATION',situation:'Confirmed: 45,000 employee PII records exfiltrated. GDPR applies. Breach occurred 6 hours ago. What must you do?',
+     choices:[
+       {t:'Notify the supervisory authority within 72 hours of discovery',correct:true,points:30,timeLost:0,explain:'Correct. GDPR Article 33 requires DPA notification within 72 hours. The clock is ticking.'},
+       {t:'Wait until you have the full forensic report before notifying',correct:false,points:-20,timeLost:12,explain:'Wrong. You notify with available information and update later. Waiting risks massive fines.'},
+       {t:'Notify affected individuals if breach poses high risk',correct:true,points:20,timeLost:0,explain:'Correct. GDPR Article 34 requires individual notification when there is high risk.'},
+       {t:'Keep the breach confidential to protect company reputation',correct:false,points:-30,timeLost:0,explain:'Illegal. Concealing a notifiable breach can result in fines up to 4% of global turnover.'},
+     ]},
+  ]},
+  insider:{steps:[
+    {label:'DETECTION',situation:'UEBA alert: senior engineer downloaded 15GB from source code repo at 11PM on Friday. Their last day is next Friday. HR has not yet revoked access. What first?',
+     choices:[
+       {t:'Preserve evidence silently without alerting the employee',correct:true,points:30,timeLost:0,explain:'Correct. Covert evidence preservation prevents destruction and gives legal stronger grounds.'},
+       {t:'Confront the employee immediately',correct:false,points:-20,timeLost:2,explain:'Wrong. Premature confrontation can cause evidence destruction or alert accomplices.'},
+       {t:'Involve HR and Legal before any action',correct:true,points:20,timeLost:0,explain:'Correct. Insider investigations have legal and HR dimensions from the start.'},
+       {t:'Immediately revoke all access without investigation',correct:false,points:-10,timeLost:0,explain:'Partial. Revoking is correct eventually but doing it immediately tips off the subject.'},
+     ]},
+    {label:'INVESTIGATION',situation:'Evidence preserved. Legal and HR engaged. Employee downloaded source code, customer lists, and strategic plans. What next?',
+     choices:[
+       {t:'Quietly revoke excess permissions while monitoring remaining access',correct:true,points:25,timeLost:0,explain:'Correct. Reduces ongoing risk without alerting the subject prematurely.'},
+       {t:'Share all findings with the entire security team',correct:false,points:-15,timeLost:0,explain:'Wrong. Insider investigations must be tightly controlled to prevent leaks to the subject.'},
+       {t:'Preserve chain of custody for all digital evidence',correct:true,points:20,timeLost:0,explain:'Correct. Evidence must be forensically preserved for any future legal or HR action.'},
+       {t:'Install a keylogger on the employee device',correct:false,points:-20,timeLost:0,explain:'Wrong. Unauthorized monitoring without legal authority may be illegal and evidence inadmissible.'},
+     ]},
+  ]},
+  zeroday:{steps:[
+    {label:'DETECTION',situation:'Vendor announces CVE-2026-9999: critical RCE in your web framework, CVSS 10.0. Active exploitation in wild. No patch yet. Your public app uses the vulnerable version.',
+     choices:[
+       {t:'Implement WAF rules to block known exploit patterns immediately',correct:true,points:25,timeLost:0,explain:'Correct. WAF virtual patching is your best immediate defense when no vendor patch exists.'},
+       {t:'Wait for the vendor patch before doing anything',correct:false,points:-25,timeLost:8,explain:'Wrong. Zero-day exploitation is active now. Waiting hours or days is unacceptable.'},
+       {t:'Disable the vulnerable application if business can tolerate it',correct:true,points:20,timeLost:0,explain:'Correct if tolerable — taking the app offline eliminates the attack surface entirely.'},
+       {t:'Increase logging and monitoring on the affected system',correct:true,points:15,timeLost:0,explain:'Correct. Enhanced monitoring helps detect exploitation attempts even without a patch.'},
+     ]},
+    {label:'CONTAINMENT',situation:'WAF deployed. Threat intel shows your IP range scanned for this CVE by a known APT group for 3 days before your WAF was deployed. 847 blocked attempts in logs.',
+     choices:[
+       {t:'Threat hunt for signs of compromise before WAF was deployed',correct:true,points:30,timeLost:0,explain:'Correct. A 3-day exposure window is enough for a skilled APT to gain a foothold. Hunt now.'},
+       {t:'Assume the WAF is sufficient and continue monitoring',correct:false,points:-20,timeLost:4,explain:'Wrong. 3-day pre-WAF exposure means you may already be compromised. You must hunt.'},
+       {t:'File a law enforcement report about the APT scanning',correct:false,points:5,timeLost:0,explain:'Eventually useful but not the priority now. Hunting for compromise takes precedence.'},
+       {t:'Apply the vendor patch immediately upon release',correct:true,points:15,timeLost:0,explain:'Correct — patch immediately when released. WAF rules are temporary, not a permanent fix.'},
+     ]},
+  ]},
 };
 
-window.loadIR=function(type){
-  const steps=irPlaybooks[type]; if(!steps)return;
-  const el=document.getElementById('ir-content');if(!el)return;
-  el.innerHTML=`<div style="color:var(--red);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;margin-bottom:10px;">📋 ${type.toUpperCase()} — RESPONSE PLAYBOOK</div>`+
-  steps.map(s=>`<div style="border:1px solid #ff003c22;background:#050000;padding:10px 12px;margin-bottom:6px;" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='#ff003c22'"><div style="color:var(--red);font-size:11px;margin-bottom:3px;">${s[0]}</div><div style="color:#ff9999;font-size:11px;line-height:1.6;">${s[1]}</div></div>`).join('')+
-  `<div style="font-size:10px;color:var(--green-dim);margin-top:8px;letter-spacing:1px;">Playbook based on NIST SP 800-61r2 and industry best practices.</div>`;
+let irState=null;
+window.irStart=function(type){
+  const drill=irDrills[type];if(!drill)return;
+  irState={drill,step:0,score:0,timeLost:0};
+  document.getElementById('ir-score').textContent='0';
+  document.getElementById('ir-time').textContent='0h';
+  document.getElementById('ir-step').textContent='--';
+  document.getElementById('ir-out').textContent='Incident started. Read the situation carefully.';
+  irShowStep();
 };
+window.irReset=function(){
+  irState=null;
+  ['ir-score','ir-time','ir-step'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=id==='ir-time'?'0h':id==='ir-step'?'--':'0';});
+  const box=document.getElementById('ir-scenario-box');if(box)box.style.display='none';
+  document.getElementById('ir-out').textContent='Select an incident type to begin.';
+};
+function irShowStep(){
+  if(!irState)return;
+  const {drill,step}=irState;
+  if(step>=drill.steps.length){
+    document.getElementById('ir-scenario-box').style.display='none';
+    const grade=irState.score>80?'A':irState.score>50?'B':irState.score>20?'C':'D';
+    document.getElementById('ir-out').textContent='DRILL COMPLETE!\nScore: '+irState.score+'pts | Time lost: '+irState.timeLost+'h | Grade: '+grade+'\n\nLesson: Wrong decisions compound. A 4-hour containment delay can mean the difference between a minor incident and a company-ending breach.';
+    document.getElementById('ir-step').textContent='DONE';
+    return;
+  }
+  const s=drill.steps[step];
+  document.getElementById('ir-step-label').textContent='STEP '+(step+1)+' — '+s.label;
+  document.getElementById('ir-situation').textContent=s.situation;
+  document.getElementById('ir-step').textContent=(step+1)+'/'+drill.steps.length;
+  const choicesEl=document.getElementById('ir-choices');choicesEl.innerHTML='';
+  const shuffled=[...s.choices].sort(()=>Math.random()-0.5);
+  shuffled.forEach(c=>{
+    const btn=document.createElement('button');btn.className='tool-btn';
+    btn.style.cssText='font-size:11px;text-align:left;padding:8px 12px;width:100%;margin-bottom:2px;';
+    btn.textContent=c.t;btn.onclick=()=>irChoose(c,btn);choicesEl.appendChild(btn);
+  });
+  document.getElementById('ir-scenario-box').style.display='block';
+}
+function irChoose(choice,btn){
+  document.querySelectorAll('#ir-choices .tool-btn').forEach(b=>{b.disabled=true;b.style.opacity='0.5';});
+  irState.score+=choice.points;irState.timeLost+=choice.timeLost;
+  document.getElementById('ir-score').textContent=Math.max(0,irState.score);
+  document.getElementById('ir-time').textContent=irState.timeLost+'h';
+  btn.style.opacity='1';btn.style.borderColor=choice.correct?'var(--green)':'var(--red)';btn.style.color=choice.correct?'var(--green)':'var(--red)';
+  const fb=document.createElement('div');fb.style.cssText='font-size:11px;color:'+(choice.correct?'var(--green)':'var(--red)')+';margin-top:6px;padding:6px;background:#000500;';
+  fb.textContent=(choice.correct?'CORRECT: ':'WRONG: ')+choice.explain+(choice.timeLost>0?' [+'+choice.timeLost+'h delay]':'');
+  document.getElementById('ir-choices').appendChild(fb);
+  document.getElementById('ir-out').textContent=choice.explain;
+  irState.step++;setTimeout(irShowStep,2000);
+}
 
 </script>
 </body>
