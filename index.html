@@ -267,30 +267,9 @@
           <span>// LIVE INTEL FEED</span>
           <span class="dot"></span>
         </div>
-        <div class="panel-body">
-          <div class="feed-item">
-            <div class="feed-meta"><span class="feed-tag">[BREACH]</span><span>2026-04-23 · 08:41 UTC</span></div>
-            <a href="#" class="feed-title">Major cloud provider reports unauthorized access to internal dashboards — investigation ongoing</a>
-          </div>
-          <div class="feed-item">
-            <div class="feed-meta"><span class="feed-tag">[ZERO-DAY]</span><span>2026-04-23 · 06:19 UTC</span></div>
-            <a href="#" class="feed-title">Unpatched vulnerability in widely-deployed VPN software actively exploited in the wild</a>
-          </div>
-          <div class="feed-item">
-            <div class="feed-meta"><span class="feed-tag">[OPSEC]</span><span>2026-04-22 · 22:55 UTC</span></div>
-            <a href="#" class="feed-title">New deanonymization technique demonstrated against Tor hidden services at academic conference</a>
-          </div>
-          <div class="feed-item">
-            <div class="feed-meta"><span class="feed-tag">[MALWARE]</span><span>2026-04-22 · 17:30 UTC</span></div>
-            <a href="#" class="feed-title">Analysis of novel rootkit variant using kernel-level evasion techniques — full report available</a>
-          </div>
-          <div class="feed-item">
-            <div class="feed-meta"><span class="feed-tag">[LEAK]</span><span>2026-04-22 · 11:04 UTC</span></div>
-            <a href="#" class="feed-title">240GB dataset allegedly from government contractor appears on underground forum — hashes circulating</a>
-          </div>
-          <div class="feed-item">
-            <div class="feed-meta"><span class="feed-tag">[NETWORK]</span><span>2026-04-21 · 09:17 UTC</span></div>
-            <a href="#" class="feed-title">BGP hijacking incident diverts traffic for multiple financial institutions — 40 minute window detected</a>
+        <div class="panel-body" id="live-feed-body">
+          <div style="text-align:center;padding:20px;color:var(--green-dim);font-size:11px;">
+            <span class="status-dot"></span> Fetching live intel feed...
           </div>
         </div>
       </div>
@@ -301,10 +280,11 @@
       <div class="widget">
         <div class="widget-header">THREAT METRICS</div>
         <div class="widget-body">
-          <div class="threat-level"><span class="threat-label">GLOBAL</span><div class="threat-bar-bg"><div class="threat-bar-fill" style="width:72%"></div></div><span class="threat-val">72%</span></div>
-          <div class="threat-level"><span class="threat-label">NETWORK</span><div class="threat-bar-bg"><div class="threat-bar-fill" style="width:55%"></div></div><span class="threat-val">55%</span></div>
-          <div class="threat-level"><span class="threat-label">ENDPOINT</span><div class="threat-bar-bg"><div class="threat-bar-fill" style="width:84%"></div></div><span class="threat-val">84%</span></div>
-          <div class="threat-level"><span class="threat-label">DARK WEB</span><div class="threat-bar-bg"><div class="threat-bar-fill" style="width:61%"></div></div><span class="threat-val">61%</span></div>
+          <div class="threat-level"><span class="threat-label">GLOBAL</span><div class="threat-bar-bg"><div class="threat-bar-fill" id="bar-global" style="width:0%"></div></div><span class="threat-val" id="val-global">--</span></div>
+          <div class="threat-level"><span class="threat-label">NETWORK</span><div class="threat-bar-bg"><div class="threat-bar-fill" id="bar-network" style="width:0%"></div></div><span class="threat-val" id="val-network">--</span></div>
+          <div class="threat-level"><span class="threat-label">ENDPOINT</span><div class="threat-bar-bg"><div class="threat-bar-fill" id="bar-endpoint" style="width:0%"></div></div><span class="threat-val" id="val-endpoint">--</span></div>
+          <div class="threat-level"><span class="threat-label">DARK WEB</span><div class="threat-bar-bg"><div class="threat-bar-fill" id="bar-darkweb" style="width:0%"></div></div><span class="threat-val" id="val-darkweb">--</span></div>
+          <div style="font-size:9px;color:var(--green-dim);margin-top:6px;letter-spacing:1px;" id="threat-source">Connecting to GreyNoise API...</div>
         </div>
       </div>
       <div class="widget">
@@ -324,11 +304,8 @@
           <div class="terminal" id="terminal-output">
             <div><span class="cmd">$ whoami</span></div>
             <div class="out">anonymous</div>
-            <div><span class="cmd">$ uptime</span></div>
-            <div class="out">247d 14h 32m — all systems nominal</div>
-            <div><span class="cmd">$ scan --target perimeter</span></div>
-            <div class="out">Scanning... [██████████] 100%</div>
-            <div class="err">3 anomalies detected</div>
+            <div><span class="cmd">$ connect --feed live</span></div>
+            <div class="out" id="term-status">Initializing...</div>
             <div><span class="cmd">$ _<span class="cursor"></span></span></div>
           </div>
         </div>
@@ -1838,6 +1815,319 @@ function irChoose(choice,btn){
   document.getElementById('ir-out').textContent=choice.explain;
   irState.step++;setTimeout(irShowStep,2000);
 }
+
+
+/* ══════════════════════════════════════════
+   🌐 LIVE DATA INTEGRATIONS
+   ─────────────────────────────────────────
+   SETUP (free, takes 2 minutes):
+   1. AbuseIPDB:  abuseipdb.com → sign up → API → create key → paste below
+   2. GreyNoise:  viz.greynoise.io/account → API Key → paste below
+   Both are free tiers, no credit card needed.
+══════════════════════════════════════════ */
+
+const LIVE_CONFIG = {
+  abuseipdb_key:  'd970282c7ad6a566d24c57d57221f2cc2b338622cdf11740123cdf4ddf9641b3846b63b4eb483a09',   // abuseipdb.com (free)
+  greynoise_key:  'dc35b637-b5f7-46c9-a98a-5c4f2a21eec9',    // viz.greynoise.io (free)
+  rss_feeds: [
+    // rss2json.com is free, no key needed for basic use
+    { label: 'THN',   url: 'https://feeds.feedburner.com/TheHackersNews' },
+    { label: 'BC',    url: 'https://www.bleepingcomputer.com/feed/' },
+    { label: 'CISA',  url: 'https://www.cisa.gov/cybersecurity-advisories/advisories.xml' },
+  ],
+  refresh_interval_ms: 5 * 60 * 1000,  // refresh every 5 minutes
+};
+
+/* ── TAG CLASSIFIER ── */
+function classifyFeedItem(title, desc) {
+  const text = (title + ' ' + (desc || '')).toLowerCase();
+  if (/ransomware|encrypted|ransom|lockbit|blackcat|cl0p/.test(text))   return 'MALWARE';
+  if (/zero.?day|0day|cve-|unpatched|exploit/.test(text))               return 'ZERO-DAY';
+  if (/breach|unauthorized|leaked|exposed|stolen|hack/.test(text))      return 'BREACH';
+  if (/phish|social.engineer|credential|password/.test(text))           return 'OPSEC';
+  if (/malware|trojan|spyware|botnet|backdoor|rat/.test(text))        return 'MALWARE';
+  if (/ddos|denial.of.service|flood|botnet/.test(text))                 return 'NETWORK';
+  if (/leak|dump|database|forum|dark.?web/.test(text))                  return 'LEAK';
+  if (/vulnerability|flaw|bug|patch|update/.test(text))                 return 'VULN';
+  return 'INTEL';
+}
+
+/* ── LIVE INTEL FEED via RSS2JSON ── */
+async function fetchLiveFeed() {
+  const feedBody = document.getElementById('live-feed-body');
+  if (!feedBody) return;
+
+  const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+  let allItems = [];
+
+  for (const feed of LIVE_CONFIG.rss_feeds) {
+    try {
+      const res = await fetch(RSS2JSON + encodeURIComponent(feed.url));
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (data.status !== 'ok' || !data.items) continue;
+      data.items.slice(0, 5).forEach(item => {
+        allItems.push({
+          title:   item.title,
+          link:    item.link,
+          date:    item.pubDate ? new Date(item.pubDate) : new Date(),
+          tag:     classifyFeedItem(item.title, item.description),
+          source:  feed.label,
+        });
+      });
+    } catch(e) { /* network or CORS issue — skip this feed */ }
+  }
+
+  if (!allItems.length) {
+    feedBody.innerHTML = '<div style="padding:16px;color:var(--green-dim);font-size:11px;">⚠ Feed unavailable — check console. Showing cached intel.</div>';
+    renderFallbackFeed();
+    return;
+  }
+
+  // Sort newest first
+  allItems.sort((a, b) => b.date - a.date);
+
+  feedBody.innerHTML = allItems.slice(0, 8).map(item => {
+    const ts = item.date.toISOString().slice(0,10) + ' · ' + item.date.toISOString().slice(11,16) + ' UTC';
+    return `<div class="feed-item">
+      <div class="feed-meta">
+        <span class="feed-tag">[${item.tag}]</span>
+        <span>${ts}</span>
+        <span style="color:var(--green-dim);opacity:0.6;">${item.source}</span>
+      </div>
+      <a href="${item.link}" target="_blank" rel="noopener" class="feed-title">${item.title}</a>
+    </div>`;
+  }).join('');
+
+  // Update ticker with real headlines
+  const headlines = allItems.slice(0, 6).map(i => i.title.slice(0, 80) + (i.title.length > 80 ? '...' : ''));
+  updateTickerWithFeed(headlines);
+
+  // Update terminal
+  termLog('Feed sync OK — ' + allItems.length + ' items from ' + LIVE_CONFIG.rss_feeds.length + ' sources');
+}
+
+function renderFallbackFeed() {
+  // Keep the original static feed as fallback — already in DOM from initial load
+  // Just re-render the static items
+  const feedBody = document.getElementById('live-feed-body');
+  if (!feedBody) return;
+  const staticItems = [
+    {tag:'BREACH',   date:'2026-04-23 · 08:41 UTC', title:'Major cloud provider reports unauthorized access to internal dashboards — investigation ongoing', link:'#'},
+    {tag:'ZERO-DAY', date:'2026-04-23 · 06:19 UTC', title:'Unpatched vulnerability in widely-deployed VPN software actively exploited in the wild', link:'#'},
+    {tag:'OPSEC',    date:'2026-04-22 · 22:55 UTC', title:'New deanonymization technique demonstrated against Tor hidden services at academic conference', link:'#'},
+    {tag:'MALWARE',  date:'2026-04-22 · 17:30 UTC', title:'Analysis of novel rootkit variant using kernel-level evasion techniques — full report available', link:'#'},
+    {tag:'LEAK',     date:'2026-04-22 · 11:04 UTC', title:'240GB dataset allegedly from government contractor appears on underground forum — hashes circulating', link:'#'},
+    {tag:'NETWORK',  date:'2026-04-21 · 09:17 UTC', title:'BGP hijacking incident diverts traffic for multiple financial institutions — 40 minute window detected', link:'#'},
+  ];
+  feedBody.innerHTML = staticItems.map(i =>
+    `<div class="feed-item"><div class="feed-meta"><span class="feed-tag">[${i.tag}]</span><span>${i.date}</span></div><a href="${i.link}" class="feed-title">${i.title}</a></div>`
+  ).join('');
+}
+
+/* ── TICKER UPDATE with live headlines ── */
+let liveTickerItems = null;
+function updateTickerWithFeed(headlines) {
+  if (!headlines || !headlines.length) return;
+  liveTickerItems = headlines;
+  // Override the static ticker array
+  Object.assign(window, { _liveTickerActive: true, _liveTickerIdx: 0 });
+}
+
+// Patch the ticker to use live headlines when available
+const _origTickerInterval = setInterval(() => {
+  if (!window._liveTickerActive || !liveTickerItems) return;
+  window._liveTickerIdx = (window._liveTickerIdx + 1) % liveTickerItems.length;
+  const el = document.getElementById('ticker-text');
+  if (!el) return;
+  el.style.opacity = 0;
+  setTimeout(() => {
+    el.textContent = liveTickerItems[window._liveTickerIdx];
+    el.style.opacity = 1;
+  }, 300);
+}, 5000);
+
+/* ── GREYNOISE THREAT METRICS ── */
+async function fetchGreyNoiseThreat() {
+  const key = LIVE_CONFIG.greynoise_key;
+  const src = document.getElementById('threat-source');
+
+  if (key === 'YOUR_GREYNOISE_KEY_HERE') {
+    // No key — animate bars with realistic simulated data based on time-of-day
+    simulateThreatMetrics();
+    if (src) src.textContent = 'Add GreyNoise API key for live data';
+    return;
+  }
+
+  try {
+    // GreyNoise /v3/stats endpoint — query for internet-wide scanning noise
+    const res = await fetch('https://api.greynoise.io/v3/community/stats', {
+      headers: { 'key': key }
+    });
+    if (!res.ok) throw new Error('GreyNoise API error: ' + res.status);
+    const data = await res.json();
+
+    // Map GreyNoise noise stats to our threat bars
+    const total = data.count || 1;
+    const malicious = data.malicious || 0;
+    const benign = data.benign || 0;
+    const unknown = data.unknown || 0;
+
+    const globalPct  = Math.min(99, Math.round((malicious / total) * 200));
+    const networkPct = Math.min(99, Math.round(((malicious + unknown * 0.3) / total) * 180));
+    const endpointPct = Math.min(99, Math.round((malicious / total) * 220));
+    const darkwebPct  = Math.min(99, Math.round(((unknown * 0.5 + malicious * 0.8) / total) * 160));
+
+    animateThreatBar('global',   globalPct);
+    animateThreatBar('network',  networkPct);
+    animateThreatBar('endpoint', endpointPct);
+    animateThreatBar('darkweb',  darkwebPct);
+
+    if (src) src.textContent = 'Source: GreyNoise — ' + total.toLocaleString() + ' IPs scanned · updated ' + new Date().toUTCString().slice(0,25);
+    termLog('GreyNoise threat data synced — ' + malicious.toLocaleString() + ' malicious IPs observed');
+  } catch(e) {
+    simulateThreatMetrics();
+    if (src) src.textContent = 'GreyNoise: ' + e.message + ' — using estimated data';
+  }
+}
+
+function simulateThreatMetrics() {
+  // Generate realistic threat levels — slightly randomised around realistic baselines
+  // slightly higher in evening UTC (peak attack hours)
+  const hour = new Date().getUTCHours();
+  const peakFactor = (hour >= 18 || hour <= 6) ? 1.15 : 1.0;
+  const base = { global: 68, network: 52, endpoint: 79, darkweb: 58 };
+  Object.entries(base).forEach(([key, val]) => {
+    const pct = Math.min(99, Math.round((val + (Math.random() * 8 - 4)) * peakFactor));
+    animateThreatBar(key, pct);
+  });
+  const src = document.getElementById('threat-source');
+  if (src) src.textContent = 'Estimated threat levels — add GreyNoise key for live data';
+}
+
+function animateThreatBar(key, pct) {
+  const bar = document.getElementById('bar-' + key);
+  const val = document.getElementById('val-' + key);
+  if (!bar || !val) return;
+  // Colour based on severity
+  const colour = pct >= 80 ? 'linear-gradient(90deg,var(--red),#ff8800)'
+               : pct >= 60 ? 'linear-gradient(90deg,#ff8800,var(--cyan))'
+               :              'linear-gradient(90deg,var(--green),var(--cyan))';
+  bar.style.background = colour;
+  bar.style.width = pct + '%';
+  val.textContent = pct + '%';
+  val.style.color = pct >= 80 ? 'var(--red)' : pct >= 60 ? '#ff8800' : 'var(--green)';
+}
+
+/* ── ABUSEIPDB NETWORK STATS ── */
+async function fetchAbuseIPDBStats() {
+  const key = LIVE_CONFIG.abuseipdb_key;
+
+  if (key === 'YOUR_ABUSEIPDB_KEY_HERE') {
+    // No key — keep jitter going (already running)
+    termLog('Add AbuseIPDB key for live blocked/alert counts');
+    return;
+  }
+
+  try {
+    // AbuseIPDB /api/v2/blacklist — returns list of most reported IPs
+    // We use the count from the response to drive the stats
+    const res = await fetch('https://api.abuseipdb.com/api/v2/blacklist?confidenceMinimum=90&limit=10000', {
+      headers: {
+        'Accept': 'application/json',
+        'Key': key,
+      }
+    });
+    if (!res.ok) throw new Error('AbuseIPDB error: ' + res.status);
+    const data = await res.json();
+    const count = data.meta?.generatedAt ? data.data.length : 0;
+
+    if (count > 0) {
+      // Drive the stats widgets with real data
+      const nodesEl = document.getElementById('cnt-nodes');
+      const blockedEl = document.getElementById('cnt-blocked');
+      const alertsEl = document.getElementById('cnt-alerts');
+      const eventsEl = document.getElementById('cnt-events');
+
+      if (blockedEl) blockedEl.textContent = count.toLocaleString();
+      if (alertsEl)  alertsEl.textContent  = Math.round(count * 0.052).toLocaleString();
+      if (nodesEl)   nodesEl.textContent   = (count * 3 + 1200).toLocaleString();
+      if (eventsEl)  eventsEl.textContent  = Math.round(count * 1.4 / 1000) + 'K';
+
+      termLog('AbuseIPDB: ' + count.toLocaleString() + ' high-confidence malicious IPs in blacklist');
+    }
+  } catch(e) {
+    termLog('AbuseIPDB: ' + e.message);
+  }
+}
+
+/* ── LIVE TERMINAL LOGGER ── */
+const termLines = [];
+function termLog(msg) {
+  termLines.push(msg);
+  if (termLines.length > 6) termLines.shift();
+  renderTerminal();
+}
+
+function renderTerminal() {
+  const el = document.getElementById('term-status');
+  if (!el) return;
+  const ts = new Date().toUTCString().slice(17, 25);
+  el.textContent = '[' + ts + '] ' + termLines[termLines.length - 1];
+
+  // Also keep a rolling full terminal visible
+  const term = document.getElementById('terminal-output');
+  if (!term) return;
+  term.innerHTML =
+    '<div><span class="cmd">$ whoami</span></div>' +
+    '<div class="out">anonymous</div>' +
+    '<div><span class="cmd">$ connect --feed live</span></div>' +
+    termLines.map(l => '<div class="out">[' + new Date().toUTCString().slice(17,25) + '] ' + l + '</div>').join('') +
+    '<div><span class="cmd">$ _<span class="cursor"></span></span></div>';
+}
+
+/* ── LIVE ALERT BANNER ── */
+function updateAlertBanner(items) {
+  if (!items || !items.length) return;
+  const banner = document.querySelector('.alert-banner');
+  if (!banner) return;
+  // Find the most critical recent item
+  const critical = items.find(i => ['ZERO-DAY','MALWARE','BREACH'].includes(i.tag)) || items[0];
+  if (critical) {
+    banner.innerHTML = '<span class="alert-icon">⚠</span> LIVE: ' + critical.title.slice(0, 100) + (critical.title.length > 100 ? '...' : '');
+  }
+}
+
+/* ── INIT & REFRESH LOOP ── */
+async function initLiveData() {
+  termLog('Initializing live data connections...');
+
+  // Fire all fetches in parallel
+  await Promise.allSettled([
+    fetchLiveFeed(),
+    fetchGreyNoiseThreat(),
+    fetchAbuseIPDBStats(),
+  ]);
+
+  termLog('All feeds loaded. Next refresh in 5 minutes.');
+
+  // Auto-refresh every 5 minutes
+  setInterval(async () => {
+    termLog('Refreshing live feeds...');
+    await Promise.allSettled([
+      fetchLiveFeed(),
+      fetchGreyNoiseThreat(),
+      fetchAbuseIPDBStats(),
+    ]);
+    termLog('Feeds refreshed — ' + new Date().toUTCString().slice(0,25));
+  }, LIVE_CONFIG.refresh_interval_ms);
+}
+
+// Kick off after page load
+window.addEventListener('load', () => {
+  // Small delay to let existing jitter/clock start first
+  setTimeout(initLiveData, 800);
+});
 
 </script>
 </body>
