@@ -376,21 +376,7 @@ updateClock(); setInterval(updateClock, 1000);
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* ── TICKER ── */
-const tickers = [
-  'Monitoring 2,847 active nodes across 47 countries...',
-  'ALERT: Elevated DDoS activity detected on AS12345...',
-  'New zero-day CVE-2026-XXXX under active exploitation...',
-  'Secure RSS feed synchronized — 14 new intel reports...',
-  'Threat level elevated — all operatives on standby...',
-  'Anonymous network uptime: 247 days, 14 hours...',
-];
-let ti = 0;
-setInterval(() => {
-  ti = (ti + 1) % tickers.length;
-  const el = document.getElementById('ticker-text');
-  el.style.opacity = 0;
-  setTimeout(() => { el.textContent = tickers[ti]; el.style.opacity = 1; }, 300);
-}, 4000);
+document.getElementById('ticker-text').textContent = 'Fetching live intel from global sources...';
 document.getElementById('ticker-text').style.transition = 'opacity 0.3s';
 
 /* ── STATS JITTER ── */
